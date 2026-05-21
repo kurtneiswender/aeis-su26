@@ -1,0 +1,1153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · Acoustics, Electrical &amp; Illumination Systems · Summer 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B;
+    --ink-2:#161412;
+    --ink-3:#1E1B17;
+    --paper:#EDE4D3;
+    --paper-2:#D9CFB9;
+    --paper-dim:#8A8273;
+    --amber:#D4A24C;
+    --amber-soft:rgba(212,162,76,.10);
+    --amber-line:rgba(212,162,76,.45);
+    --red:#C8472F;
+    --blue:#9FC8D4;
+    --rule:rgba(237,228,211,.18);
+    --rule-strong:rgba(237,228,211,.42);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  body{
+    font-family:"Newsreader",Georgia,serif;
+    font-weight:380;font-size:17px;line-height:1.55;
+    font-feature-settings:"ss01","onum";
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.55;
+  }
+  ::selection{background:var(--amber);color:var(--ink);}
+
+  .wrap{max-width:1260px;margin:0 auto;padding:48px 56px 120px;position:relative;}
+  @media (max-width:720px){ .wrap{padding:32px 22px 80px} }
+
+  /* TOPBAR */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);
+    padding-bottom:18px;border-bottom:1px solid var(--rule);
+  }
+  .topbar .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:8px;vertical-align:middle;animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{50%{opacity:.35}}
+
+  /* HERO */
+  .hero{padding:72px 0 56px;position:relative;}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-bottom:24px;}
+  h1.title{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;
+    font-weight:380;font-size:clamp(54px,10.5vw,160px);line-height:.86;letter-spacing:-.035em;margin:0;
+  }
+  h1.title em{font-style:italic;color:var(--amber);font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+  h1.title .amp{color:var(--red);font-style:italic;font-weight:300;}
+  .sub{margin-top:36px;max-width:820px;font-family:"Newsreader",serif;font-size:clamp(19px,2vw,24px);line-height:1.45;color:var(--paper-2);font-style:italic;}
+
+  .ornament{position:absolute;right:-20px;top:60px;width:240px;height:240px;opacity:.55;pointer-events:none;}
+  @media (max-width:900px){ .ornament{display:none} }
+
+  /* META GRID */
+  .meta{margin-top:64px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);}
+  .meta > div{padding:22px 22px 22px 0;border-right:1px solid var(--rule);}
+  .meta > div:last-child{border-right:none}
+  .meta dt{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:8px;}
+  .meta dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:22px;line-height:1.2;font-variation-settings:"opsz" 36;}
+  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:13px;color:var(--paper-dim);margin-top:4px;font-style:italic;}
+  @media (max-width:820px){ .meta{grid-template-columns:repeat(2,1fr)} .meta > div:nth-child(2){border-right:none}}
+
+  /* SECTION */
+  section{margin-top:120px;}
+  .sec-label{display:flex;align-items:baseline;gap:22px;margin-bottom:36px;padding-bottom:14px;border-bottom:1px solid var(--rule-strong);}
+  .sec-num{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.18em;color:var(--amber);}
+  .sec-title{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(32px,4.4vw,56px);line-height:1;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 72,"SOFT" 40;}
+  .sec-title em{font-style:italic;color:var(--amber);font-variation-settings:"opsz" 72,"SOFT" 100,"WONK" 1;}
+
+  .lede{max-width:780px;font-size:19px;line-height:1.55;color:var(--paper);}
+  .lede p{margin:0 0 1em;}
+  .lede p:first-child::first-letter{
+    font-family:"Fraunces",serif;font-weight:300;
+    font-variation-settings:"opsz" 144,"SOFT" 60,"WONK" 1;
+    font-size:5.2em;float:left;line-height:.82;padding:6px 12px 0 0;color:var(--amber);
+  }
+
+  /* ACTS */
+  .acts{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:56px;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);}
+  .act{padding:28px 22px 32px;border-right:1px solid var(--rule);position:relative;}
+  .act:last-child{border-right:none}
+  .act .roman{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-size:60px;color:var(--red);line-height:.9;margin-bottom:8px;}
+  .act.encore .roman{color:var(--amber);}
+  .act .actname{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:14px;}
+  .act h3{font-family:"Fraunces",serif;font-weight:380;font-size:26px;line-height:1.05;letter-spacing:-.01em;margin:0 0 14px;font-variation-settings:"opsz" 60,"SOFT" 30;}
+  .act h3 em{font-style:italic;color:var(--amber);}
+  .act p{margin:0 0 10px;color:var(--paper-2);font-size:14.5px;line-height:1.5;}
+  .act .weeks{margin-top:18px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.14em;color:var(--amber);}
+  @media (max-width:900px){.acts{grid-template-columns:repeat(2,1fr)} .act:nth-child(2){border-right:none}}
+  @media (max-width:560px){.acts{grid-template-columns:1fr}.act{border-right:none;border-bottom:1px solid var(--rule)}.act:last-child{border-bottom:none}}
+
+  /* ─────────── WEEK CARD ─────────── */
+  .schedule{margin-top:48px;}
+  .week{
+    padding:36px 0 8px;
+    border-top:1px solid var(--rule-strong);
+  }
+  .week:last-child{border-bottom:1px solid var(--rule-strong);}
+  .week-head{
+    display:grid;grid-template-columns:110px 130px 1fr;gap:24px;align-items:start;margin-bottom:16px;
+  }
+  .week .wnum{
+    font-family:"Fraunces",serif;font-weight:300;
+    font-variation-settings:"opsz" 144,"SOFT" 60,"WONK" 1;
+    font-size:72px;line-height:.85;color:var(--amber);letter-spacing:-.04em;
+  }
+  .week .wdate{
+    font-family:"JetBrains Mono",monospace;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);padding-top:14px;
+  }
+  .week .wdate strong{display:block;color:var(--paper);font-weight:500;margin-bottom:4px;}
+  .week .wtitle h4{
+    font-family:"Fraunces",serif;font-weight:380;font-size:30px;line-height:1.1;
+    letter-spacing:-.01em;margin:6px 0 8px;font-variation-settings:"opsz" 48,"SOFT" 30;
+  }
+  .week .wtitle h4 em{font-style:italic;color:var(--amber);}
+  .week .wtitle p.sumline{margin:0;font-size:15.5px;color:var(--paper-2);line-height:1.5;}
+  .week .tag{
+    display:inline-block;font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.18em;text-transform:uppercase;padding:3px 10px;
+    border:1px solid var(--rule-strong);color:var(--paper-dim);margin-bottom:6px;
+  }
+  .week .tag.acoustics{color:var(--red);border-color:rgba(200,71,47,.6)}
+  .week .tag.daylight{color:var(--amber);border-color:rgba(212,162,76,.55)}
+  .week .tag.electric{color:var(--blue);border-color:rgba(159,200,212,.45)}
+  .week .tag.review{background:var(--red);color:var(--ink);border-color:var(--red);font-weight:500;}
+  .week .tag.tighten{color:var(--paper);border-color:var(--paper)}
+  .week .tag.encore{background:var(--amber);color:var(--ink);border-color:var(--amber);font-weight:500;}
+
+  .blocks{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:14px;
+    border-top:1px dashed var(--rule);
+  }
+  .block{
+    padding:18px 18px 22px;
+    border-right:1px dashed var(--rule);
+    font-size:14.5px;line-height:1.5;color:var(--paper-2);
+  }
+  .block:last-child{border-right:none;}
+  .block .label{
+    font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);
+    margin-bottom:10px;display:flex;align-items:center;gap:8px;
+  }
+  .block .label::before{
+    content:"";display:inline-block;width:18px;height:1px;background:var(--paper-dim);
+  }
+  .block em{font-style:italic;color:var(--paper);}
+  .block strong{color:var(--paper);font-weight:500;}
+  .block.deliverable{
+    background:var(--amber-soft);
+    border-right:1px dashed var(--amber-line);
+  }
+  .block.deliverable .label{color:var(--amber);}
+  .block.deliverable .label::before{background:var(--amber);}
+  .block.deliverable em{color:var(--amber);}
+
+  @media (max-width:980px){
+    .blocks{grid-template-columns:repeat(2,1fr);}
+    .block{border-bottom:1px dashed var(--rule);}
+    .block:nth-child(2){border-right:none}
+    .block:nth-child(3),.block:nth-child(4){border-bottom:none}
+  }
+  @media (max-width:600px){
+    .week-head{grid-template-columns:80px 1fr;gap:14px;}
+    .week-head .wdate{grid-column:2;padding-top:6px;}
+    .week-head .wtitle{grid-column:1/-1;}
+    .blocks{grid-template-columns:1fr;}
+    .block{border-right:none;border-bottom:1px dashed var(--rule);}
+    .block:last-child{border-bottom:none;}
+  }
+
+  /* PANELS / TWO-COL */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:32px;}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:32px;}
+  @media (max-width:820px){.two,.three{grid-template-columns:1fr;gap:24px}}
+  .panel{border:1px solid var(--rule-strong);padding:28px 28px 24px;background:rgba(237,228,211,.02);}
+  .panel.accent{border-color:var(--amber-line);background:var(--amber-soft);}
+  .panel h4{font-family:"Fraunces",serif;font-weight:380;font-size:24px;margin:0 0 12px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .panel h4 em{font-style:italic;color:var(--amber);}
+  .panel p{margin:0 0 10px;color:var(--paper-2);font-size:15px;line-height:1.55;}
+  .panel ul{margin:8px 0 0;padding-left:18px;color:var(--paper-2);font-size:15px;}
+  .panel li{margin-bottom:6px;}
+  .panel small{font-size:13px;color:var(--paper-dim);font-style:italic;}
+
+  /* DL EXAMPLE */
+  .dl-example{
+    border:1px solid var(--amber-line);background:var(--amber-soft);
+    padding:24px 28px;margin-top:28px;font-family:"Newsreader",serif;font-size:15.5px;
+    line-height:1.55;color:var(--paper);
+  }
+  .dl-example .field{
+    display:grid;grid-template-columns:140px 1fr;gap:18px;padding:6px 0;
+    border-bottom:1px dashed var(--rule);
+  }
+  .dl-example .field:last-child{border-bottom:none;}
+  .dl-example .field b{
+    font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--amber);font-weight:500;align-self:start;padding-top:4px;
+  }
+  @media (max-width:600px){.dl-example .field{grid-template-columns:1fr;gap:2px;}}
+
+  /* GRADING */
+  .grade{width:100%;border-collapse:collapse;margin-top:24px;font-size:15.5px;}
+  .grade th,.grade td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--rule);}
+  .grade th{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);font-weight:500;}
+  .grade td:last-child{font-family:"JetBrains Mono",monospace;color:var(--amber);text-align:right;font-variant-numeric:tabular-nums;}
+  .grade tr:last-child td{border-bottom:none;font-family:"Fraunces",serif;font-size:18px;color:var(--paper);}
+  .grade tr:last-child td:last-child{font-family:"JetBrains Mono",monospace;font-size:14px;color:var(--paper);}
+  .grade-scale{
+    margin-top:14px;display:grid;grid-template-columns:repeat(9,1fr);gap:0;
+    border:1px solid var(--rule);
+    font-family:"JetBrains Mono",monospace;font-size:11px;
+  }
+  .grade-scale.ug{grid-template-columns:repeat(6,1fr);}
+  .grade-scale div{padding:10px 12px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);color:var(--paper-2);}
+  .grade-scale div:last-child{border-right:none;border-bottom:none;}
+  .grade-scale div:nth-last-child(-n+6).first-of-row,
+  .grade-scale div{}
+  .grade-scale.ug div:nth-child(6){border-right:none;}
+  .grade-scale.ug div:nth-child(n+7){border-bottom:none;}
+  .grade-scale div b{color:var(--amber);font-weight:500;display:block;margin-bottom:2px;letter-spacing:.1em;}
+  .grade-scale div:last-child b{color:var(--red);}
+  @media (max-width:900px){
+    .grade-scale{grid-template-columns:repeat(4,1fr)}
+    .grade-scale.ug{grid-template-columns:repeat(4,1fr)}
+    .grade-scale div{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+    .grade-scale.ug div:nth-child(6){border-right:1px solid var(--rule);}
+    .grade-scale.ug div:nth-child(n+7){border-bottom:1px solid var(--rule);}
+  }
+  @media (max-width:560px){
+    .grade-scale,.grade-scale.ug{grid-template-columns:repeat(2,1fr)}
+    .grade-scale div:nth-child(2n){border-right:none}
+  }
+
+  /* CALLOUT */
+  .callout{margin-top:48px;padding:22px 26px;border-left:3px solid var(--amber);background:var(--amber-soft);color:var(--paper);font-size:15px;line-height:1.55;}
+  .callout strong{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:6px;font-weight:500;}
+
+  /* SESSION TIMETABLE */
+  .timetable{margin-top:24px;border-top:1px solid var(--rule-strong);}
+  .timetable .row{
+    display:grid;grid-template-columns:160px 80px 1fr;gap:20px;padding:14px 0;
+    border-bottom:1px solid var(--rule);align-items:baseline;
+  }
+  .timetable .row .when{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--amber);letter-spacing:.06em;}
+  .timetable .row .dur{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--paper-dim);letter-spacing:.14em;}
+  .timetable .row .what{font-size:16px;color:var(--paper);}
+  .timetable .row .what em{font-style:italic;color:var(--amber);}
+  .timetable .row.break{color:var(--paper-dim);}
+  .timetable .row.lab .what{font-weight:500;}
+  @media (max-width:600px){.timetable .row{grid-template-columns:1fr;gap:2px;}.timetable .row .dur{font-size:10px;}}
+
+  /* FOOT */
+  footer{margin-top:120px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+  hr.thin{border:0;border-top:1px solid var(--rule);margin:48px 0;}
+  .wave{display:block;width:100%;height:60px;margin:56px 0;opacity:.7;}
+
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .hero, section{animation:rise .9s ease both;}
+
+  /* PRINT */
+  @page{size:Letter;margin:0.55in 0.6in 0.55in 0.6in;}
+  @media print{
+    html{
+      background:var(--ink) !important;
+      -webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact;
+    }
+    body{
+      background:var(--ink) !important;margin:0 !important;padding:0 !important;
+      -webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact;
+      font-size:14.5px;line-height:1.5;
+    }
+    body::before{display:none !important;}
+    .wrap{max-width:none;padding:0;background:transparent;}
+
+    section, .hero{animation:none !important;}
+    .topbar{break-after:avoid;padding-bottom:14px;}
+    .hero{padding:28px 0 24px;break-after:page;page-break-after:always;}
+    h1.title{font-size:74px !important;line-height:.92;}
+    .sub{margin-top:24px;font-size:18px;}
+    .meta{margin-top:32px;break-inside:avoid;page-break-inside:avoid;}
+
+    /* every section gets breathing room and avoids crashing into page top */
+    section{margin-top:0;padding-top:18px;break-before:auto;}
+    section + section{margin-top:48px;}
+
+    .sec-label{break-after:avoid;page-break-after:avoid;margin-bottom:24px;}
+    .sec-title{font-size:38px !important;}
+
+    /* Keep paragraphs and lists from splitting */
+    p, li, .lede p, .prose p{
+      orphans:3;widows:3;break-inside:avoid;page-break-inside:avoid;
+    }
+    .lede{break-inside:auto;}
+    .lede p{break-inside:avoid;page-break-inside:avoid;margin-bottom:14px;}
+    .prose ul, .prose ol{break-inside:avoid;page-break-inside:avoid;}
+    .panel, .acts .act, .timetable, .timetable .row,
+    .dl-example, .dl-example .field, .grade, .grade tr,
+    .grade-scale, .grade-scale > div, .week, .blocks, .block,
+    .week-head, .acts{
+      break-inside:avoid;page-break-inside:avoid;
+    }
+
+    /* Force grading scales into clean print grids */
+    .grade-scale{grid-template-columns:repeat(3,1fr) !important;}
+    .grade-scale.ug{grid-template-columns:repeat(4,1fr) !important;}
+    .grade-scale div{border-right:1px solid var(--rule) !important;border-bottom:1px solid var(--rule) !important;}
+    .grade-scale.grad div:nth-child(3n){border-right:none !important;}
+    .grade-scale.grad div:nth-child(n+7){border-bottom:none !important;}
+    .grade-scale.ug div:nth-child(4n){border-right:none !important;}
+    .grade-scale.ug div:nth-child(n+9){border-bottom:none !important;}
+
+    /* Section orientation */
+    .ornament{display:none;}
+    .wave{margin:24px 0;height:36px;}
+    footer{break-before:avoid;margin-top:48px;padding-top:18px;}
+    a{color:var(--amber);}
+
+    /* Explicit forced breaks */
+    .pb-before{break-before:page !important;page-break-before:always !important;padding-top:0 !important;margin-top:0 !important;}
+  }
+
+  /* BODY GENERIC */
+  .prose{max-width:820px;color:var(--paper-2);font-size:16px;line-height:1.6;}
+  .prose p{margin:0 0 1em;}
+  .prose em{color:var(--paper);font-style:italic;}
+  .prose strong{color:var(--paper);}
+  .prose ul{padding-left:20px;}
+  .prose ul li{margin-bottom:8px;}
+  .prose h5{
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--amber);margin:24px 0 10px;font-weight:500;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <span><span class="dot"></span>Draft v4 · Working Document · 2026.05.18</span>
+    <span>ARC 5443 · §01 · CoAD · LTU</span>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="kicker">Lawrence Technological University · College of Architecture &amp; Design</div>
+    <h1 class="title">The <em>Invisible</em> <br/>Architecture <span class="amp">&amp;</span> <br/>the Listening Room.</h1>
+    <p class="sub">Acoustics, daylight, and electrical illumination &mdash; the three forces that shape a room without ever being drawn on a plan. Ten weeks, fifteen students, one five-hundred-seat auditorium designed through the ear, the eye, and the wire.</p>
+
+    <svg class="ornament" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g stroke="#D4A24C" stroke-width="1" opacity=".9">
+        <path d="M20 200 L120 60 L220 200 Z" />
+        <path d="M40 200 L120 90 L200 200" />
+        <path d="M60 200 L120 120 L180 200" />
+        <line x1="20" y1="200" x2="220" y2="200" />
+      </g>
+      <g stroke="#C8472F" stroke-width="1" opacity=".75">
+        <path d="M120 90 Q 150 130 180 200" stroke-dasharray="3 3"/>
+        <path d="M120 90 Q  90 130  60 200" stroke-dasharray="3 3"/>
+      </g>
+      <circle cx="120" cy="90" r="3" fill="#EDE4D3"/>
+    </svg>
+  </header>
+
+  <!-- META GRID -->
+  <dl class="meta">
+    <div>
+      <dt>Term</dt>
+      <dd>Summer 2026<small>05·20 &rarr; 07·22 &middot; 10 weeks · online</small></dd>
+    </div>
+    <div>
+      <dt>Meets</dt>
+      <dd>Wed · 19:30&ndash;23:35<small>Zoom &mdash; cameras on, 100%</small></dd>
+    </div>
+    <div>
+      <dt>Instructor</dt>
+      <dd>Kurt Neiswender, AIA<small>kneiswend@ltu.edu</small></dd>
+    </div>
+    <div>
+      <dt>Cohort</dt>
+      <dd>15 students<small>Graduate · lecture &amp; lab</small></dd>
+    </div>
+  </dl>
+
+  <!-- ─────────────── § 01 INVISIBLE ARCHITECTURE ─────────────── -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 01</span>
+      <h2 class="sec-title">The <em>Invisible</em> Architecture.</h2>
+    </div>
+
+    <div class="lede">
+      <p>Walls can be photographed. Sound and light cannot. Yet the experience of a room &mdash; whether a singer&rsquo;s breath reaches the back row, whether a lobby feels like arrival or like waiting &mdash; is governed almost entirely by these invisible forces. They are present in every section drawing without ever appearing in one. This course treats them as the primary clients of the building.</p>
+      <p>For ten weeks, every student will design the same building: a <em>500-seat auditorium with a prefunction room.</em> Each student receives the same starting kit in Week 1 &mdash; generic seating diagrams (shoebox, fan, vineyard, horseshoe), a stage orientation, a site, a climate, and a program. From that kit, you will shape the hall three times over &mdash; first through the ear, then through the eye, then through the wire &mdash; with a fourth week reserved for tightening, and a tenth for the curtain.</p>
+      <p>Acoustics comes first because the shape of the room is acoustically determined: once the section and plan are tuned for sound, the daylight and lighting strategies follow. Daylight comes second, compressed to two weeks &mdash; its deeper treatment lives in the HVAC and Water Systems course. Lighting and electrical close the loop: the design we hear and see is finally <em>wired, dimmed, and powered.</em> Week 9 is yours for integration; Week 10 is the encore.</p>
+    </div>
+  </section>
+
+  <!-- ─────────────── § 02 THREE ACTS & ENCORE ─────────────── -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 02</span>
+      <h2 class="sec-title">Three Acts &amp; an <em>Encore.</em></h2>
+    </div>
+
+    <div class="acts">
+      <div class="act">
+        <div class="roman">I.</div>
+        <div class="actname">Act One · Weeks 1&ndash;3</div>
+        <h3>Acoustics &amp; <em>Room Shape</em></h3>
+        <p>Sound first. Section, plan curvature, ceiling slope, seat rake &mdash; shaped with the ear as the primary client. Sabine, RT60, early reflections, NC targets, STC separation from back-of-house.</p>
+        <div class="weeks">Wks 01 · 02 · 03 &nbsp;//&nbsp; MEEB ch.7 · 22 · 23</div>
+      </div>
+      <div class="act">
+        <div class="roman">II.</div>
+        <div class="actname">Act Two · Weeks 4&ndash;5</div>
+        <h3>Daylight &amp; the <em>Prefunction</em></h3>
+        <p>With the shell stable, we open it &mdash; selectively. Prefunction as a daylit room of arrival; the hall studied for clerestory or controllable apertures that don&rsquo;t compromise blackout or NC.</p>
+        <div class="weeks">Wks 04 · 05 &nbsp;//&nbsp; MEEB ch.10 · 6</div>
+      </div>
+      <div class="act">
+        <div class="roman">III.</div>
+        <div class="actname">Act Three · Weeks 6&ndash;8</div>
+        <h3>Lighting &amp; <em>Electrical</em></h3>
+        <p>House lighting, theatrical positions, dimming &amp; controls, panel schedule and circuit groupings, PV offset. All deliverables are <em>modeled drawings</em> in Rhino or Revit &mdash; no hand-drawn circuits.</p>
+        <div class="weeks">Wks 06 · 07 · 08 &nbsp;//&nbsp; MEEB ch.15&middot;1·2 · 16 · 17 · 25 · 26 · 28 · 29</div>
+      </div>
+      <div class="act encore">
+        <div class="roman" style="font-size:38px;letter-spacing:-.01em;">Finale</div>
+        <div class="actname">Tightening &amp; Encore · 9&ndash;10</div>
+        <h3>Integration <em>&amp; Curtain</em></h3>
+        <p>Week 9 is a working week &mdash; rehearse, refine, integrate across systems, desk crits with the instructor. Week 10 is the final presentation. A revision window follows before final grading submission.</p>
+        <div class="weeks">Wks 09 · 10 &nbsp;//&nbsp; assemble &amp; present</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────── § 03 DECISION LOG (PREFACE) ─────────────── -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 03</span>
+      <h2 class="sec-title">The <em>Decision Log.</em></h2>
+    </div>
+
+    <div class="lede" style="max-width:780px;">
+      <p>Before the schedule, a word on the artifact that runs underneath it. The Decision Log is the primary learning record of the course &mdash; the place where your <em>thinking</em> about the hall is captured as it develops. It is not a transcript of what you did; it is the reasoning behind why you did it, and what you traded away.</p>
+      <p>You will maintain the log as a <strong>shared Google Doc</strong> (template provided in the Week 1 Canvas module &mdash; make a copy and share it with the instructor on Day 1). Update it after every weekly work session. The instructor has ongoing view access; the log is a live document, not a batch submission. Roughly 2&ndash;4 short entries per week is typical. At each Act Review, paste your entries into the Canvas text submission as a timestamped snapshot. Quality of reasoning matters more than entry count.</p>
+    </div>
+
+    <div class="dl-example">
+      <div class="field"><b>Week / Act</b><span>Week 02 &middot; Act I &mdash; Acoustics</span></div>
+      <div class="field"><b>System</b><span>Acoustics &mdash; Room Shape</span></div>
+      <div class="field"><b>Space</b><span>Main Hall</span></div>
+      <div class="field"><b>Decision</b><span>Adopted a 14&deg; ceiling splay over the rear two-thirds of the hall and lowered the proscenium reflector to 28 ft.</span></div>
+      <div class="field"><b>Reasoning</b><span>RT60 script showed Eyring result at 1 kHz was 1.9 s &mdash; above the 1.4&ndash;1.7 s target. Added a 14&deg; ceiling splay to redirect late lateral energy into the rear seating; recalculated at 1.6 s. Geometry change is visible in updated Rhino model.</span></div>
+      <div class="field"><b>Trade-off</b><span>Lost 6 ft of fly height above the proscenium; will reduce theatrical lighting throw options &mdash; revisit in Act III.</span></div>
+      <div class="field"><b>What I&rsquo;d Reconsider</b><span>(Filled in at Act I Review.) Should the splay be steeper at the back wall to avoid focusing echoes? Re-run the RT60 script with revised geometry before Act II.</span></div>
+    </div>
+
+    <p class="prose" style="margin-top:24px;font-size:15.5px;">
+      A template document is provided in the Week 1 Canvas module. The log is evaluated qualitatively &mdash; the criterion is <em>quality of reasoning</em>, not whether your first decision was correct. A student who identifies a flawed decision, explains why, and corrects it has demonstrated more learning than one who happened to be right by accident.
+    </p>
+  </section>
+
+  <!-- ─────────────── § 04 TEN-WEEK ROADMAP ─────────────── -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 04</span>
+      <h2 class="sec-title">Ten-Week <em>Roadmap.</em></h2>
+    </div>
+
+    <div class="lede">
+      <p>Each week opens with two micro-lectures &mdash; roughly 30 min on the assigned book content and 30 min on supporting material (precedents or software tutorials). The long middle of every session is <em>lab</em>, with breakout groups and a circulating instructor. Each row below tells you exactly what to read, what to expect in lecture, what the lab breakout will look like, and what is due.</p>
+    </div>
+
+    <svg class="wave" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,30 Q150,5 300,30 T600,30 T900,30 T1200,30" stroke="#D4A24C" stroke-width="1" fill="none"/>
+      <path d="M0,30 Q150,55 300,30 T600,30 T900,30 T1200,30" stroke="#C8472F" stroke-width=".75" fill="none" opacity=".7"/>
+    </svg>
+
+    <div class="schedule">
+
+      <!-- WEEK 1 -->
+      <article class="week">
+        <div class="week-head">
+          <div class="wnum">01</div>
+          <div class="wdate"><strong>Wed 05·20</strong>19:30&ndash;23:35</div>
+          <div class="wtitle">
+            <span class="tag acoustics">Act I · Acoustics</span>
+            <h4>Sound, Hearing, and the <em>Listening Room</em>.</h4>
+            <p class="sumline">Course orientation; the 500-seat program &amp; starting plan kit; fundamentals of sound &mdash; frequency, dB, equal-loudness, NC criteria.</p>
+          </div>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <div class="label">Read · Before</div>
+            MEEB <em>Ch.&nbsp;7 &mdash; Sound, Hearing, &amp; Acoustical Comfort</em>. Complete the intake survey on Canvas.
+          </div>
+          <div class="block">
+            <div class="label">Micro-Lectures</div>
+            <strong>Book (30 min):</strong> sound fundamentals, NC criteria.<br/>
+            <strong>Support (30 min):</strong> precedent tour &mdash; Boston Symphony, Berlin Philharmonie, Bayreuth, Disney Hall.
+          </div>
+          <div class="block">
+            <div class="label">Lab Breakout · Example</div>
+            <strong>Groups of 3&ndash;4:</strong> each group is assigned one of the four seating geometries (shoebox / fan / vineyard / horseshoe). Discuss acoustic implications, sketch sectional response. Each <em>student</em> then commits individually to a starting scheme and begins their Rhino model.
+          </div>
+          <div class="block deliverable">
+            <div class="label">Deliverable · Due Tue 05·26</div>
+            <strong>Submit to Canvas &amp; update Google Doc:</strong>
+            <ul style="margin:8px 0 0;padding-left:18px;">
+              <li>Rhino model (.3dm) with AEIS_ layers assigned</li>
+              <li>Two screenshots (plan + section, layer panel visible)</li>
+              <li>Program declaration: geometry, NC target, program type</li>
+              <li>Decision Log Entry 1 in Google Doc (share link if not yet done)</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- WEEK 2 -->
+      <article class="week">
+        <div class="week-head">
+          <div class="wnum">02</div>
+          <div class="wdate"><strong>Wed 05·27</strong>19:30&ndash;23:35</div>
+          <div class="wtitle">
+            <span class="tag acoustics">Act I · Acoustics</span>
+            <h4>Room Shape, RT60 &amp; <em>Sabine</em>.</h4>
+            <p class="sumline">Absorption coefficients; NRC tables; targeting RT60 for speech vs. music; ceiling clouds, splays, the geometry of early reflections.</p>
+          </div>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <div class="label">Read · Before</div>
+            MEEB <em>Ch.&nbsp;22 &mdash; Sound in Enclosed Spaces</em>.
+          </div>
+          <div class="block">
+            <div class="label">Micro-Lectures</div>
+            <strong>Book:</strong> Sabine &amp; Eyring equations, NRC, absorption math.<br/>
+            <strong>Support:</strong> Python RT60 script walkthrough &mdash; layer setup, running the script, reading the HTML report.
+          </div>
+          <div class="block">
+            <div class="label">Lab Breakout · Example</div>
+            <strong>Pairs:</strong> partner with one other student. Run each other&rsquo;s Week 1 Rhino models through the Python RT60 script; compare Eyring RT60 at 500 / 1k / 2k Hz against your target band. Cross-critique the geometry, then verify against your hand-calc worksheet.
+          </div>
+          <div class="block deliverable">
+            <div class="label">Deliverable · Due Tue 06·02</div>
+            <strong>Submit &amp; update Google Doc:</strong>
+            <ul style="margin:8px 0 0;padding-left:18px;">
+              <li>RT60 worksheet (Sabine + Eyring, hand calc)</li>
+              <li>Python RT60 script HTML report + viewport screenshot</li>
+              <li>Updated Rhino model (.3dm)</li>
+              <li>Decision Log updated in Google Doc</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- WEEK 3 - ACT I REVIEW -->
+      <article class="week">
+        <div class="week-head">
+          <div class="wnum">03</div>
+          <div class="wdate"><strong>Wed 06·03</strong>19:30&ndash;23:35</div>
+          <div class="wtitle">
+            <span class="tag acoustics">Act I · Acoustics</span>
+            <span class="tag review">Act I Review</span>
+            <h4>Noise Control &amp; <em>Act I Pin-Up</em>.</h4>
+            <p class="sumline">STC, mass law, flanking paths; separating loading dock and mechanical from the hall; door seals, vestibules. Closes with Act I review.</p>
+          </div>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <div class="label">Read · Before</div>
+            MEEB <em>Ch.&nbsp;23 &mdash; Building Noise Control</em>.
+          </div>
+          <div class="block">
+            <div class="label">Micro-Lectures</div>
+            <strong>Book:</strong> STC, mass law, isolation strategies.<br/>
+            <strong>Support:</strong> pin-up format and reviewer rubric.
+          </div>
+          <div class="block">
+            <div class="label">Lab Breakout · Example</div>
+            <strong>First half (60 min):</strong> STC calculation for the back-of-house party wall; assembly spec-up.<br/>
+            <strong>Second half (60 min):</strong> <em>Act I Review</em> &mdash; each student presents room shape + RT60 + STC strategy in 5 min; cohort + instructor critique.
+          </div>
+          <div class="block deliverable">
+            <div class="label">Deliverable · Act I Package · Due Tue 06·10</div>
+            <strong>Submit PDF to Canvas &amp; paste Decision Log snapshot:</strong>
+            <ul style="margin:8px 0 0;padding-left:18px;">
+              <li>Acoustic plan + section with material schedule</li>
+              <li>RT60 worksheet (Sabine + Eyring) + script HTML report</li>
+              <li>STC wall assembly for critical partition</li>
+              <li>Act I review slides</li>
+              <li>Decision Log entries Wks 1&ndash;3 pasted into Canvas text box (snapshot of your Google Doc)</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- WEEK 4 -->
+      <article class="week">
+        <div class="week-head">
+          <div class="wnum">04</div>
+          <div class="wdate"><strong>Wed 06·10</strong>19:30&ndash;23:35</div>
+          <div class="wtitle">
+            <span class="tag daylight">Act II · Daylight</span>
+            <h4>Solar Geometry &amp; the <em>Aperture Question</em>.</h4>
+            <p class="sumline">Sun path, altitude/azimuth, site latitude; where (and whether) to put glass on a performance hall; prefunction as a separate daylight problem.</p>
+          </div>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <div class="label">Read · Before</div>
+            MEEB <em>Ch.&nbsp;10 &mdash; Daylighting</em> (pp. 1&ndash;25).
+          </div>
+          <div class="block">
+            <div class="label">Micro-Lectures</div>
+            <strong>Book:</strong> solar geometry, daylight metrics (sDA, ASE, DF).<br/>
+            <strong>Support:</strong> LightStanza walkthrough &mdash; importing Rhino models into the web app; Ladybug sun-path tutorial.
+          </div>
+          <div class="block">
+            <div class="label">Lab Breakout · Example</div>
+            <strong>Groups of 3:</strong> each student brings their acoustic Rhino mass into LightStanza or Ladybug. Run solstice + equinox sun studies; tag daylight zones on the prefunction; share findings; vote on the most promising aperture stance for the hall.
+          </div>
+          <div class="block deliverable">
+            <div class="label">Deliverable · Due Tue 06·16</div>
+            <strong>Submit:</strong>
+            <ul style="margin:8px 0 0;padding-left:18px;">
+              <li>Sun-study screenshots (solstice + equinox)</li>
+              <li>Daylight-zone diagram (prefunction + hall)</li>
+              <li>Aperture-stance memo (1 page)</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- WEEK 5 - ACT II REVIEW -->
+      <article class="week">
+        <div class="week-head">
+          <div class="wnum">05</div>
+          <div class="wdate"><strong>Wed 06·17</strong>19:30&ndash;23:35</div>
+          <div class="wtitle">
+            <span class="tag daylight">Act II · Daylight</span>
+            <span class="tag review">Act II Review</span>
+            <h4>Visual Comfort, Glare &amp; <em>Act II Pin-Up</em>.</h4>
+            <p class="sumline">Human visual adaptation; the 10:1 contrast rule; clerestory vs. sidelight vs. baffled aperture; reconciling daylight with hall blackout. Closes with Act II review.</p>
+          </div>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <div class="label">Read · Before</div>
+            MEEB <em>Ch.&nbsp;6 &mdash; Light &amp; Visual Comfort</em>; LightStanza help docs.
+          </div>
+          <div class="block">
+            <div class="label">Micro-Lectures</div>
+            <strong>Book:</strong> visual adaptation, glare, sDA/ASE thresholds.<br/>
+            <strong>Support:</strong> precedents &mdash; Kimbell Art Museum, Glyndebourne lobby, Aspen Music Tent.
+          </div>
+          <div class="block">
+            <div class="label">Lab Breakout · Example</div>
+            <strong>Individual (60 min):</strong> parametric WWR sweep in LightStanza for prefunction; controlled aperture study for hall.<br/>
+            <strong>Second half (60 min):</strong> <em>Act II Review</em> &mdash; 5-min pin-ups; cohort + instructor critique focused on glare, blackout integrity, and aperture reasoning.
+          </div>
+          <div class="block deliverable">
+            <div class="label">Deliverable · Act II Package</div>
+            <strong>Submit:</strong>
+            <ul style="margin:8px 0 0;padding-left:18px;">
+              <li>LightStanza comparison sheets (min. 2 scenarios)</li>
+              <li>Annotated daylight plan + reflectance specs</li>
+              <li>Act II review slides &amp; presentation</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- WEEK 6 -->
+      <article class="week">
+        <div class="week-head">
+          <div class="wnum">06</div>
+          <div class="wdate"><strong>Wed 06·24</strong>19:30&ndash;23:35</div>
+          <div class="wtitle">
+            <span class="tag electric">Act III · Lighting/Elec</span>
+            <h4>Lamps, Luminaires &amp; <em>Theatrical Positions</em>.</h4>
+            <p class="sumline">LED, CCT, CRI, efficacy; house light vs. work light vs. performance rig; catwalks, FOH positions, box-boom, ellipsoidal vs. wash; IES files.</p>
+          </div>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <div class="label">Read · Before</div>
+            MEEB <em>Ch.&nbsp;15 Pt.&nbsp;1 &amp; 2 &mdash; Lamps, Luminaires, Controls</em>.
+          </div>
+          <div class="block">
+            <div class="label">Micro-Lectures</div>
+            <strong>Book:</strong> LED / CCT / CRI / efficacy; lamp families.<br/>
+            <strong>Support:</strong> a real venue rig walk-through &mdash; FOH catwalk plot from a working road house.
+          </div>
+          <div class="block">
+            <div class="label">Lab Breakout · Example</div>
+            <strong>Groups of 3, each takes one family:</strong> (a) house downlights, (b) prefunction decorative + general, (c) FOH stage rig. Each group sources 2&ndash;3 real luminaires (IES + spec sheet), then re-pairs to share findings so every student leaves with all three families.
+          </div>
+          <div class="block deliverable">
+            <div class="label">Deliverable · Due Tue 06·30</div>
+            <strong>Submit:</strong>
+            <ul style="margin:8px 0 0;padding-left:18px;">
+              <li>Spec packet (3 luminaire families, IES included)</li>
+              <li>Selection rationale &mdash; CCT, CRI, throw, why</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- WEEK 7 -->
+      <article class="week">
+        <div class="week-head">
+          <div class="wnum">07</div>
+          <div class="wdate"><strong>Wed 07·01</strong>19:30&ndash;23:35</div>
+          <div class="wtitle">
+            <span class="tag electric">Act III · Lighting/Elec</span>
+            <h4>Lighting Design &amp; <em>Controls</em>.</h4>
+            <p class="sumline">Lumen method &amp; zonal cavity; uniformity; theatrical dimming (DMX overview); occupancy &amp; daylight controls in prefunction; emergency &amp; egress lighting.</p>
+          </div>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <div class="label">Read · Before</div>
+            MEEB <em>Ch.&nbsp;16 &amp; Ch.&nbsp;17 &mdash; Lighting Design &amp; Applications</em>.
+          </div>
+          <div class="block">
+            <div class="label">Micro-Lectures</div>
+            <strong>Book:</strong> lumen method &amp; zonal cavity worked example.<br/>
+            <strong>Support:</strong> tutorial &mdash; LightStanza electric workflow OR Revit luminaire placement + IES (students pick their tool).
+          </div>
+          <div class="block">
+            <div class="label">Lab Breakout · Example</div>
+            <strong>Pair-work by tool:</strong> Rhino+LightStanza pairs and Revit pairs cluster separately. Place house + prefunction luminaires, generate illuminance map, iterate against IES targets (30&ndash;50 fc reading task, lower for hall). Cross-tool comparison at the debrief.
+          </div>
+          <div class="block deliverable">
+            <div class="label">Deliverable · Due Tue 07·07</div>
+            <strong>Submit:</strong>
+            <ul style="margin:8px 0 0;padding-left:18px;">
+              <li>Illuminance maps (house + prefunction)</li>
+              <li>Controls strategy annotated plan</li>
+              <li>Updated luminaire schedule</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- WEEK 8 - ACT III REVIEW -->
+      <article class="week">
+        <div class="week-head">
+          <div class="wnum">08</div>
+          <div class="wdate"><strong>Wed 07·08</strong>19:30&ndash;23:35</div>
+          <div class="wtitle">
+            <span class="tag electric">Act III · Lighting/Elec</span>
+            <span class="tag review">Act III Review</span>
+            <h4>Electrical, Panels, PV &amp; <em>Act III Pin-Up</em>.</h4>
+            <p class="sumline">V/I/R/P, AC/DC; load calc &amp; LPD; the path utility &rarr; panel &rarr; branch; rig power as a special load; PV array sized to offset the lighting load.</p>
+          </div>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <div class="label">Read · Before</div>
+            MEEB <em>Ch.&nbsp;25, 26, 28; Ch.&nbsp;29 (Photovoltaics)</em>.
+          </div>
+          <div class="block">
+            <div class="label">Micro-Lectures</div>
+            <strong>Book:</strong> V/I/R/P, load calc, LPD compliance, PV basics.<br/>
+            <strong>Support:</strong> real panel schedule walk-through from a small commercial venue.
+          </div>
+          <div class="block">
+            <div class="label">Lab Breakout · Example</div>
+            <strong>First half (60 min):</strong> produce the <em>lighting + power plan as a modeled drawing</em> in Rhino or Revit &mdash; luminaire layout, circuit groupings annotated, panel locations, load summary table, PV sizing.<br/>
+            <strong>Second half (60 min):</strong> <em>Act III Review</em> pin-up.
+          </div>
+          <div class="block deliverable">
+            <div class="label">Deliverable · Act III Package</div>
+            <strong>Submit:</strong>
+            <ul style="margin:8px 0 0;padding-left:18px;">
+              <li>Lighting plan (Rhino or Revit)</li>
+              <li>Power plan + panel schedule</li>
+              <li>Load summary + PV calc</li>
+              <li>Act III review slides &amp; presentation</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- WEEK 9 - TIGHTENING -->
+      <article class="week">
+        <div class="week-head">
+          <div class="wnum">09</div>
+          <div class="wdate"><strong>Wed 07·15</strong>19:30&ndash;23:35</div>
+          <div class="wtitle">
+            <span class="tag tighten">Integration · Tightening</span>
+            <h4>Cross-System <em>Tightening</em>.</h4>
+            <p class="sumline">A working week. Refine, integrate, rehearse. Resolve cross-system trade-offs: where did acoustics constrain daylight? Where did the rig conflict with the ceiling cloud?</p>
+          </div>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <div class="label">Read · Before</div>
+            Review all course materials; assemble book draft.
+          </div>
+          <div class="block">
+            <div class="label">Micro-Lectures</div>
+            <strong>Book recap (30 min):</strong> cross-system integration case study &mdash; a real auditorium where acoustics, daylight, and lighting interlock.<br/>
+            <strong>Support (30 min):</strong> final book + presentation template walk-through.
+          </div>
+          <div class="block">
+            <div class="label">Lab Breakout · Example</div>
+            <strong>Open studio:</strong> students work independently on the integrated book and presentation. Instructor holds 10-minute 1:1 desk crits in rotating breakout rooms. Optional dry-run slot in the final 30 minutes.
+          </div>
+          <div class="block deliverable">
+            <div class="label">Deliverable · Due Tue 07·21</div>
+            <strong>Submit:</strong>
+            <ul style="margin:8px 0 0;padding-left:18px;">
+              <li>Draft final book (all three acts assembled)</li>
+              <li>Presentation outline / slide draft</li>
+              <li>Cross-system trade-off memo</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- WEEK 10 - ENCORE -->
+      <article class="week">
+        <div class="week-head">
+          <div class="wnum">10</div>
+          <div class="wdate"><strong>Wed 07·22</strong>19:30&ndash;23:35</div>
+          <div class="wtitle">
+            <span class="tag encore">The Encore · Final Presentations</span>
+            <h4>The Hall, <em>Heard, Seen, Powered</em>.</h4>
+            <p class="sumline">Final presentations. Each student presents the auditorium across all three acts. 10 min present + 5 min Q&amp;A. Guest critic invited.</p>
+          </div>
+        </div>
+        <div class="blocks">
+          <div class="block">
+            <div class="label">Read · Before</div>
+            Rehearse. Finalize slide deck and walkthrough video.
+          </div>
+          <div class="block">
+            <div class="label">Format</div>
+            15 presentations &times; 15 min = full session. Order announced Week 9. Guest critic joins for the full evening.
+          </div>
+          <div class="block">
+            <div class="label">Lab Breakout · Example</div>
+            No breakouts this week. The session <em>is</em> the encore. Cohort remains together for all presentations &mdash; peer engagement counts toward participation.
+          </div>
+          <div class="block deliverable">
+            <div class="label">Final Book · Due Sun 07·26 · 11:59 PM</div>
+            A short revision window follows the encore &mdash; grades are due to the registrar 07·29. Incorporate critique feedback, then submit.<br/><br/>
+            <strong>Submit:</strong>
+            <ul style="margin:8px 0 0;padding-left:18px;">
+              <li>Full project book (all three acts + integration)</li>
+              <li>Three system summary sheets</li>
+              <li>Annotated plan set (acoustic / daylight / lighting+power)</li>
+              <li>PV calculation</li>
+              <li>5-min walkthrough video</li>
+              <li>Complete Decision Log</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ─────────────── § 05 SESSION ARCHITECTURE ─────────────── -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 05</span>
+      <h2 class="sec-title">The Session &mdash; <em>Lab-Forward.</em></h2>
+    </div>
+
+    <div class="lede" style="max-width:780px;">
+      <p>Every Wednesday session is built around two micro-lectures and a long working lab. The micro-lectures keep theory tight so the bulk of the four hours can be spent making, testing, and critiquing the building you are designing.</p>
+    </div>
+
+    <div class="timetable">
+      <div class="row"><div class="when">19:30 &middot; 19:40</div><div class="dur">10 min</div><div class="what">Arrival &amp; week framing &mdash; why this week matters for your hall right now.</div></div>
+      <div class="row"><div class="when">19:40 &middot; 20:10</div><div class="dur">30 min</div><div class="what"><em>Micro-Lecture A &mdash; Book Content.</em> The week&rsquo;s MEEB chapter, distilled, with a worked example.</div></div>
+      <div class="row break"><div class="when">20:10 &middot; 20:20</div><div class="dur">10 min</div><div class="what">Break &mdash; cameras off, move around.</div></div>
+      <div class="row"><div class="when">20:20 &middot; 20:50</div><div class="dur">30 min</div><div class="what"><em>Micro-Lecture B &mdash; Support.</em> Precedent, software tutorial, or guest demo.</div></div>
+      <div class="row"><div class="when">20:50 &middot; 21:00</div><div class="dur">10 min</div><div class="what">Lab framing &mdash; instructor sets up the lab tasks and breakout assignments.</div></div>
+      <div class="row lab"><div class="when">21:00 &middot; 23:20</div><div class="dur">140 min</div><div class="what"><em>Lab.</em> Breakout rooms of 3&ndash;4. Instructor circulates. See each week for the breakout example.</div></div>
+      <div class="row"><div class="when">23:20 &middot; 23:35</div><div class="dur">15 min</div><div class="what">Whole-group debrief &mdash; one share per room; instructor sets next-week ask.</div></div>
+    </div>
+
+    <p class="prose" style="margin-top:24px;font-size:15.5px;">
+      Breakout composition is consistent for Acts I and II, then reshuffled at Week 6 for the technical integration phase. All sessions are recorded and posted within 24 hours; recordings are chaptered (Lecture A, Lecture B, Lab Intro) for review. Watching a recording does <em>not</em> substitute for live presence &mdash; the lab is the course.
+    </p>
+  </section>
+
+  <!-- ─────────────── § 06 TOOLS & SOFTWARE ─────────────── -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 06</span>
+      <h2 class="sec-title">Tools &amp; <em>Software.</em></h2>
+    </div>
+
+    <div class="three">
+      <div class="panel">
+        <h4>Primary &mdash; <em>Rhino</em></h4>
+        <p>Rhino + Grasshopper is the connective tissue of the semester. The acoustic shape, the daylight mass, and the lighting plan can all live in one model. The Python RT60 script runs directly inside Rhino; Ladybug runs in Grasshopper; LightStanza ingests the Rhino model directly via its web app.</p>
+        <p><small>Required Weeks 2&ndash;9.</small></p>
+      </div>
+      <div class="panel">
+        <h4>Daylight + Lighting &mdash; <em>LightStanza</em></h4>
+        <p>LightStanza handles both daylight and artificial-lighting analysis in a single environment. Two access paths: <strong>(a)</strong> upload your Rhino model to the LightStanza web app, or <strong>(b)</strong> use the Revit plug-in if you prefer the BIM workflow.</p>
+        <p><small>Account setup in Week 4. Notify instructor of any license issues immediately.</small></p>
+      </div>
+      <div class="panel">
+        <h4>Optional &mdash; <em>Revit</em></h4>
+        <p>Revit is fully supported for students who prefer it. Luminaire placement, IES analysis, panel schedules, and the Week 8 lighting+power plan can all be produced in Revit. Use <em>Rhino.Inside.Revit</em> to move acoustic geometry across.</p>
+        <p><small>Academic license via Autodesk Education.</small></p>
+      </div>
+    </div>
+
+    <p class="prose" style="margin-top:24px;font-size:15px;color:var(--paper-dim);font-style:italic;">
+      Supporting tools: Python RT60 script (acoustic, provided on Canvas), Ladybug (solar), Excel or Sheets (load summaries, PV calc). Software access should never block a deliverable &mdash; email the instructor immediately if you hit a license wall.
+    </p>
+  </section>
+
+  <!-- ─────────────── § 07 GRADING ─────────────── -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 07</span>
+      <h2 class="sec-title">Evaluation &amp; <em>Grading.</em></h2>
+    </div>
+
+    <p class="prose">
+      Three Act Reviews and an Encore. Each Act Review evaluates the package due at the close of that act &mdash; the modeled drawings, the analysis, and the Decision Log section. The Encore is the final presentation plus the assembled book due one week after, during the revision window.
+    </p>
+
+    <table class="grade">
+      <thead><tr><th>Component</th><th>Weight</th></tr></thead>
+      <tbody>
+        <tr><td>Weekly Deliverables &mdash; Weeks 1, 2, 4, 6, 7, 9 (6 &times; 5%)</td><td>30%</td></tr>
+        <tr><td>Act I Review &mdash; Acoustics (Week 3)</td><td>10%</td></tr>
+        <tr><td>Act II Review &mdash; Daylight (Week 5)</td><td>10%</td></tr>
+        <tr><td>Act III Review &mdash; Lighting/Electrical (Week 8)</td><td>10%</td></tr>
+        <tr><td>Encore &mdash; Final Presentation &amp; Book (Week 10 + revision week)</td><td>30%</td></tr>
+        <tr><td>Participation, Cameras, Peer Engagement</td><td>10%</td></tr>
+        <tr><td>Total</td><td>100%</td></tr>
+      </tbody>
+    </table>
+
+    <p class="prose" style="margin-top:18px;font-size:15px;">
+      Weekly Deliverables are evaluated on a 5-point scale (completeness + reasoning quality). Act Reviews are graded against a rubric posted in Canvas covering: technical content, modeling quality, Decision Log reasoning, and presentation clarity. The Encore is graded on integrated thinking across all three acts &mdash; the question is whether the hall <em>holds together</em> as a designed object.
+    </p>
+
+    <h5 class="prose pb-before" style="margin-top:32px;color:var(--amber);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;">Grading scale &mdash; Graduate</h5>
+    <div class="grade-scale grad">
+      <div><b>A</b> 94&ndash;100</div>
+      <div><b>A&minus;</b> 90&ndash;&lt;94</div>
+      <div><b>B+</b> 87&ndash;&lt;90</div>
+      <div><b>B</b> 84&ndash;&lt;87</div>
+      <div><b>B&minus;</b> 80&ndash;&lt;84</div>
+      <div><b>C+</b> 77&ndash;&lt;80</div>
+      <div><b>C</b> 74&ndash;&lt;77</div>
+      <div><b>C&minus;</b> 70&ndash;&lt;74</div>
+      <div><b>F</b> &lt;70</div>
+    </div>
+
+    <p class="prose" style="margin-top:10px;font-size:14px;color:var(--paper-dim);font-style:italic;">
+      C&minus; is the lowest passing graduate mark per CoAD policy. Anything below 70 is recorded as F and the course must be retaken to satisfy degree requirements.
+    </p>
+
+    <h5 class="prose" style="margin-top:28px;color:var(--amber);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;">Grading scale &mdash; Undergraduate</h5>
+    <div class="grade-scale ug">
+      <div><b>A</b> 94&ndash;100</div>
+      <div><b>A&minus;</b> 90&ndash;&lt;94</div>
+      <div><b>B+</b> 87&ndash;&lt;90</div>
+      <div><b>B</b> 84&ndash;&lt;87</div>
+      <div><b>B&minus;</b> 80&ndash;&lt;84</div>
+      <div><b>C+</b> 77&ndash;&lt;80</div>
+      <div><b>C</b> 74&ndash;&lt;77</div>
+      <div><b>C&minus;</b> 70&ndash;&lt;74</div>
+      <div><b>D+</b> 67&ndash;&lt;70</div>
+      <div><b>D</b> 64&ndash;&lt;67</div>
+      <div><b>D&minus;</b> 61&ndash;&lt;64</div>
+      <div><b>F</b> &lt;61</div>
+    </div>
+
+    <p class="prose" style="margin-top:10px;font-size:14px;color:var(--paper-dim);font-style:italic;">
+      This course is co-listed with undergraduate enrollment. Undergraduate students follow the standard LTU letter scale above; F is failing.
+    </p>
+
+    <p class="prose" style="margin-top:18px;font-size:14px;color:var(--paper-dim);font-style:italic;">
+      The instructor reserves the right to adjust the low-end average cut-off score based on the statistical distribution of final semester averages. Late work accepted with a 48-hour grace period at no penalty; beyond, a 20%-per-week deduction applies. Work more than two weeks late will not be accepted without prior approval.
+    </p>
+  </section>
+
+  <!-- ─────────────── § 08 CANVAS ─────────────── -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 08</span>
+      <h2 class="sec-title">Canvas &mdash; <em>Online Course Management.</em></h2>
+    </div>
+
+    <div class="prose">
+      <p>The course syllabus, calendar, assignments, additional readings, and notes are posted on Canvas. Students are responsible for monitoring the site regularly. You are expected to have your camera on 100% of the class session to receive attendance and participation credit.</p>
+
+      <p>Each week&rsquo;s Canvas module follows an identical structure so you always know where to look:</p>
+      <ul>
+        <li><strong>0. Before Class</strong> &mdash; required reading and any short prep video.</li>
+        <li><strong>1. This Week&rsquo;s Concepts</strong> &mdash; lecture slides and worked examples (posted after class).</li>
+        <li><strong>2. Lab Tasks</strong> &mdash; step-by-step task list for the in-class lab (posted before class).</li>
+        <li><strong>3. Deliverable</strong> &mdash; what to submit, file format, due date (Tuesdays 11:59 PM), submission link.</li>
+        <li><strong>4. Discussion Board</strong> &mdash; optional, ungraded; instructor posts a weekly prompt.</li>
+      </ul>
+
+      <p>A <strong>Weekly Snapshot Thread</strong> runs the full 10 weeks. Each student posts one image per week &mdash; a screenshot of their current project work. This is required but ungraded. It creates a visible record of your hall&rsquo;s evolution and helps the instructor identify questions early.</p>
+    </div>
+  </section>
+
+  <!-- ─────────────── § 09 POLICIES ─────────────── -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 09</span>
+      <h2 class="sec-title">Attendance, <em>Cameras</em> &amp; Conduct.</h2>
+    </div>
+
+    <div class="two">
+      <div class="panel">
+        <h4>Attendance &amp; the <em>20% rule</em></h4>
+        <p>LTU policy permits a maximum of 20% absence. For a once-weekly 10-week course, that is <strong>2 absences</strong> before failure.</p>
+        <p><strong>Warning sequence:</strong></p>
+        <ul>
+          <li>1st absence &mdash; instructor email.</li>
+          <li>2nd absence &mdash; written warning + required check-in + registrar notification.</li>
+          <li>3rd absence &mdash; failing grade for non-attendance.</li>
+        </ul>
+        <p><small>Documented emergencies handled case-by-case; communicate before, not after. Watching the recording does not substitute for live presence in this lab-driven format.</small></p>
+      </div>
+      <div class="panel">
+        <h4>Camera Policy &mdash; <em>on, 100%</em></h4>
+        <p>This is a small, lab-driven cohort. Cameras are <strong>on for the full session</strong> &mdash; lecture, demo, breakout, debrief &mdash; to receive attendance and participation credit. The only exception is the mid-session break.</p>
+        <p>If a camera-related circumstance arises (bandwidth, family obligation, illness), email the instructor before class. A blank tile mid-session is read as an absence.</p>
+        <p><small>The lab is collaborative space-shaping. We need to see your face, your hands, and your work.</small></p>
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:32px;">
+      <h5>The Student Companion &mdash; Conduct, Honesty, Department Policies</h5>
+      <p>All college policies and procedures have been compiled into a single document, <em>The Student Companion</em>. All students are responsible for reading and understanding these policies. The Companion is posted online:
+      <br/>https://www.ltu.edu/architecture_and_design/student_resources.asp</p>
+      <p>Topics covered: the Studio Code, plagiarism, attendance and late work, participation.</p>
+
+      <h5>Graduate Online Courses &mdash; Attendance, Participation, Engagement</h5>
+      <p>CoAD graduate courses are comprised of asynchronous and synchronous educational engagement structures so that knowledge can be explored in a variety of ways. To maintain the high, rigorous standards of the CoAD academic environment, consistent attendance and participation in both modalities is a necessity. Required synchronous class sessions will be held within the class times listed on Banner; other meetings may be arranged by student-faculty agreement. In the case of conflicts between a listed course time, synchronous content delivery, and extra-curricular student responsibilities, the student should communicate directly with the faculty member. The student is responsible to compensate for these scheduling conflicts during the semester. Since graduate work is assessed on performance, a lack of engagement through absence will inevitably impact educational outcomes.</p>
+    </div>
+  </section>
+
+  <!-- ─────────────── § 10 CATALOG / NAAB ─────────────── -->
+  <section class="pb-before">
+    <div class="sec-label">
+      <span class="sec-num">§ 10</span>
+      <h2 class="sec-title">Catalog &amp; <em>NAAB.</em></h2>
+    </div>
+
+    <div class="prose">
+      <h5>Catalog Description</h5>
+      <p>The course reviews the theories of sound perception, analysis of architectural acoustics, room acoustics, sound isolation, sound absorption, electronic sound reinforcement, and the study of acoustic properties of materials and room shapes to provide speech privacy, enhance speech clarity, enrich music spaces and control noise. The course also addresses basic electrical theory, utility connection options, emergency backup, distribution, and safety considerations as they relate to building construction. Electrical lighting is studied as part of an assimilated section covering the fundamentals of illumination, integrating natural daylighting and electrical lighting design for energy conservation. Class projects include investigations into course subjects to further enhance understanding of real-work applications.</p>
+
+      <h5>Prerequisites</h5>
+      <p>Architecture Foundations Studio 2 &mdash; ARC 5024<br/>Architecture Interiors Studio 1 &mdash; ARC 5113</p>
+
+      <h5>NAAB Program Criteria</h5>
+      <p><strong>Environmental Systems (SC.4B)</strong> &mdash; principles of environmental system design; application to problems involving solar geometry, daylight, natural ventilation, heating and cooling, indoor air quality, lighting systems, and acoustics; and analysis across different geographic regions.</p>
+      <p><strong>Building Service Systems (SC.4E)</strong> &mdash; principles of building service systems (mechanical, plumbing, fire protection, electrical, lighting); appropriate application; performance analysis through quantitative reasoning; application to problems using advanced technologies.</p>
+
+      <h5>Course Objectives</h5>
+      <ul>
+        <li><strong>Environmental Systems:</strong> demonstrate principles of environmental systems design, how design criteria vary by geographic region, and the tools used for performance assessment &mdash; including daylighting, lighting systems, and acoustics. (SC.4B)</li>
+        <li><strong>Building Service Systems:</strong> understand the basic principles and appropriate application and performance of building service systems, including lighting and electrical. (SC.4E)</li>
+      </ul>
+
+      <h5>Additional Learning Outcomes</h5>
+      <ul>
+        <li><strong>Ecological Knowledge</strong> &mdash; dynamics between built and natural environments; resilience.</li>
+        <li><strong>Health, Safety &amp; Welfare</strong> &mdash; impact of the built environment on human comfort and safety at multiple scales.</li>
+        <li><strong>Building Integration</strong> &mdash; design decisions that integrate envelope, structural, environmental control, and life-safety systems with measurable performance outcomes.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ─────────────── § 11 TEXTS ─────────────── -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 11</span>
+      <h2 class="sec-title">Texts &amp; <em>References.</em></h2>
+    </div>
+
+    <div class="two">
+      <div class="panel">
+        <h4>Required</h4>
+        <p><em>Mechanical &amp; Electrical Equipment for Buildings (MEEB)</em>, 13th ed.<br/>Grondzik &amp; Kwok &middot; Wiley, 2019.</p>
+        <p><small>Chapter scans for assigned weeks are posted on Canvas; physical copy strongly recommended.</small></p>
+      </div>
+      <div class="panel">
+        <h4>Recommended</h4>
+        <ul>
+          <li>Livingston &mdash; <em>Designing with Light</em>.</li>
+          <li>Long &mdash; <em>Architectural Acoustics</em> (selected chapters, Canvas PDF).</li>
+          <li>La Roche &mdash; <em>Carbon-neutral Architectural Design</em>, 2e.</li>
+          <li>Beranek &mdash; <em>Concert Halls and Opera Houses</em> (Act I precedents).</li>
+          <li>The Coffee Sketch Podcast &mdash; coffeesketchpodcast.com</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────── § 12 CLOSING ─────────────── -->
+  <section class="pb-before">
+    <div class="sec-label">
+      <span class="sec-num">§ 12</span>
+      <h2 class="sec-title">Before <em>the Curtain.</em></h2>
+    </div>
+
+    <div class="lede">
+      <p>An auditorium is one of the few building types whose quality is measurable at every register of the senses. Sound and light are <em>invisible</em> &mdash; they leave no line on a plan &mdash; yet they decide whether the room works. Over ten weeks we move through the hall in the order it should be designed: heard first, seen second, operated last.</p>
+      <p>Calculations are not the goal. The hall is. Every reverberation time, every footcandle, every wired circuit exists to answer a question about the room you are making. Bring the questions to the lab. The calculations will follow.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>ARC 5443 · Summer 2026 · Draft v4</span>
+    <span>Kurt Neiswender, AIA · CoAD · LTU</span>
+  </footer>
+
+</div>
+</body>
+</html>

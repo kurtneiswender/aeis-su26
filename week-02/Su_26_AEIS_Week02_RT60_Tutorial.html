@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARC 5443 · RT60 Tutorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink:    #0E0D0B;
+  --paper:  #EDE4D3;
+  --amber:  #D4A24C;
+  --red:    #C8472F;
+  --blue:   #9FC8D4;
+  --green:  #6BAA7E;
+  --paper2: #E2D8C4;
+  --rule:   rgba(14,13,11,.15);
+}
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Newsreader', Georgia, serif;
+  line-height: 1.7;
+}
+img { display: block; max-width: 100%; }
+a { color: var(--amber); }
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+.page { max-width: 860px; margin: 0 auto; padding: 0 28px 80px; }
+
+/* ── Hero ────────────────────────────────────────────────────────────────── */
+.hero {
+  border-bottom: 3px solid var(--ink);
+  padding: 64px 0 32px;
+  margin-bottom: 56px;
+}
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2.6rem, 6vw, 4rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -.03em;
+  margin-bottom: 16px;
+}
+.hero-sub {
+  font-size: 1.15rem;
+  font-style: italic;
+  color: rgba(14,13,11,.65);
+  max-width: 560px;
+}
+.meta-strip {
+  display: flex;
+  gap: 28px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+  flex-wrap: wrap;
+}
+.meta-item { font-family: 'JetBrains Mono', monospace; font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: rgba(14,13,11,.5); }
+.meta-item strong { color: var(--ink); display: block; font-size: .8rem; margin-top: 2px; }
+
+/* ── Section ─────────────────────────────────────────────────────────────── */
+.section { margin-bottom: 64px; }
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .7rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 6px;
+}
+.section h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  margin-bottom: 20px;
+  line-height: 1.15;
+}
+.section p { margin-bottom: 1rem; font-size: 1.02rem; }
+.section p:last-child { margin-bottom: 0; }
+
+/* ── Pull Quote ──────────────────────────────────────────────────────────── */
+.pullquote {
+  border-left: 4px solid var(--amber);
+  padding: 16px 24px;
+  margin: 28px 0;
+  background: rgba(212,162,76,.08);
+  border-radius: 0 6px 6px 0;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: rgba(14,13,11,.8);
+}
+
+/* ── Analogy Card ────────────────────────────────────────────────────────── */
+.analogy {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 10px;
+  padding: 28px 32px;
+  margin: 28px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.analogy h3 { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+.analogy p { font-size: .93rem; line-height: 1.55; color: rgba(237,228,211,.8); margin: 0; }
+.analogy .icon { font-size: 2rem; margin-bottom: 8px; }
+@media (max-width: 560px) { .analogy { grid-template-columns: 1fr; } }
+
+/* ── Equation Box ────────────────────────────────────────────────────────── */
+.equation-box {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 10px;
+  padding: 32px 36px;
+  margin: 28px 0;
+  text-align: center;
+}
+.eq-formula {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(1.3rem, 3.5vw, 1.9rem);
+  font-weight: 600;
+  letter-spacing: -.01em;
+  color: var(--amber);
+  margin-bottom: 24px;
+}
+.eq-parts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  text-align: left;
+}
+.eq-part { background: rgba(237,228,211,.07); border-radius: 6px; padding: 12px 14px; }
+.eq-part .sym { font-family: 'JetBrains Mono', monospace; font-size: .95rem; color: var(--amber); font-weight: 600; margin-bottom: 4px; }
+.eq-part .def { font-size: .8rem; color: rgba(237,228,211,.7); line-height: 1.4; }
+
+/* ── Scale Bar ───────────────────────────────────────────────────────────── */
+.rt60-scale {
+  position: relative;
+  margin: 28px 0 16px;
+  padding-bottom: 48px;
+}
+.scale-track {
+  height: 12px;
+  background: linear-gradient(to right, var(--blue) 0%, var(--green) 30%, var(--amber) 65%, var(--red) 100%);
+  border-radius: 6px;
+  position: relative;
+}
+.scale-marker {
+  position: absolute;
+  top: -4px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.scale-marker .tick { width: 2px; height: 20px; background: var(--ink); }
+.scale-marker .label { font-family: 'JetBrains Mono', monospace; font-size: .65rem; white-space: nowrap; margin-top: 6px; text-align: center; line-height: 1.3; color: rgba(14,13,11,.7); }
+.scale-marker .label strong { color: var(--ink); display: block; }
+.scale-axis { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: rgba(14,13,11,.45); margin-top: 6px; }
+
+/* ── Target Range Pills ──────────────────────────────────────────────────── */
+.target-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 24px 0;
+}
+.target-pill {
+  border: 1.5px solid var(--rule);
+  border-radius: 8px;
+  padding: 14px 16px;
+  position: relative;
+}
+.target-pill .prog { font-family: 'JetBrains Mono', monospace; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: rgba(14,13,11,.5); }
+.target-pill .range { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 600; color: var(--ink); margin-top: 2px; }
+.target-pill .eg { font-size: .78rem; color: rgba(14,13,11,.55); margin-top: 4px; font-style: italic; }
+.target-pill.highlight { border-color: var(--amber); background: rgba(212,162,76,.07); }
+
+/* ── Absorption Table ────────────────────────────────────────────────────── */
+.abs-table-wrap { overflow-x: auto; margin: 24px 0; }
+table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+th {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 9px 12px;
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 600;
+}
+td { padding: 8px 12px; border-bottom: 1px solid var(--rule); }
+tr:nth-child(even) td { background: rgba(14,13,11,.03); }
+.alpha-bar-cell { padding: 6px 12px; }
+.alpha-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--amber);
+  transition: width .3s;
+}
+
+/* ── Step List ───────────────────────────────────────────────────────────── */
+.steps { counter-reset: step; list-style: none; margin: 24px 0; }
+.steps li {
+  counter-increment: step;
+  display: flex;
+  gap: 18px;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+.steps li::before {
+  content: counter(step);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem;
+  font-weight: 600;
+  background: var(--amber);
+  color: var(--ink);
+  min-width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.steps li .step-body { flex: 1; }
+.steps li strong { display: block; margin-bottom: 3px; }
+.steps li code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .82em;
+  background: rgba(14,13,11,.08);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* ── Layer Table ─────────────────────────────────────────────────────────── */
+.layer-row td:first-child { font-family: 'JetBrains Mono', monospace; font-size: .82rem; }
+.layer-row .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+
+/* ── Interactive Calculator ──────────────────────────────────────────────── */
+.calc-box {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 12px;
+  padding: 36px 36px 32px;
+  margin: 28px 0;
+}
+.calc-box h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--amber);
+  margin-bottom: 24px;
+}
+.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
+@media (max-width: 580px) { .calc-grid { grid-template-columns: 1fr; } }
+.calc-input label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: rgba(237,228,211,.55);
+  display: block;
+  margin-bottom: 8px;
+}
+.calc-input input[type=range] {
+  width: 100%;
+  accent-color: var(--amber);
+  cursor: pointer;
+}
+.calc-input .val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--amber);
+  margin-top: 4px;
+}
+.calc-input .unit { font-size: .75rem; color: rgba(237,228,211,.45); }
+.calc-result {
+  border-top: 1px solid rgba(237,228,211,.15);
+  padding-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: center;
+}
+@media (max-width: 580px) { .calc-result { grid-template-columns: 1fr; } }
+.calc-math {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .78rem;
+  color: rgba(237,228,211,.55);
+  line-height: 2;
+}
+.calc-math .line { display: block; }
+.calc-math .highlight { color: var(--amber); font-weight: 600; }
+.rt60-display {
+  text-align: center;
+}
+.rt60-num {
+  font-family: 'Fraunces', serif;
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+  transition: color .25s;
+}
+.rt60-unit { font-size: .85rem; color: rgba(237,228,211,.5); margin-top: 4px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: .1em; }
+.rt60-status { font-family: 'JetBrains Mono', monospace; font-size: .75rem; font-weight: 600; margin-top: 8px; padding: 3px 12px; border-radius: 20px; display: inline-block; }
+
+/* ── Tip Box ─────────────────────────────────────────────────────────────── */
+.tip {
+  border: 1.5px solid var(--blue);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 24px 0;
+  background: rgba(159,200,212,.08);
+  font-size: .93rem;
+}
+.tip strong { color: var(--blue); }
+
+/* ── Compare Card ────────────────────────────────────────────────────────── */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+@media (max-width: 560px) { .compare-grid { grid-template-columns: 1fr; } }
+.compare-card {
+  border: 1.5px solid var(--rule);
+  border-radius: 8px;
+  padding: 20px;
+}
+.compare-card h4 { font-family: 'JetBrains Mono', monospace; font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+.compare-card .eq { font-family: 'JetBrains Mono', monospace; font-size: .82rem; color: var(--amber); background: rgba(14,13,11,.05); padding: 8px 10px; border-radius: 4px; margin-bottom: 10px; }
+.compare-card ul { font-size: .88rem; padding-left: 18px; }
+.compare-card ul li { margin-bottom: 4px; }
+.compare-card.recommended { border-color: var(--amber); background: rgba(212,162,76,.05); }
+.compare-card.recommended h4::after { content: " ✓ recommended"; color: var(--amber); font-weight: 600; }
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--rule);
+  padding-top: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: rgba(14,13,11,.35);
+  margin-top: 80px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ── HERO ──────────────────────────────────────────────────────────────── -->
+<header class="hero">
+  <div class="hero-eyebrow">ARC 5443 · AEIS · Week 02</div>
+  <h1>RT60:<br>How Long Should<br>Sound Last?</h1>
+  <p class="hero-sub">From the Sabine equation to Rhino simulation — a working guide to reverberation time.</p>
+  <div class="meta-strip">
+    <div class="meta-item">Course<strong>ARC 5443 AEIS</strong></div>
+    <div class="meta-item">Act<strong>Act I · Acoustics</strong></div>
+    <div class="meta-item">Tools<strong>Rhino + aeis_rt60.py</strong></div>
+    <div class="meta-item">Due<strong>Week 3 · Act I Review</strong></div>
+  </div>
+</header>
+
+<!-- ── §01 WHAT IS RT60 ───────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">§ 01</div>
+  <h2>What is RT60?</h2>
+
+  <p>RT60 is the time it takes for a sound to decay by <strong>60 decibels</strong> after the source stops. In practice: clap once inside a room, then measure how long you hear it fade to silence. A tile bathroom echoes for a second or two. A cathedral echoes for six. A recording studio is dead in under a third of a second.</p>
+
+  <div class="pullquote">
+    RT60 is not just a number on a worksheet — it is the difference between a hall where Beethoven soars and a hall where Beethoven blurs.
+  </div>
+
+  <p>The ideal RT60 depends entirely on what the room is for. Speech needs clarity — short decay so consonants don't smear. Music needs richness — longer decay so the room "sings" with the ensemble. There is no universally correct RT60, only appropriate ones.</p>
+
+  <div class="analogy">
+    <div>
+      <div class="icon">🔈</div>
+      <h3>Too dry (short RT60)</h3>
+      <p>Sound dies instantly. Great for speech intelligibility, recording studios, TV studios. Terrible for orchestras — musicians can't hear each other, the room feels lifeless.</p>
+    </div>
+    <div>
+      <div class="icon">🏛️</div>
+      <h3>Too live (long RT60)</h3>
+      <p>Sound lingers too long. Successive notes blur together. A choir piece designed for a cathedral (RT60 ≈ 4 s) becomes an unintelligible wash in an overreverberant hall.</p>
+    </div>
+  </div>
+
+  <p>The goal of acoustic design is to land your RT60 in the target range for your program — then keep it consistent across all octave bands. A room that is well-tuned at 500 Hz but boomy at 125 Hz still fails.</p>
+</section>
+
+<!-- ── §02 THE SCALE ──────────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">§ 02</div>
+  <h2>The RT60 Scale</h2>
+
+  <p>Use this reference when interpreting your results. The color gradient runs from studio-dead (blue) through ideal-for-music (green–amber) to cathedral-live (red).</p>
+
+  <div class="rt60-scale">
+    <div class="scale-track">
+      <div class="scale-marker" style="left:10%"><div class="tick"></div><div class="label"><strong>0.3 s</strong>Recording<br>studio</div></div>
+      <div class="scale-marker" style="left:25%"><div class="tick"></div><div class="label"><strong>0.8 s</strong>Lecture<br>hall</div></div>
+      <div class="scale-marker" style="left:47%"><div class="tick"></div><div class="label"><strong>1.4 s</strong>Multipurpose<br>hall</div></div>
+      <div class="scale-marker" style="left:62%"><div class="tick"></div><div class="label"><strong>1.9 s</strong>Boston<br>Symphony</div></div>
+      <div class="scale-marker" style="left:77%"><div class="tick"></div><div class="label"><strong>2.3 s</strong>Opera<br>upper limit</div></div>
+      <div class="scale-marker" style="left:93%"><div class="tick"></div><div class="label"><strong>≥4 s</strong>Cathedral</div></div>
+    </div>
+    <div class="scale-axis"><span>0 s</span><span>1.0 s</span><span>2.0 s</span><span>3.0 s</span></div>
+  </div>
+
+  <div class="target-grid">
+    <div class="target-pill">
+      <div class="prog">Speech / Lecture</div>
+      <div class="range">0.6 – 1.0 s</div>
+      <div class="eg">Courtroom, lecture hall, boardroom</div>
+    </div>
+    <div class="target-pill">
+      <div class="prog">Cinema</div>
+      <div class="range">0.3 – 0.5 s</div>
+      <div class="eg">Dialogue clarity, sound effects precision</div>
+    </div>
+    <div class="target-pill">
+      <div class="prog">Multipurpose</div>
+      <div class="range">1.4 – 1.8 s</div>
+      <div class="eg">Community halls, flexible performing arts</div>
+    </div>
+    <div class="target-pill highlight">
+      <div class="prog">Opera / Music</div>
+      <div class="range">1.6 – 2.0 s</div>
+      <div class="eg">Your ARC 5443 auditorium target</div>
+    </div>
+    <div class="target-pill">
+      <div class="prog">Symphony</div>
+      <div class="range">1.8 – 2.2 s</div>
+      <div class="eg">Vienna Musikverein: 2.05 s</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── §03 SABINE EQUATION ───────────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">§ 03</div>
+  <h2>The Sabine Equation</h2>
+
+  <p>Wallace Clement Sabine derived this formula empirically in 1900 at Harvard by measuring reverberation in different rooms with different amounts of seat cushions. It remains the standard hand-calculation method.</p>
+
+  <div class="equation-box">
+    <div class="eq-formula">RT60 = 0.161 × V / A</div>
+    <div class="eq-parts">
+      <div class="eq-part">
+        <div class="sym">RT60</div>
+        <div class="def">Reverberation time in seconds — what we are solving for</div>
+      </div>
+      <div class="eq-part">
+        <div class="sym">0.161</div>
+        <div class="def">Physical constant (SI units). Derived from air density and speed of sound at 20°C</div>
+      </div>
+      <div class="eq-part">
+        <div class="sym">V</div>
+        <div class="def">Room volume in cubic meters (m³)</div>
+      </div>
+      <div class="eq-part">
+        <div class="sym">A</div>
+        <div class="def">Total absorption in sabins (m²) = Σ (surface area × absorption coefficient α)</div>
+      </div>
+    </div>
+  </div>
+
+  <p>The logic is intuitive: <strong>more volume = longer decay</strong> (more energy to absorb), and <strong>more absorption = shorter decay</strong> (surfaces kill energy faster). Doubling the volume doubles RT60. Doubling the total absorption halves it.</p>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:1.1rem;margin:20px 0 10px">What is a sabin?</h3>
+  <p>One sabin (m²) is the absorption equivalent of one square meter of open window — a perfectly absorbing surface. A 100 m² concrete wall with α = 0.02 contributes only 2 sabins. A 100 m² carpet floor with α = 0.57 contributes 57 sabins. The carpet is 28× more effective per unit area.</p>
+
+  <div class="tip">
+    <strong>Worked example:</strong> 40 m × 25 m × 12 m room (V = 12,000 m³). Floor is carpet (1,000 m², α = 0.57 → 570 sabins), rear wall is acoustic tile (480 m², α = 0.78 → 374 sabins), everything else is concrete or gypsum (≈ 100 sabins total). Total A ≈ 1,044 sabins.<br><br>
+    RT60 = 0.161 × 12,000 / 1,044 = <strong>1.85 s</strong> — in range for opera.
+  </div>
+</section>
+
+<!-- ── §04 ABSORPTION COEFFICIENT ───────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">§ 04</div>
+  <h2>Absorption Coefficient &amp; NRC</h2>
+
+  <p>The absorption coefficient (α) is a number from 0.0 to 1.0 that tells you what fraction of sound energy a surface absorbs. α = 0.0 is a perfect mirror — all energy reflected. α = 1.0 is an open window — all energy lost.</p>
+
+  <p>Absorption coefficients <strong>vary by frequency</strong>. Soft materials absorb high frequencies well but often let bass pass through. Hard surfaces reflect almost everything. This is why you need to run Sabine at multiple octave bands — the room may be tuned at 500 Hz but bass-heavy or treble-dead.</p>
+
+  <div class="abs-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Material</th>
+          <th>125 Hz</th>
+          <th>250 Hz</th>
+          <th>500 Hz</th>
+          <th>1k Hz</th>
+          <th>2k Hz</th>
+          <th>4k Hz</th>
+          <th>NRC</th>
+          <th>α at 500 Hz</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Concrete (bare)</td><td>0.01</td><td>0.01</td><td>0.02</td><td>0.02</td><td>0.03</td><td>0.03</td><td>0.02</td><td class="alpha-bar-cell"><div class="alpha-bar" style="width:2%"></div></td></tr>
+        <tr><td>Brick (unglazed)</td><td>0.03</td><td>0.03</td><td>0.03</td><td>0.04</td><td>0.05</td><td>0.07</td><td>0.04</td><td class="alpha-bar-cell"><div class="alpha-bar" style="width:3%"></div></td></tr>
+        <tr><td>Gypsum board (½")</td><td>0.29</td><td>0.10</td><td>0.05</td><td>0.04</td><td>0.07</td><td>0.09</td><td>0.07</td><td class="alpha-bar-cell"><div class="alpha-bar" style="width:5%"></div></td></tr>
+        <tr><td>Wood panel (¾")</td><td>0.10</td><td>0.11</td><td>0.10</td><td>0.08</td><td>0.08</td><td>0.11</td><td>0.09</td><td class="alpha-bar-cell"><div class="alpha-bar" style="width:10%"></div></td></tr>
+        <tr><td>Carpet (thin)</td><td>0.02</td><td>0.06</td><td>0.14</td><td>0.37</td><td>0.60</td><td>0.65</td><td>0.29</td><td class="alpha-bar-cell"><div class="alpha-bar" style="width:14%"></div></td></tr>
+        <tr><td>Carpet (thick)</td><td>0.08</td><td>0.24</td><td>0.57</td><td>0.69</td><td>0.71</td><td>0.73</td><td>0.68</td><td class="alpha-bar-cell"><div class="alpha-bar" style="width:57%"></div></td></tr>
+        <tr><td>Acoustic tile (¾")</td><td>0.25</td><td>0.45</td><td>0.78</td><td>0.92</td><td>0.89</td><td>0.87</td><td>0.87</td><td class="alpha-bar-cell"><div class="alpha-bar" style="width:78%"></div></td></tr>
+        <tr><td>Fabric panel (2")</td><td>0.20</td><td>0.55</td><td>0.90</td><td>0.95</td><td>0.95</td><td>0.90</td><td>0.94</td><td class="alpha-bar-cell"><div class="alpha-bar" style="width:90%"></div></td></tr>
+        <tr><td>Seats (upholstered)</td><td>0.44</td><td>0.56</td><td>0.67</td><td>0.74</td><td>0.83</td><td>0.87</td><td>0.78</td><td class="alpha-bar-cell"><div class="alpha-bar" style="width:67%"></div></td></tr>
+        <tr><td>Seats (occupied)</td><td>0.39</td><td>0.57</td><td>0.80</td><td>0.94</td><td>0.92</td><td>0.87</td><td>0.91</td><td class="alpha-bar-cell"><div class="alpha-bar" style="width:80%"></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>NRC (Noise Reduction Coefficient)</strong> is a single-number average of α at 250, 500, 1000, and 2000 Hz. It is useful for quick comparisons but never use it for RT60 calculations — always use the per-band values.</p>
+</section>
+
+<!-- ── §05 EYRING VS SABINE ───────────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">§ 05</div>
+  <h2>Eyring vs. Sabine — When Each Applies</h2>
+
+  <p>Sabine's formula assumes sound energy is uniformly distributed and that absorption is small. When surfaces are highly absorbent (mean α &gt; 0.2), Sabine overestimates RT60 because it underestimates how aggressively each reflection is killed.</p>
+
+  <p>The Eyring–Norris equation corrects for this by using the natural log of the mean absorption:</p>
+
+  <div class="compare-grid">
+    <div class="compare-card">
+      <h4>Sabine</h4>
+      <div class="eq">RT60 = 0.161 × V / A</div>
+      <ul>
+        <li>Use for preliminary estimates</li>
+        <li>Your worksheet hand-calculation</li>
+        <li>Accurate when mean α &lt; 0.2</li>
+        <li>Always overestimates at high α</li>
+      </ul>
+    </div>
+    <div class="compare-card recommended">
+      <h4>Eyring</h4>
+      <div class="eq">RT60 = 0.161 × V / (−S × ln(1−ᾱ))</div>
+      <ul>
+        <li>More accurate when mean α &gt; 0.2</li>
+        <li>What the script uses for status flags</li>
+        <li>Closer to Pachyderm simulation output</li>
+        <li>Use this for design decisions</li>
+      </ul>
+    </div>
+  </div>
+
+  <p>In a well-designed auditorium with carpet seating and acoustic treatment, mean α at 500 Hz is typically 0.25–0.35 — firmly in Eyring territory. The gap between the two equations is your calibration signal: a large gap means your room has highly non-uniform absorption distribution.</p>
+
+  <div class="tip">
+    <strong>Rubric note:</strong> Criterion 2 requires you to submit both Sabine (hand-calc) and Pachyderm (simulation). The script gives you both Sabine and Eyring. Use Sabine as your worksheet value; use Eyring and Pachyderm to validate it.
+  </div>
+</section>
+
+<!-- ── §06 INTERACTIVE CALCULATOR ────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">§ 06</div>
+  <h2>Interactive Sabine Calculator</h2>
+
+  <p>Adjust volume and total absorption to see how RT60 changes in real time. Watch the equation work — this is exactly what you are doing on your worksheet, just with your room's actual numbers.</p>
+
+  <div class="calc-box">
+    <h3>Sabine RT60 Calculator</h3>
+    <div class="calc-grid">
+      <div class="calc-input">
+        <label>Room Volume (V)</label>
+        <input type="range" id="vol" min="500" max="20000" step="100" value="12000">
+        <div class="val" id="vol-display">12,000 <span class="unit">m³</span></div>
+      </div>
+      <div class="calc-input">
+        <label>Total Absorption (A)</label>
+        <input type="range" id="abs" min="50" max="5000" step="50" value="1044">
+        <div class="val" id="abs-display">1,044 <span class="unit">sabins (m²)</span></div>
+      </div>
+    </div>
+    <div class="calc-result">
+      <div class="calc-math">
+        <span class="line">RT60 = 0.161 × V / A</span>
+        <span class="line">     = 0.161 × <span class="highlight" id="math-v">12,000</span> / <span class="highlight" id="math-a">1,044</span></span>
+        <span class="line">     = <span class="highlight" id="math-result">1.85</span> s</span>
+      </div>
+      <div class="rt60-display">
+        <div class="rt60-num" id="rt60-num">1.85</div>
+        <div class="rt60-unit">seconds (RT60)</div>
+        <div class="rt60-status" id="rt60-status">IN RANGE</div>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-size:.88rem;color:rgba(14,13,11,.55);font-style:italic">Status checked against Opera / Mixed program target (1.6–2.0 s). Adjust absorption to see TOO DRY / TOO LIVE flags.</p>
+</section>
+
+<!-- ── §07 RHINO WORKFLOW ─────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">§ 07</div>
+  <h2>Rhino Workflow</h2>
+
+  <p>The script reads your Rhino model geometry directly — no export, no plugin license needed. Each room surface must be on a named layer so the script knows what material it is.</p>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:1.1rem;margin:20px 0 12px">Step 1 — Build your room as surfaces</h3>
+  <p>Model each major surface of the room as a separate flat surface or simple brep. Explode any joined polysurfaces (<code>Explode</code> in Rhino). Each surface becomes one entry in your material schedule.</p>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:1.1rem;margin:20px 0 12px">Step 2 — Name your layers</h3>
+  <p>Every surface layer must follow the naming convention <code>AEIS_&lt;MATERIAL&gt;</code>. The script looks up the material key in its table. Underscores only — no hyphens, no spaces.</p>
+
+  <div class="abs-table-wrap">
+    <table>
+      <thead><tr><th>Surface</th><th>Layer Name</th><th>Notes</th></tr></thead>
+      <tbody class="layer-row">
+        <tr><td>Floor (carpet)</td><td><code>AEIS_CARPET_THICK</code></td><td>Heavy carpet on concrete</td></tr>
+        <tr><td>Ceiling (gypsum)</td><td><code>AEIS_GYPSUM_BOARD</code></td><td>½" GWB on studs</td></tr>
+        <tr><td>Side walls</td><td><code>AEIS_CONCRETE_BARE</code></td><td>Poured or painted concrete</td></tr>
+        <tr><td>Stage wall</td><td><code>AEIS_WOOD_PANEL</code></td><td>¾" wood panel with air gap</td></tr>
+        <tr><td>Rear wall</td><td><code>AEIS_ACOUSTIC_TILE</code></td><td>¾" lay-in ceiling tile</td></tr>
+        <tr><td>Seating area</td><td><code>AEIS_SEATS_UPHOLSTERED</code></td><td>Model as a flat surface</td></tr>
+        <tr><td>Sound source</td><td><code>AEIS_SOURCE</code></td><td>A single Point object (not a surface)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:1.1rem;margin:20px 0 12px">Step 3 — Run the script</h3>
+  <ol class="steps">
+    <li><div class="step-body"><strong>Open the script</strong><br>In Rhino: type <code>_RunPythonScript</code> → navigate to <code>aeis_rt60.py</code> → Open.</div></li>
+    <li><div class="step-body"><strong>Select program type</strong><br>A dialog appears: choose <code>music_opera</code> for the ARC 5443 auditorium.</div></li>
+    <li><div class="step-body"><strong>Read the command line output</strong><br>Scroll up to see the full octave-band table. Look for the STATUS column — you want OK at 500 Hz, 1k Hz, and 2k Hz.</div></li>
+    <li><div class="step-body"><strong>Read the popup</strong><br>The summary dialog shows Eyring RT60 (primary) and Sabine (worksheet reference) at 500 Hz, plus an IN RANGE / OUT OF RANGE flag against your target.</div></li>
+    <li><div class="step-body"><strong>Save your report</strong><br>Click Yes when asked to save. Choose a file path. The script captures your viewport and generates an HTML report you can open in any browser and print to PDF.</div></li>
+  </ol>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:1.1rem;margin:20px 0 12px">Step 4 — Iterate</h3>
+  <p>If your result is TOO LIVE: swap a large surface to a more absorptive material (or increase area of absorptive surfaces). If TOO DRY: replace acoustic tile or carpet with harder materials, or add volume. Re-run the script immediately — each iteration takes under 30 seconds.</p>
+</section>
+
+<!-- ── §08 READING YOUR OUTPUT ───────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">§ 08</div>
+  <h2>Reading the Ray Trace</h2>
+
+  <p>After computing RT60, the script casts 200 rays from your source point and draws each bounce as a colored line on the <code>AEIS_RAYS</code> layer. The color encodes energy remaining:</p>
+
+  <div class="analogy" style="grid-template-columns: repeat(4,1fr)">
+    <div>
+      <div style="width:24px;height:24px;border-radius:4px;background:#dc3028;margin-bottom:8px"></div>
+      <h3 style="font-size:.9rem">Red</h3>
+      <p>High energy — first 1–2 bounces. Direct sound and early reflections.</p>
+    </div>
+    <div>
+      <div style="width:24px;height:24px;border-radius:4px;background:#dc7828;margin-bottom:8px"></div>
+      <h3 style="font-size:.9rem">Orange</h3>
+      <p>Medium energy — 3–4 bounces. Still contributing to room warmth.</p>
+    </div>
+    <div>
+      <div style="width:24px;height:24px;border-radius:4px;background:#288c8c;margin-bottom:8px"></div>
+      <h3 style="font-size:.9rem">Teal</h3>
+      <p>Low energy — late reflections. RT60 is extending but not supporting intelligibility.</p>
+    </div>
+    <div>
+      <div style="width:24px;height:24px;border-radius:4px;background:#2850c8;margin-bottom:8px"></div>
+      <h3 style="font-size:.9rem">Blue</h3>
+      <p>Near-dead — below 5% of original energy. Absorbed or escaped.</p>
+    </div>
+  </div>
+
+  <p>Look for gaps (areas with no ray coverage) — those are acoustic shadow zones. Look for dense clusters of late-bounce rays in corners — potential flutter echo or bass buildup. These observations feed directly into your Decision Log entries.</p>
+</section>
+
+<!-- ── §09 SUBMITTING FOR ACT I ─────────────────────────────────────────── -->
+<section class="section">
+  <div class="section-num">§ 09</div>
+  <h2>What Goes in Your Act I Submission</h2>
+
+  <p>The RT60 calculation is Criterion 2 of the Act I rubric (4 points). To reach Exemplary:</p>
+
+  <ul style="padding-left:20px;margin:16px 0;font-size:.97rem">
+    <li style="margin-bottom:8px"><strong>Hand calculation (Sabine):</strong> Show the equation with your room's numbers at 500 Hz, 1k Hz, and 2k Hz minimum. Include a material schedule with areas and α values cited from MEEB or the script's source table.</li>
+    <li style="margin-bottom:8px"><strong>Pachyderm simulation:</strong> Screenshot the Pachyderm result at 500 Hz. Compare to your Sabine number — if they differ by more than ±0.2 s, explain why.</li>
+    <li style="margin-bottom:8px"><strong>RT60 target justification:</strong> State your program type and cite the target range. Don't just say "opera" — say "mixed speech/music program: target 1.6–2.0 s per MEEB Table 27.3."</li>
+    <li style="margin-bottom:8px"><strong>Dominant absorber:</strong> Name the surface that contributes the most sabins. (Usually carpet floor or upholstered seats in a 500-seat house.)</li>
+    <li style="margin-bottom:8px"><strong>Decision Log entry:</strong> At least one entry connecting a material swap to a specific RT60 change. Reference actual numbers.</li>
+  </ul>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
+<footer>
+  ARC 5443 · Acoustics, Electrical &amp; Illumination Systems · Lawrence Technological University · Summer 2026 · Kurt Neiswender AIA
+</footer>
+
+</div><!-- /.page -->
+
+<!-- ── CALCULATOR SCRIPT ──────────────────────────────────────────────────── -->
+<script>
+  const T_MIN = 1.4, T_MAX = 2.0;
+
+  function fmt(n) { return n.toLocaleString(); }
+
+  function update() {
+    const V = parseInt(document.getElementById('vol').value);
+    const A = parseInt(document.getElementById('abs').value);
+    const rt60 = (0.161 * V / A).toFixed(2);
+
+    document.getElementById('vol-display').innerHTML = fmt(V) + ' <span class="unit">m³</span>';
+    document.getElementById('abs-display').innerHTML = fmt(A) + ' <span class="unit">sabins (m²)</span>';
+    document.getElementById('math-v').textContent = fmt(V);
+    document.getElementById('math-a').textContent = fmt(A);
+    document.getElementById('math-result').textContent = rt60;
+    document.getElementById('rt60-num').textContent = rt60;
+
+    const num  = parseFloat(rt60);
+    const stat = document.getElementById('rt60-status');
+    const disp = document.getElementById('rt60-num');
+
+    if (num >= T_MIN && num <= T_MAX) {
+      disp.style.color = '#3a8a5a';
+      stat.textContent = 'IN RANGE';
+      stat.style.background = '#3a8a5a';
+    } else if (num < T_MIN) {
+      disp.style.color = '#c87030';
+      stat.textContent = 'TOO DRY — add volume or reduce absorption';
+      stat.style.background = '#c87030';
+    } else {
+      disp.style.color = '#c8472f';
+      stat.textContent = 'TOO LIVE — add absorptive material';
+      stat.style.background = '#c8472f';
+    }
+  }
+
+  document.getElementById('vol').addEventListener('input', update);
+  document.getElementById('abs').addEventListener('input', update);
+  update();
+</script>
+</body>
+</html>

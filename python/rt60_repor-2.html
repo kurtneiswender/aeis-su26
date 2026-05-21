@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RT60 Report - AEIS ARC 5443</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Newsreader', Georgia, serif; background: #ede4d3; color: #0e0d0b; max-width: 900px; margin: 48px auto; padding: 0 24px 64px; }
+  header { border-bottom: 3px solid #0e0d0b; padding-bottom: 16px; margin-bottom: 32px; }
+  header h1 { font-size: 2rem; font-weight: 600; letter-spacing: -.02em; }
+  header p { color: #555; font-size: 0.9rem; margin-top: 4px; }
+  h2 { font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin: 32px 0 12px; border-bottom: 1px solid #c4b89a; padding-bottom: 6px; }
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .card { background: #fff; border: 1px solid #c4b89a; border-radius: 6px; padding: 18px 20px; }
+  .card-val { font-family: 'JetBrains Mono', monospace; font-size: 2.2rem; font-weight: 600; line-height: 1; }
+  .card-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .07em; color: #777; margin-top: 4px; }
+  .badge { display: inline-block; padding: 3px 12px; border-radius: 20px; color: #fff; font-size: 0.8rem; font-weight: 700; letter-spacing: .04em; }
+  .bar-wrap { background: #d6ccb8; border-radius: 8px; height: 18px; position: relative; overflow: hidden; margin-bottom: 6px; }
+  .bar-target { position: absolute; top: 0; height: 100%; opacity: .45; background: #3a8a5a; }
+  .bar-needle { position: absolute; top: 2px; width: 4px; height: 14px; border-radius: 2px; transform: translateX(-2px); }
+  .bar-labels { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #777; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th { background: #0e0d0b; color: #ede4d3; padding: 8px 12px; text-align: left; font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: .05em; }
+  td { padding: 7px 12px; border-bottom: 1px solid #d6ccb8; }
+  tr:last-child td { border-bottom: none; }
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #c4b89a; font-size: 0.75rem; color: #888; font-style: italic; }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 0.82em; background: #e0d9cc; padding: 1px 5px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>RT60 Acoustic Analysis</h1>
+  <p>ARC 5443 AEIS &nbsp;&middot;&nbsp; Lawrence Technological University &nbsp;&middot;&nbsp; Program: <strong>MUSIC OPERA</strong> &nbsp;&middot;&nbsp; Target: 1.6&ndash;2.0 s</p>
+</header>
+
+<img src="rt60_repor-2_viewport.png" alt="Rhino viewport" style="width:100%;border-radius:6px;margin:0 0 32px">
+
+<h2>500 Hz Summary</h2>
+<div class="summary-grid">
+  <div class="card">
+    <div class="card-val" style="color:#3a8a5a">1.85 s</div>
+    <div class="card-label">Eyring RT60 &mdash; primary result</div>
+  </div>
+  <div class="card">
+    <div class="card-val" style="color:#555">2.14 s</div>
+    <div class="card-label">Sabine RT60 &mdash; hand-calc reference</div>
+  </div>
+  <div class="card">
+    <div class="card-val"><span class="badge" style="background:#3a8a5a">IN RANGE</span></div>
+    <div class="card-label">vs. MUSIC OPERA target</div>
+  </div>
+</div>
+
+<div class="bar-wrap">
+  <div class="bar-target" style="left:53.3%;width:13.3%"></div>
+  <div class="bar-needle" style="left:61.8%;background:#3a8a5a"></div>
+</div>
+<div class="bar-labels"><span>0 s</span><span>1.0 s</span><span>2.0 s</span><span>3.0 s</span></div>
+
+<h2>Octave Band Results</h2>
+<table>
+  <tr><th>Frequency</th><th>Sabine RT60</th><th>Eyring RT60</th><th>Status</th></tr>
+  <tr><td>125 Hz</td><td>3.99 s</td><td><strong>3.71 s</strong></td><td style="color:#c8472f;font-weight:600">TOO LIVE</td></tr>
+<tr><td>250 Hz</td><td>3.73 s</td><td><strong>3.45 s</strong></td><td style="color:#c8472f;font-weight:600">TOO LIVE</td></tr>
+<tr style="background:#eef6f1"><td>500 Hz</td><td>2.14 s</td><td><strong>1.85 s</strong></td><td style="color:#3a8a5a;font-weight:600">IN RANGE</td></tr>
+<tr><td>1000 Hz</td><td>1.84 s</td><td><strong>1.55 s</strong></td><td style="color:#c87030;font-weight:600">TOO DRY</td></tr>
+<tr><td>2000 Hz</td><td>1.76 s</td><td><strong>1.47 s</strong></td><td style="color:#c87030;font-weight:600">TOO DRY</td></tr>
+<tr><td>4000 Hz</td><td>1.69 s</td><td><strong>1.40 s</strong></td><td style="color:#c87030;font-weight:600">TOO DRY</td></tr>
+
+</table>
+<p style="font-size:.78rem;color:#888;margin-top:8px">Status based on Eyring RT60 vs. program target [1.6&ndash;2.0 s].</p>
+
+<h2>Material Schedule</h2>
+<table>
+  <tr><th>Surface</th><th>Material</th><th>Area (m&sup2;)</th><th>&alpha; 500 Hz</th><th>NRC</th><th>Absorption (sabins)</th></tr>
+  <tr><td>CARPET_THICK</td><td>Carpet Thick</td><td>1000</td><td>0.57</td><td>0.68</td><td>570</td></tr>
+<tr><td>GYPSUM_BOARD</td><td>Gypsum Board</td><td>1000</td><td>0.05</td><td>0.06</td><td>50</td></tr>
+<tr><td>CONCRETE_BARE</td><td>Concrete Bare</td><td>960</td><td>0.02</td><td>0.03</td><td>19</td></tr>
+<tr><td>WOOD_PANEL</td><td>Wood Panel</td><td>300</td><td>0.10</td><td>0.09</td><td>30</td></tr>
+<tr><td>ACOUSTIC_TILE</td><td>Acoustic Tile</td><td>300</td><td>0.78</td><td>0.87</td><td>234</td></tr>
+<tr style="font-weight:700;background:#e8e0d0"><td colspan="2">TOTAL</td><td>3560 m²</td><td>-</td><td>-</td><td>903 sabins</td></tr>
+
+</table>
+<p style="font-size:.78rem;color:#888;margin-top:8px">NRC = average of &alpha; at 250, 500, 1000, 2000 Hz. Absorption sabins = area &times; &alpha; at 500 Hz.</p>
+
+<h2>Room Parameters</h2>
+<table>
+  <tr><th>Parameter</th><th>Value</th></tr>
+  <tr><td>Volume</td><td><code>12000 m&sup3;</code> &nbsp;(423776 ft&sup3;)</td></tr>
+  <tr><td>Total surface area</td><td><code>3560 m&sup2;</code></td></tr>
+  <tr><td>Total absorption at 500 Hz</td><td><code>903 sabins</code></td></tr>
+  <tr><td>Mean absorption coefficient (500 Hz)</td><td><code>0.254</code></td></tr>
+  <tr><td>Program type</td><td>MUSIC OPERA</td></tr>
+  <tr><td>RT60 target</td><td>1.6&ndash;2.0 s</td></tr>
+</table>
+
+<footer>
+  Generated by the AEIS RT60 Script &mdash; ARC 5443 AEIS &mdash; Lawrence Technological University<br>
+  Sabine: RT60 = 0.161 &times; V / A &nbsp;&nbsp; Eyring: RT60 = 0.161 &times; V / (&minus;S &times; ln(1 &minus; &alpha;&#772;))<br>
+  Compare Eyring result with your hand calculation at 500 Hz. Discrepancy &gt; &plusmn;0.2 s should be explained in your submission.
+</footer>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ARC 5443 · 500-Seat Proscenium Auditorium · Schematic Floor Plan
+  Seating: 3 sections · 6 left + 13 center + 6 right = 25 seats/row × 20 rows = 500 total
+  Grid: seat tile 18 × 13 px · section x-starts at multiples of 18 · row y-start at multiple of 13
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-28 -18 980 760">
+<defs>
+
+  <!-- ── Seat tile: 18 px wide × 13 px tall ──
+       Pattern aligns at x=198 (11×18), x=342 (19×18), x=612 (34×18), y=299 (23×13) -->
+  <pattern id="sg" x="0" y="0" width="18" height="13" patternUnits="userSpaceOnUse">
+    <rect x="1.5" y="2" width="15" height="9" rx="1.5"
+          fill="rgba(159,200,212,0.28)" stroke="#9FC8D4" stroke-width="0.7"/>
+  </pattern>
+
+  <!-- BOH diagonal hatch -->
+  <pattern id="boh-x" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45 0 0)">
+    <line x1="0" y1="0" x2="0" y2="9" stroke="rgba(237,228,211,0.09)" stroke-width="0.9"/>
+  </pattern>
+
+  <!-- Stage diagonal hatch (amber) -->
+  <pattern id="stg-x" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45 0 0)">
+    <line x1="0" y1="0" x2="0" y2="10" stroke="rgba(212,162,76,0.20)" stroke-width="1"/>
+  </pattern>
+
+</defs>
+
+<!-- ══════════════════════════════════════════
+     BACKGROUND
+     ══════════════════════════════════════════ -->
+<rect x="-28" y="-18" width="980" height="760" fill="#0E0D0B"/>
+
+<!-- ══════════════════════════════════════════
+     TITLE
+     ══════════════════════════════════════════ -->
+<text x="450" y="20"
+      font-family="'Courier New',Courier,monospace" font-size="10.5"
+      letter-spacing="2.5" fill="#D4A24C" text-anchor="middle">
+  ARC 5443  ·  500-SEAT PROSCENIUM AUDITORIUM  ·  SCHEMATIC FLOOR PLAN
+</text>
+
+<!-- ══════════════════════════════════════════
+     BUILDING OUTER ENVELOPE
+     x = 22 – 878   y = 30 – 680
+     ══════════════════════════════════════════ -->
+<rect x="22" y="30" width="856" height="650"
+      fill="none" stroke="#EDE4D3" stroke-width="3.5"/>
+
+
+<!-- ══════════════════════════════════════════
+     BACK OF HOUSE    y = 30 – 130
+     ══════════════════════════════════════════ -->
+<rect x="22" y="30" width="856" height="100" fill="rgba(14,13,11,0.75)"/>
+<rect x="22" y="30" width="856" height="100" fill="url(#boh-x)"/>
+
+<!-- BOH room dividers -->
+<line x1="202" y1="30" x2="202" y2="130"
+      stroke="#EDE4D3" stroke-width="1.5" stroke-opacity="0.55"/>
+<line x1="658" y1="30" x2="658" y2="130"
+      stroke="#EDE4D3" stroke-width="1.5" stroke-opacity="0.55"/>
+
+<!-- BOH labels -->
+<text x="112" y="72"  font-family="'Courier New',Courier,monospace" font-size="9.5" letter-spacing="1.5" fill="#D4A24C" text-anchor="middle">GREEN ROOM</text>
+<text x="112" y="86"  font-family="'Courier New',Courier,monospace" font-size="9.5" letter-spacing="1.5" fill="#D4A24C" text-anchor="middle">+ DRESSING</text>
+<text x="430" y="82"  font-family="'Courier New',Courier,monospace" font-size="11"  letter-spacing="3"   fill="#D4A24C" text-anchor="middle">FLY LOFT  /  GRID</text>
+<text x="768" y="72"  font-family="'Courier New',Courier,monospace" font-size="9.5" letter-spacing="1.5" fill="#D4A24C" text-anchor="middle">LOADING DOCK</text>
+<text x="768" y="86"  font-family="'Courier New',Courier,monospace" font-size="9.5" letter-spacing="1.5" fill="#D4A24C" text-anchor="middle">+ SCENE SHOP</text>
+
+<!-- BOH → Stage wall -->
+<line x1="22" y1="130" x2="878" y2="130" stroke="#EDE4D3" stroke-opacity="0.55" stroke-width="1.5"/>
+
+
+<!-- ══════════════════════════════════════════
+     STAGE     y = 130 – 250
+     Stage deck x = 100 – 800  (wings 22–100, 800–878)
+     ══════════════════════════════════════════ -->
+
+<!-- Stage deck fill + hatch -->
+<rect x="100" y="130" width="700" height="120" fill="rgba(212,162,76,0.06)"/>
+<rect x="100" y="130" width="700" height="120" fill="url(#stg-x)"/>
+
+<!-- Stage perimeter walls -->
+<line x1="100" y1="130" x2="100" y2="262" stroke="#EDE4D3" stroke-opacity="0.55" stroke-width="1.5"/>
+<line x1="800" y1="130" x2="800" y2="262" stroke="#EDE4D3" stroke-opacity="0.55" stroke-width="1.5"/>
+
+<!-- Wing fills -->
+<rect x="22"  y="130" width="78"  height="132" fill="rgba(200,71,47,0.06)"/>
+<rect x="800" y="130" width="78"  height="132" fill="rgba(200,71,47,0.06)"/>
+
+<!-- Wing labels -->
+<text x="61"  y="190" font-family="'Courier New',Courier,monospace" font-size="9" letter-spacing="1" fill="#D4A24C" text-anchor="middle">STAGE</text>
+<text x="61"  y="204" font-family="'Courier New',Courier,monospace" font-size="9" letter-spacing="1" fill="#D4A24C" text-anchor="middle">LEFT</text>
+<text x="839" y="190" font-family="'Courier New',Courier,monospace" font-size="9" letter-spacing="1" fill="#D4A24C" text-anchor="middle">STAGE</text>
+<text x="839" y="204" font-family="'Courier New',Courier,monospace" font-size="9" letter-spacing="1" fill="#D4A24C" text-anchor="middle">RIGHT</text>
+
+<!-- Stage label -->
+<text x="450" y="189" font-family="'Courier New',Courier,monospace" font-size="12.5" letter-spacing="4" fill="#D4A24C" text-anchor="middle">STAGE</text>
+<text x="450" y="205" font-family="'Courier New',Courier,monospace" font-size="8.5"  letter-spacing="2" fill="rgba(212,162,76,0.80)" text-anchor="middle">PERFORMANCE AREA</text>
+
+<!-- Upstage reference line -->
+<line x1="100" y1="178" x2="800" y2="178" stroke="rgba(237,228,211,0.18)" stroke-width="0.7" stroke-dasharray="4 4"/>
+
+<!-- Building centerline (red dash) -->
+<line x1="450" y1="30" x2="450" y2="680"
+      stroke="rgba(200,71,47,0.45)" stroke-width="0.9" stroke-dasharray="9 5"/>
+
+
+<!-- ══════════════════════════════════════════
+     PROSCENIUM WALL    y = 250 – 262
+     Left x=100–320   Opening x=320–580   Right x=580–800
+     ══════════════════════════════════════════ -->
+<rect x="100" y="250" width="220" height="12" fill="#161412" stroke="#EDE4D3" stroke-width="1.4"/>
+<rect x="580" y="250" width="220" height="12" fill="#161412" stroke="#EDE4D3" stroke-width="1.4"/>
+
+<!-- Proscenium arch hint -->
+<path d="M 320 250 Q 450 224 580 250"
+      fill="none" stroke="rgba(237,228,211,0.65)" stroke-width="1.4" stroke-dasharray="5 3"/>
+
+<!-- Proscenium opening label -->
+<text x="450" y="246" font-family="'Courier New',Courier,monospace"
+      font-size="8.5" fill="rgba(237,228,211,0.75)" text-anchor="middle" letter-spacing="0.5">
+  PROSCENIUM OPENING  ≈  53'
+</text>
+
+
+<!-- ══════════════════════════════════════════
+     ORCHESTRA PIT    y = 262 – 282
+     x = 320 – 580
+     ══════════════════════════════════════════ -->
+<rect x="320" y="262" width="260" height="20"
+      fill="rgba(159,200,212,0.14)" stroke="#9FC8D4" stroke-width="1"/>
+<text x="450" y="275" font-family="'Courier New',Courier,monospace"
+      font-size="8.5" letter-spacing="1.5" fill="#9FC8D4" text-anchor="middle">ORCHESTRA PIT</text>
+
+
+<!-- ══════════════════════════════════════════
+     AUDITORIUM HOUSE    y = 282 – 580
+     Outer walls x = 100 – 800  (same as stage — continuous envelope)
+     ══════════════════════════════════════════ -->
+<rect x="100" y="282" width="700" height="298"
+      fill="rgba(14,13,11,0.22)" stroke="#EDE4D3" stroke-width="2.5"/>
+
+<!-- Aisle boundary guides (visible but subtle) -->
+<!-- Left outer zone boundary -->
+<line x1="198" y1="282" x2="198" y2="580" stroke="rgba(237,228,211,0.28)" stroke-width="0.8"/>
+<!-- Left section / left aisle -->
+<line x1="306" y1="282" x2="306" y2="580" stroke="rgba(237,228,211,0.28)" stroke-width="0.8"/>
+<line x1="342" y1="282" x2="342" y2="580" stroke="rgba(237,228,211,0.28)" stroke-width="0.8"/>
+<!-- Center section / right aisle -->
+<line x1="576" y1="282" x2="576" y2="580" stroke="rgba(237,228,211,0.28)" stroke-width="0.8"/>
+<line x1="612" y1="282" x2="612" y2="580" stroke="rgba(237,228,211,0.28)" stroke-width="0.8"/>
+<!-- Right outer zone boundary -->
+<line x1="720" y1="282" x2="720" y2="580" stroke="rgba(237,228,211,0.28)" stroke-width="0.8"/>
+
+
+<!-- ══════════════════════════════════════════
+     SEATING
+     3 sections  ·  6 + 13 + 6 = 25 seats/row  ×  20 rows  =  500 TOTAL
+     Seat tile: 18 px wide × 13 px tall
+     x aligns: 198=11×18, 342=19×18, 612=34×18
+     y aligns: 299=23×13
+     ══════════════════════════════════════════ -->
+
+<!-- Left section: 6 seats × 20 rows = 120 seats (x=198–306, w=108, h=260) -->
+<rect x="198" y="299" width="108" height="260" fill="url(#sg)"/>
+
+<!-- Center section: 13 seats × 20 rows = 260 seats (x=342–576, w=234, h=260) -->
+<rect x="342" y="299" width="234" height="260" fill="url(#sg)"/>
+
+<!-- Right section: 6 seats × 20 rows = 120 seats (x=612–720, w=108, h=260) -->
+<rect x="612" y="299" width="108" height="260" fill="url(#sg)"/>
+
+<!-- Seat count annotation -->
+<text x="450" y="294" font-family="'Courier New',Courier,monospace"
+      font-size="8.5" fill="rgba(159,200,212,0.75)" text-anchor="middle" letter-spacing="0.5">
+  20 ROWS  ×  25 SEATS/ROW  =  500 SEATS
+</text>
+
+<!-- Aisle labels (rotated) -->
+<text x="152" y="430" font-family="'Courier New',Courier,monospace"
+      font-size="8" fill="rgba(237,228,211,0.65)" text-anchor="middle"
+      transform="rotate(-90 152 430)">SIDE AISLE</text>
+<text x="748" y="430" font-family="'Courier New',Courier,monospace"
+      font-size="8" fill="rgba(237,228,211,0.65)" text-anchor="middle"
+      transform="rotate(90 748 430)">SIDE AISLE</text>
+<text x="324" y="430" font-family="'Courier New',Courier,monospace"
+      font-size="7.5" fill="rgba(237,228,211,0.55)" text-anchor="middle"
+      transform="rotate(-90 324 430)">L AISLE</text>
+<text x="594" y="430" font-family="'Courier New',Courier,monospace"
+      font-size="7.5" fill="rgba(237,228,211,0.55)" text-anchor="middle"
+      transform="rotate(90 594 430)">R AISLE</text>
+
+
+<!-- ══════════════════════════════════════════
+     CROSS AISLE    y = 580 – 600
+     ══════════════════════════════════════════ -->
+<line x1="100" y1="580" x2="800" y2="580" stroke="rgba(237,228,211,0.55)" stroke-width="1.1"/>
+<text x="450" y="593" font-family="'Courier New',Courier,monospace"
+      font-size="9" fill="rgba(237,228,211,0.75)" text-anchor="middle" letter-spacing="1.5">
+  CROSS AISLE
+</text>
+
+
+<!-- ══════════════════════════════════════════
+     LOBBY / PREFUNCTION    y = 600 – 680
+     ══════════════════════════════════════════ -->
+<line x1="100" y1="600" x2="800" y2="600" stroke="#EDE4D3" stroke-opacity="0.60" stroke-width="1.5"/>
+
+<!-- Lobby sub-divisions -->
+<line x1="268" y1="600" x2="268" y2="680" stroke="rgba(237,228,211,0.32)" stroke-width="0.9"/>
+<line x1="632" y1="600" x2="632" y2="680" stroke="rgba(237,228,211,0.32)" stroke-width="0.9"/>
+
+<!-- Lobby labels -->
+<text x="450" y="648" font-family="'Courier New',Courier,monospace"
+      font-size="11.5" letter-spacing="2.5" fill="#D4A24C" text-anchor="middle">LOBBY  /  PREFUNCTION</text>
+<text x="185" y="646" font-family="'Courier New',Courier,monospace"
+      font-size="8.5" fill="rgba(237,228,211,0.70)" text-anchor="middle">BOX OFFICE</text>
+<text x="715" y="646" font-family="'Courier New',Courier,monospace"
+      font-size="8.5" fill="rgba(237,228,211,0.70)" text-anchor="middle">COAT / BAR</text>
+
+
+<!-- ══════════════════════════════════════════
+     ENTRY DOORS    y ≈ 678 (south facade)
+     Three double doors with swing arcs
+     ══════════════════════════════════════════ -->
+<!-- Opening gaps (white out the south wall) -->
+<rect x="322" y="677" width="52" height="4" fill="#0E0D0B"/>
+<rect x="424" y="677" width="52" height="4" fill="#0E0D0B"/>
+<rect x="526" y="677" width="52" height="4" fill="#0E0D0B"/>
+
+<!-- Door swing arcs — left pair -->
+<path d="M 322 680 A 20 20 0 0 1 342 700" fill="none" stroke="rgba(237,228,211,0.35)" stroke-width="0.8"/>
+<line x1="322" y1="680" x2="342" y2="700" stroke="rgba(237,228,211,0.28)" stroke-width="0.6"/>
+<path d="M 374 680 A 20 20 0 0 0 354 700" fill="none" stroke="rgba(237,228,211,0.35)" stroke-width="0.8"/>
+<line x1="374" y1="680" x2="354" y2="700" stroke="rgba(237,228,211,0.28)" stroke-width="0.6"/>
+<!-- Door swing arcs — center pair -->
+<path d="M 424 680 A 20 20 0 0 1 444 700" fill="none" stroke="rgba(237,228,211,0.35)" stroke-width="0.8"/>
+<line x1="424" y1="680" x2="444" y2="700" stroke="rgba(237,228,211,0.28)" stroke-width="0.6"/>
+<path d="M 476 680 A 20 20 0 0 0 456 700" fill="none" stroke="rgba(237,228,211,0.35)" stroke-width="0.8"/>
+<line x1="476" y1="680" x2="456" y2="700" stroke="rgba(237,228,211,0.28)" stroke-width="0.6"/>
+<!-- Door swing arcs — right pair -->
+<path d="M 526 680 A 20 20 0 0 1 546 700" fill="none" stroke="rgba(237,228,211,0.35)" stroke-width="0.8"/>
+<line x1="526" y1="680" x2="546" y2="700" stroke="rgba(237,228,211,0.28)" stroke-width="0.6"/>
+<path d="M 578 680 A 20 20 0 0 0 558 700" fill="none" stroke="rgba(237,228,211,0.35)" stroke-width="0.8"/>
+<line x1="578" y1="680" x2="558" y2="700" stroke="rgba(237,228,211,0.28)" stroke-width="0.6"/>
+
+
+<!-- ══════════════════════════════════════════
+     NORTH ARROW    (top-right, inside margin)
+     Stage = NORTH
+     ══════════════════════════════════════════ -->
+<g transform="translate(844 72)">
+  <circle cx="0" cy="0" r="17" fill="none" stroke="rgba(237,228,211,0.40)" stroke-width="0.9"/>
+  <path d="M 0 -15 L 5 5 L 0 1 Z" fill="#EDE4D3"/>
+  <path d="M 0 -15 L -5 5 L 0 1 Z" fill="rgba(14,13,11,0)" stroke="#EDE4D3" stroke-width="0.9"/>
+  <text x="0" y="-21" font-family="'Courier New',Courier,monospace"
+        font-size="10" fill="rgba(237,228,211,0.85)" text-anchor="middle">N</text>
+</g>
+
+
+<!-- ══════════════════════════════════════════
+     DIMENSION LINES
+     ══════════════════════════════════════════ -->
+
+<!-- ── Overall width (top) ── -->
+<line x1="22"  y1="14" x2="878" y2="14" stroke="rgba(237,228,211,0.55)" stroke-width="0.9"/>
+<line x1="22"  y1="10" x2="22"  y2="18" stroke="rgba(237,228,211,0.55)" stroke-width="0.9"/>
+<line x1="878" y1="10" x2="878" y2="18" stroke="rgba(237,228,211,0.55)" stroke-width="0.9"/>
+<text x="450" y="12" font-family="'Courier New',Courier,monospace"
+      font-size="8.5" fill="rgba(237,228,211,0.80)" text-anchor="middle">≈ 175'  OVERALL WIDTH</text>
+
+<!-- ── Overall length (left side) ── -->
+<line x1="8" y1="30"  x2="8" y2="680" stroke="rgba(237,228,211,0.55)" stroke-width="0.9"/>
+<line x1="4" y1="30"  x2="12" y2="30"  stroke="rgba(237,228,211,0.55)" stroke-width="0.9"/>
+<line x1="4" y1="680" x2="12" y2="680" stroke="rgba(237,228,211,0.55)" stroke-width="0.9"/>
+<text x="8" y="355" font-family="'Courier New',Courier,monospace"
+      font-size="8.5" fill="rgba(237,228,211,0.80)" text-anchor="middle"
+      transform="rotate(-90 8 355)">≈ 135'  OVERALL LENGTH</text>
+
+<!-- ── Stage depth (right side) ── -->
+<line x1="868" y1="130" x2="868" y2="262" stroke="rgba(237,228,211,0.42)" stroke-width="0.8"/>
+<line x1="864" y1="130" x2="872" y2="130" stroke="rgba(237,228,211,0.42)" stroke-width="0.8"/>
+<line x1="864" y1="262" x2="872" y2="262" stroke="rgba(237,228,211,0.42)" stroke-width="0.8"/>
+<text x="880" y="200" font-family="'Courier New',Courier,monospace"
+      font-size="7.5" fill="rgba(237,228,211,0.65)" text-anchor="middle"
+      transform="rotate(90 880 200)">STAGE DEPTH ≈ 25'</text>
+
+<!-- ── House depth (right side) ── -->
+<line x1="868" y1="282" x2="868" y2="580" stroke="rgba(237,228,211,0.42)" stroke-width="0.8"/>
+<line x1="864" y1="282" x2="872" y2="282" stroke="rgba(237,228,211,0.42)" stroke-width="0.8"/>
+<line x1="864" y1="580" x2="872" y2="580" stroke="rgba(237,228,211,0.42)" stroke-width="0.8"/>
+<text x="880" y="430" font-family="'Courier New',Courier,monospace"
+      font-size="7.5" fill="rgba(237,228,211,0.65)" text-anchor="middle"
+      transform="rotate(90 880 430)">HOUSE DEPTH ≈ 60'</text>
+
+
+<!-- ══════════════════════════════════════════
+     SCALE BAR
+     ══════════════════════════════════════════ -->
+<g transform="translate(100 706)">
+  <line x1="0" y1="0" x2="195" y2="0" stroke="rgba(237,228,211,0.65)" stroke-width="1.1"/>
+  <line x1="0"   y1="-5" x2="0"   y2="5"  stroke="rgba(237,228,211,0.65)" stroke-width="1.1"/>
+  <line x1="97"  y1="-3" x2="97"  y2="3"  stroke="rgba(237,228,211,0.65)" stroke-width="1.1"/>
+  <line x1="195" y1="-5" x2="195" y2="5"  stroke="rgba(237,228,211,0.65)" stroke-width="1.1"/>
+  <rect x="0" y="-5" width="97" height="5" fill="rgba(237,228,211,0.22)"/>
+  <text x="0"   y="15" font-family="'Courier New',Courier,monospace" font-size="8.5" fill="rgba(237,228,211,0.75)">0</text>
+  <text x="89"  y="15" font-family="'Courier New',Courier,monospace" font-size="8.5" fill="rgba(237,228,211,0.75)">50'</text>
+  <text x="181" y="15" font-family="'Courier New',Courier,monospace" font-size="8.5" fill="rgba(237,228,211,0.75)">100'</text>
+  <text x="0"   y="27" font-family="'Courier New',Courier,monospace" font-size="7.5" fill="rgba(237,228,211,0.50)">SCHEMATIC — NOT FOR CONSTRUCTION</text>
+</g>
+
+
+<!-- ══════════════════════════════════════════
+     LEGEND
+     ══════════════════════════════════════════ -->
+<g transform="translate(420 706)">
+  <!-- Seat sample -->
+  <rect x="0" y="-8" width="15" height="9" rx="1.5"
+        fill="rgba(159,200,212,0.28)" stroke="#9FC8D4" stroke-width="0.7"/>
+  <text x="20" y="0" font-family="'Courier New',Courier,monospace"
+        font-size="8.5" fill="rgba(237,228,211,0.80)">FIXED SEAT (500 TOTAL)</text>
+  <!-- Stage sample -->
+  <rect x="210" y="-8" width="15" height="9"
+        fill="rgba(212,162,76,0.22)" stroke="rgba(212,162,76,0.60)" stroke-width="0.7"/>
+  <text x="230" y="0" font-family="'Courier New',Courier,monospace"
+        font-size="8.5" fill="rgba(237,228,211,0.80)">STAGE</text>
+  <!-- Centerline -->
+  <line x1="310" y1="-4" x2="340" y2="-4"
+        stroke="rgba(200,71,47,0.65)" stroke-width="0.9" stroke-dasharray="7 3"/>
+  <text x="346" y="0" font-family="'Courier New',Courier,monospace"
+        font-size="8.5" fill="rgba(237,228,211,0.80)">CENTERLINE</text>
+</g>
+
+</svg>

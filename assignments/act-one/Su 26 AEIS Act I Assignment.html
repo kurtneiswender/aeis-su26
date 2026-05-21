@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · Act I Review · Acoustics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B; --ink-2:#161412;
+    --paper:#EDE4D3; --paper-2:#D9CFB9; --paper-dim:#8A8273;
+    --amber:#D4A24C; --amber-soft:rgba(212,162,76,.10); --amber-line:rgba(212,162,76,.40);
+    --red:#C8472F; --blue:#9FC8D4;
+    --rule:rgba(237,228,211,.16); --rule-strong:rgba(237,228,211,.38);
+    --green:#7FAF78;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  body{
+    font-family:"Newsreader",Georgia,serif;font-weight:380;font-size:17px;line-height:1.55;
+    font-feature-settings:"ss01","onum";-webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.5;
+  }
+  ::selection{background:var(--amber);color:var(--ink);}
+  .wrap{max-width:1060px;margin:0 auto;padding:48px 56px 120px;position:relative;}
+  @media(max-width:720px){.wrap{padding:32px 22px 80px}}
+
+  /* TOPBAR */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);padding-bottom:18px;
+    border-bottom:1px solid var(--rule);
+  }
+  .topbar .act-tag{
+    background:rgba(212,162,76,.12);border:1px solid var(--amber-line);
+    color:var(--amber);padding:3px 10px;font-size:10px;letter-spacing:.22em;
+  }
+
+  /* HERO */
+  .hero{padding:52px 0 36px;}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.32em;
+    text-transform:uppercase;color:var(--amber);margin-bottom:16px;}
+  .kicker .pipe{color:var(--paper-dim);margin:0 10px;}
+  h1.title{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;
+    font-weight:380;font-size:clamp(42px,7vw,96px);line-height:.9;letter-spacing:-.03em;margin:0;
+  }
+  h1.title em{font-style:italic;color:var(--amber);font-weight:300;
+    font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+  .sub{margin-top:24px;max-width:680px;font-family:"Newsreader",serif;
+    font-size:clamp(17px,1.6vw,20px);line-height:1.5;color:var(--paper-2);font-style:italic;}
+
+  /* META STRIP */
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+    border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);margin-top:44px;}
+  .meta>div{padding:16px 16px 16px 0;border-right:1px solid var(--rule);}
+  .meta>div:last-child{border-right:none}
+  .meta dt{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--paper-dim);margin-bottom:5px;}
+  .meta dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:18px;line-height:1.2;
+    font-variation-settings:"opsz" 36;}
+  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:12px;
+    color:var(--paper-dim);margin-top:2px;font-style:italic;}
+  @media(max-width:820px){.meta{grid-template-columns:repeat(2,1fr)}.meta>div:nth-child(2){border-right:none}}
+
+  /* SECTION */
+  section{margin-top:88px;}
+  .sec-label{display:flex;align-items:baseline;gap:20px;margin-bottom:24px;
+    padding-bottom:12px;border-bottom:1px solid var(--rule-strong);}
+  .sec-num{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.18em;color:var(--amber);}
+  .sec-title{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(28px,3.5vw,42px);
+    line-height:1;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 72,"SOFT" 40;}
+  .sec-title em{font-style:italic;color:var(--amber);}
+
+  .prose{max-width:780px;color:var(--paper-2);font-size:16px;line-height:1.62;}
+  .prose p{margin:0 0 1em;}
+  .prose em{color:var(--paper);font-style:italic;}
+  .prose strong{color:var(--paper);}
+  .prose ul,.prose ol{padding-left:20px;}
+  .prose ul li,.prose ol li{margin-bottom:6px;}
+
+  /* MONO LABEL */
+  .mono{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.20em;
+    text-transform:uppercase;color:var(--amber);}
+
+  /* PACKAGE CHECKLIST */
+  .package{margin-top:20px;border:1px solid var(--rule-strong);}
+  .pkg-row{
+    display:grid;grid-template-columns:36px 1fr;align-items:start;
+    padding:14px 18px;border-bottom:1px solid var(--rule);gap:0;
+  }
+  .pkg-row:last-child{border-bottom:none;}
+  .pkg-check{
+    width:18px;height:18px;border:1.5px solid var(--amber-line);margin-top:2px;flex-shrink:0;
+  }
+  .pkg-body{padding-left:4px;}
+  .pkg-body strong{color:var(--paper);font-size:15.5px;}
+  .pkg-body p{margin:4px 0 0;font-size:14px;color:var(--paper-dim);line-height:1.45;}
+
+  /* SUBMISSION BOX */
+  .submit-box{
+    margin-top:20px;border:1px solid var(--amber-line);
+    background:rgba(212,162,76,.05);padding:22px 24px;
+  }
+  .submit-box h4{
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--amber);margin:0 0 12px;
+  }
+  .submit-box p{margin:0 0 8px;color:var(--paper-2);font-size:15px;line-height:1.5;}
+  .submit-box p:last-child{margin:0;}
+  .submit-box .example{
+    margin-top:14px;padding:14px 16px;background:rgba(14,13,11,.5);
+    border-left:2px solid var(--amber-line);
+    font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--paper-2);
+    line-height:1.7;
+  }
+  .submit-box .example span{color:var(--paper-dim);}
+
+  /* RUBRIC */
+  .criterion{
+    margin-bottom:28px;border:1px solid var(--rule-strong);
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  .criterion-head{
+    padding:14px 20px;border-bottom:1px solid var(--rule-strong);
+    background:rgba(212,162,76,.06);
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+  }
+  .criterion-head .ctitle{
+    font-family:"Fraunces",serif;font-weight:380;font-size:20px;line-height:1.1;
+    font-variation-settings:"opsz" 48,"SOFT" 30;margin:0;
+  }
+  .criterion-head .ctitle em{font-style:italic;color:var(--amber);}
+  .criterion-head .cmeta{
+    display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  }
+  .naab-tag{
+    font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--amber);
+    border:1px solid var(--amber-line);padding:2px 8px;
+  }
+  .pts-tag{
+    font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;
+    color:var(--paper-dim);
+  }
+
+  .rating-row{
+    display:grid;grid-template-columns:168px 1fr;
+    border-bottom:1px solid var(--rule);
+  }
+  .rating-row:last-child{border-bottom:none;}
+  .rating-label{
+    padding:14px 16px;border-right:1px solid var(--rule);
+    display:flex;flex-direction:column;justify-content:flex-start;gap:4px;
+  }
+  .rating-name{
+    font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;
+  }
+  .rating-name.exemplary{color:#a8c89a;}
+  .rating-name.proficient{color:var(--blue);}
+  .rating-name.developing{color:var(--amber);}
+  .rating-name.beginning{color:var(--red);}
+  .rating-pts{
+    font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:500;
+    color:var(--paper-dim);
+  }
+  .rating-desc{
+    padding:14px 18px;font-size:14.5px;line-height:1.55;color:var(--paper-2);
+  }
+  .rating-desc strong{color:var(--paper);}
+  @media(max-width:680px){
+    .rating-row{grid-template-columns:1fr;}
+    .rating-label{border-right:none;border-bottom:1px solid var(--rule);padding:10px 16px;}
+  }
+
+  /* NAAB BLOCK */
+  .naab-block{
+    margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:0;
+    border:1px solid var(--rule-strong);
+  }
+  .naab-item{padding:18px 20px;border-right:1px solid var(--rule);}
+  .naab-item:last-child{border-right:none;}
+  .naab-item .code{
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;
+    color:var(--amber);margin-bottom:6px;
+  }
+  .naab-item .label{font-family:"Fraunces",serif;font-weight:380;font-size:17px;
+    font-variation-settings:"opsz" 36;margin-bottom:6px;}
+  .naab-item p{margin:0;font-size:14px;color:var(--paper-dim);line-height:1.5;}
+  @media(max-width:640px){.naab-block{grid-template-columns:1fr}.naab-item{border-right:none;border-bottom:1px solid var(--rule)}}
+
+  /* SCORE ANCHORS */
+  .anchors{margin-top:20px;border:1px solid var(--rule-strong);width:100%;}
+  .anchors tr{border-bottom:1px solid var(--rule);}
+  .anchors tr:last-child{border-bottom:none;}
+  .anchors th{
+    padding:10px 16px;font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);
+    text-align:left;border-bottom:1px solid var(--rule-strong);font-weight:400;
+    background:rgba(14,13,11,.4);
+  }
+  .anchors td{padding:12px 16px;font-size:14.5px;color:var(--paper-2);vertical-align:top;}
+  .anchors td:first-child{
+    font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--paper);
+    white-space:nowrap;
+  }
+  .anchors td:nth-child(2){
+    font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--paper-dim);
+    white-space:nowrap;
+  }
+  .grade-a{color:#a8c89a !important;}
+  .grade-b{color:var(--blue) !important;}
+  .grade-c{color:var(--amber) !important;}
+  .grade-d{color:rgba(200,71,47,.8) !important;}
+  .grade-f{color:var(--red) !important;}
+
+  /* PRINT */
+  @media print{
+    html{background:var(--ink);print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+    @page{margin:.55in .6in;}
+    body::before{display:none;}
+    .wrap{padding:0;}
+    section{break-inside:avoid;}
+    .criterion{break-inside:avoid;}
+    .rating-row{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <span>ARC 5443 &nbsp;·&nbsp; Acoustics, Electrical &amp; Illumination Systems &nbsp;·&nbsp; Summer 2026</span>
+    <span class="act-tag">ACT I &nbsp;·&nbsp; ACOUSTICS</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="kicker">
+      Week 03 <span class="pipe">|</span> Wed 06·04 <span class="pipe">|</span> Act I Review
+    </div>
+    <h1 class="title">The Hall,<br><em>Heard.</em></h1>
+    <p class="sub">You have shaped the room once — through the ear. This package is the evidence that your geometry, your materials, and your isolation strategy were driven by acoustic reasoning, not default choices.</p>
+    <div style="margin-top:20px;padding:14px 20px;border-left:2px solid var(--amber-line);background:rgba(212,162,76,.05);">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);">Act I Arc</span>
+      <div style="margin-top:8px;font-size:14.5px;color:var(--paper-2);line-height:1.5;">
+        <strong style="color:var(--paper);">Week 1</strong> — Volume massing in Rhino: establish hall geometry, confirm seating capacity, assign preliminary layer materials. &nbsp;<strong style="color:var(--paper);">Week 2</strong> — Run the RT60 script; compare Sabine and Eyring results against your target; revise geometry or materials as needed. &nbsp;<strong style="color:var(--paper);">Week 3</strong> — Pin-up review; submit this package by Tue 06·10.
+      </div>
+    </div>
+  </div>
+
+  <!-- META -->
+  <div class="meta">
+    <div><dt>Due</dt><dd>Tue 06·10<small>11:59 PM Canvas</small></dd></div>
+    <div><dt>Weight</dt><dd>10%<small>20 pts raw</small></dd></div>
+    <div><dt>Submission</dt><dd>PDF + Text<small>two parts, one assignment</small></dd></div>
+    <div><dt>NAAB</dt><dd>SC.4B<small>+ SC.4E secondary</small></dd></div>
+  </div>
+
+
+  <!-- § 01 WHAT YOU ARE SUBMITTING -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 01</span>
+      <h2 class="sec-title">What You Are <em>Submitting.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Act I closes with a two-part Canvas submission: a <strong>PDF package</strong> containing your drawings, calculations, and presentation slides, and a <strong>pasted text entry</strong> of your Decision Log entries from Weeks 1–3. Both parts are required. A missing Decision Log text entry will score zero on Criterion 5 regardless of the quality of the PDF.</p>
+      <p>The PDF is graded against a five-criterion rubric worth 20 points total. The Decision Log entries are read alongside the PDF — the question is whether your stated reasoning in the log matches the design decisions visible in the drawings.</p>
+    </div>
+  </section>
+
+
+  <!-- § 02 PDF PACKAGE CONTENTS -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 02</span>
+      <h2 class="sec-title">PDF Package <em>Contents.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Export everything into a single PDF. Page order does not need to follow this list exactly, but all items must be present. Label each page or section clearly.</p>
+    </div>
+
+    <div class="package">
+      <div class="pkg-row">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>Acoustic Plan + Section</strong>
+          <p>Your current Rhino or Revit plan and at least one section. Surface materials tagged with a legend. Proscenium opening, ceiling cloud or reflector geometry, and rear wall treatment clearly legible. Minimum 1/8&Prime; = 1&prime; scale or equivalent.</p>
+        </div>
+      </div>
+      <div class="pkg-row">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>RT60 Worksheet</strong>
+          <p>Hand calculation using both <strong>Sabine&rsquo;s equation</strong> and the <strong>Eyring equation</strong> at minimum 500 Hz, 1 kHz, and 2 kHz octave bands. Show: room volume, surface areas, absorption coefficients (with source citation), mean absorption coefficient, total absorption, and RT60 from each method. Your target RT60 and its program justification must appear at the top of the worksheet. Note whether Sabine or Eyring is the more conservative estimate for your room&rsquo;s average absorption, and why.</p>
+        </div>
+      </div>
+      <div class="pkg-row">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>RT60 Script Output</strong>
+          <p>Run the Python RT60 script provided on Canvas in Rhino and include the generated HTML report and at least one viewport screenshot showing the ray paths colored by energy. The report shows Eyring RT60 per octave band and the Sabine reference table. If the script&rsquo;s Eyring result diverges from your hand calculation by more than &plusmn;0.2 s, include a brief note explaining why (material assignment mismatch, volume difference, audience area not modeled, etc.).</p>
+        </div>
+      </div>
+      <div class="pkg-row">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>Material Schedule</strong>
+          <p>A table listing every surface assembly in your acoustic scheme. Columns: surface name, material description, NRC value, source (MEEB table number or manufacturer). Minimum five distinct assemblies. This may appear as a legend on the plan or as a separate page.</p>
+        </div>
+      </div>
+      <div class="pkg-row">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>STC Wall Assembly — Critical Partition</strong>
+          <p>Identify your critical noise partition (typically the back-of-house boundary or mechanical room wall). Show: the STC target derivation (source level minus NC criterion), wall assembly layers with individual STC contribution, and at least one flanking mitigation strategy. Entry vestibule or acoustic door seal must be addressed.</p>
+        </div>
+      </div>
+      <div class="pkg-row">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>Act I Review Slides</strong>
+          <p>Your pin-up presentation from the Week 3 in-class review, exported as PDF pages. These are graded on content, not slide design. A concise 6&ndash;8 slides covering: geometry rationale, RT60 results, material strategy, and noise isolation approach.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- § 03 DECISION LOG SUBMISSION -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 03</span>
+      <h2 class="sec-title">Decision Log <em>Text Entry.</em></h2>
+    </div>
+    <div class="prose">
+      <p>In the Canvas text entry box below the file upload, paste the full text of your Decision Log entries from Weeks 1&ndash;3 (Entries 1&ndash;5 from your Google Doc template, or however many entries you have written through Act I close). Do not summarize or edit your entries for submission &mdash; paste them as written. The instructor has view access to your live Google Doc throughout the term; the Canvas paste creates a timestamped snapshot for grading purposes.</p>
+    </div>
+
+    <div class="submit-box">
+      <h4>Format for the text paste</h4>
+      <p>Copy each entry from your Google Doc exactly as written. Separate entries with a blank line. You do not need to reformat.</p>
+      <div class="example">
+        <span>Entry 1 &middot; Week 1</span><br>
+        Decision: Chose vineyard plan geometry with central stage thrust...<br>
+        System: Acoustics<br>
+        Space: House<br>
+        Reasoning: Early reflection coverage is stronger in vineyard because...<br>
+        Trade-off: Vineyard complicates the fly system and reduces wing depth...<br>
+        Reconsider: If the program shifts to opera-primary, I would...<br><br>
+        <span>Entry 2 &middot; Week 2</span><br>
+        Decision: Revised rear wall from flat concrete to convex GRG panels...<br>
+        &hellip;
+      </div>
+    </div>
+  </section>
+
+
+  <!-- § 04 RUBRIC -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 04</span>
+      <h2 class="sec-title">Rubric &mdash; <em>20 Points.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:28px;">
+      <p>Five criteria, four points each. Scores map directly to the gradebook: 20 raw points = 10% of the course grade. Each criterion is evaluated independently. <em>Proficient</em> represents full competency at the graduate level for this stage of the project.</p>
+    </div>
+
+    <!-- CRITERION 1 -->
+    <div class="criterion">
+      <div class="criterion-head">
+        <h3 class="ctitle">01 &nbsp; Acoustic <em>Geometry</em></h3>
+        <div class="cmeta">
+          <span class="naab-tag">SC.4B</span>
+          <span class="pts-tag">4 pts</span>
+        </div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-pts">4</span>
+        </div>
+        <div class="rating-desc">Plan and section clearly show acoustic intent: volume is calculated and appropriate for the RT60 target; surface angles are drawn to direct early reflections toward listeners; geometry decisions are explicitly connected to acoustic principles in the submission. At least one geometric element (cloud angle, side wall splay, rear wall profile) is demonstrably derived from a reflection path analysis.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-pts">3</span>
+        </div>
+        <div class="rating-desc">Geometry shows awareness of acoustic principles with minor gaps. Volume is approximately correct; some surface angles are considered; connection to acoustic intent is present but not fully developed in all areas.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name developing">Developing</span>
+          <span class="rating-pts">2</span>
+        </div>
+        <div class="rating-desc">Geometry is largely carried over from Week 1 without acoustic development. Volume is not calculated or is significantly off-target. Surface treatment is applied without explanation of acoustic role.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-pts">1</span>
+        </div>
+        <div class="rating-desc">Submitted plan/section shows no evidence that acoustic principles influenced shape. Room is a default rectangle or starter geometry with no sectional response to sound.</div>
+      </div>
+    </div>
+
+    <!-- CRITERION 2 -->
+    <div class="criterion">
+      <div class="criterion-head">
+        <h3 class="ctitle">02 &nbsp; Quantitative Analysis &mdash; <em>RT60</em></h3>
+        <div class="cmeta">
+          <span class="naab-tag">SC.4B</span>
+          <span class="naab-tag">SC.4E</span>
+          <span class="pts-tag">4 pts</span>
+        </div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-pts">4</span>
+        </div>
+        <div class="rating-desc">RT60 target is justified by program (speech-primary, music-primary, or mixed) with reference to published ranges. Hand calculation using <em>both</em> Sabine and Eyring equations is complete and accurate at three or more octave bands; student notes which method yields the more conservative estimate. RT60 script Eyring result is within &plusmn;0.2 s of hand calc, or the discrepancy is explained. Student identifies the dominant absorptive surface by name and area.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-pts">3</span>
+        </div>
+        <div class="rating-desc">RT60 target is stated with reasonable justification. Hand calculation covers two or more octave bands using Sabine and/or Eyring with minor arithmetic errors. RT60 script output is submitted with the HTML report included. Discrepancy between hand calc and script result is acknowledged even if not fully resolved.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name developing">Developing</span>
+          <span class="rating-pts">2</span>
+        </div>
+        <div class="rating-desc">RT60 target is stated but not justified by program. Hand calculation covers one band only or contains errors in applying the equations. RT60 script output is present (screenshot only, or HTML report without discussion) but not compared to the hand calculation.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-pts">1</span>
+        </div>
+        <div class="rating-desc">RT60 target is absent or incorrect by more than 0.5 s from any plausible range for this program. No hand calculation submitted, or calculation shows fundamental errors in applying Sabine or Eyring. No RT60 script output present.</div>
+      </div>
+    </div>
+
+    <!-- CRITERION 3 -->
+    <div class="criterion">
+      <div class="criterion-head">
+        <h3 class="ctitle">03 &nbsp; Material Strategy &mdash; <em>NRC</em></h3>
+        <div class="cmeta">
+          <span class="naab-tag">SC.4B</span>
+          <span class="pts-tag">4 pts</span>
+        </div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-pts">4</span>
+        </div>
+        <div class="rating-desc">Material schedule lists five or more distinct assemblies with NRC values cited from MEEB tables or manufacturer data. Each surface type is tagged on the plan or section with a clear legend. Placement logic is explained for at least two surfaces — one absorptive, one reflective or diffusive. At least one material decision has been revised from an earlier draft based on RT60 feedback, and the revision is traceable to a Decision Log entry.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-pts">3</span>
+        </div>
+        <div class="rating-desc">Schedule lists three or more assemblies with NRC values. Most surfaces are tagged on drawings. Placement rationale is present for the primary absorptive surface. Minor gaps in coverage or citation.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name developing">Developing</span>
+          <span class="rating-pts">2</span>
+        </div>
+        <div class="rating-desc">Materials are named but NRC values are absent or estimated without citation. Drawings show finish materials but make no acoustic distinction between absorptive, reflective, and diffusive roles.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-pts">1</span>
+        </div>
+        <div class="rating-desc">No material schedule submitted. Finishes on drawings are generic (e.g., &ldquo;concrete,&rdquo; &ldquo;carpet&rdquo;) with no NRC values and no acoustic reasoning.</div>
+      </div>
+    </div>
+
+    <!-- CRITERION 4 -->
+    <div class="criterion">
+      <div class="criterion-head">
+        <h3 class="ctitle">04 &nbsp; Noise Isolation &mdash; <em>STC</em></h3>
+        <div class="cmeta">
+          <span class="naab-tag">SC.4E</span>
+          <span class="pts-tag">4 pts</span>
+        </div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-pts">4</span>
+        </div>
+        <div class="rating-desc">Critical partition is correctly identified and labeled on the plan. STC target is derived from the NC criterion of the hall and the expected source level, with the derivation shown. Assembly is specified with component layers. At least one flanking path (structure-borne, HVAC duct, or plenum) is identified and addressed. Entry vestibule or acoustic door seal strategy is included and shown on the plan.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-pts">3</span>
+        </div>
+        <div class="rating-desc">Critical partition is identified with a reasonable STC target. Assembly is specified (stud type, layer count, decoupling) without full derivation. Flanking paths are acknowledged. Vestibule or door seal is mentioned.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name developing">Developing</span>
+          <span class="rating-pts">2</span>
+        </div>
+        <div class="rating-desc">A partition is identified but the STC target is stated without derivation. Assembly is generic (&ldquo;double drywall&rdquo;) without layer specification. Flanking and entry sealing are not addressed.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-pts">1</span>
+        </div>
+        <div class="rating-desc">No noise isolation strategy submitted, or strategy is limited to a note such as &ldquo;use thick walls&rdquo; with no specification, no target derivation, and no plan reference.</div>
+      </div>
+    </div>
+
+    <!-- CRITERION 5 -->
+    <div class="criterion">
+      <div class="criterion-head">
+        <h3 class="ctitle">05 &nbsp; Decision Log <em>Quality</em></h3>
+        <div class="cmeta">
+          <span class="naab-tag">SC.4B</span>
+          <span class="pts-tag">4 pts</span>
+        </div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-pts">4</span>
+        </div>
+        <div class="rating-desc">Four or more substantive entries covering Weeks 1&ndash;3. At least one entry references a specific calculation or published criterion (e.g., &ldquo;lowered rear wall absorptivity after RT60 came in at 1.2 s, below the 1.6&ndash;1.8 s target for mixed program&rdquo;). At least one entry acknowledges a trade-off with a downstream system (daylight, structure, or circulation). Reasoning is written in the student&rsquo;s own voice and goes beyond description of what was done.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-pts">3</span>
+        </div>
+        <div class="rating-desc">Three or more entries covering Weeks 1&ndash;3. At least one entry connects a decision to a calculation or criterion. Trade-off field is completed on most entries. Reasoning is present but may be thin on one or two entries.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name developing">Developing</span>
+          <span class="rating-pts">2</span>
+        </div>
+        <div class="rating-desc">Two entries submitted, or entries are present but reasoning fields are brief and purely descriptive. Calculations are not referenced in the log. Trade-off field is blank on most entries.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-pts">1</span>
+        </div>
+        <div class="rating-desc">Zero or one entry submitted, or entries are placeholder text. No connection between log content and the acoustic work visible in the PDF package.</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- § 05 NAAB ALIGNMENT -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 05</span>
+      <h2 class="sec-title">NAAB <em>Alignment.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>This assignment addresses two Student Performance Criteria from the NAAB 2020 Conditions. Criteria 1, 3, and 5 map primarily to SC.4B; Criteria 2 and 4 draw on both.</p>
+    </div>
+    <div class="naab-block">
+      <div class="naab-item">
+        <div class="code">SC.4B</div>
+        <div class="label">Environmental Systems</div>
+        <p>Principles of environmental systems design; application to problems involving daylighting, lighting systems, and acoustics; tools used for performance assessment; analysis across different geographic regions.</p>
+      </div>
+      <div class="naab-item">
+        <div class="code">SC.4E</div>
+        <div class="label">Building Service Systems</div>
+        <p>Principles of building service systems including mechanical, plumbing, and electrical; appropriate application; <strong>performance analysis through quantitative reasoning</strong>; application using advanced technologies.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- § 06 SCORE ANCHORS -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 06</span>
+      <h2 class="sec-title">Score <em>Anchors.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>Use these as calibration guides, not guarantees. A student who scores Proficient on all five criteria earns 15/20 (B range), which is the expected outcome for a graduate student engaging fully with Act I for the first time.</p>
+    </div>
+    <table class="anchors">
+      <thead>
+        <tr>
+          <th>Score</th>
+          <th>Grade equiv.</th>
+          <th>What the work shows</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="grade-a">18 – 20</td>
+          <td class="grade-a">A</td>
+          <td>Strong integration of calculation and design intent across all five criteria. Decision Log shows genuine iteration — a decision changed because of a calculation result. Independent application of acoustic principles beyond the examples given in class.</td>
+        </tr>
+        <tr>
+          <td class="grade-b">14 – 17</td>
+          <td class="grade-b">B</td>
+          <td>Solid technical work with a minor gap in one criterion. Calculations are present and mostly correct. Log is substantive but may be thin on trade-offs or cross-system reasoning.</td>
+        </tr>
+        <tr>
+          <td class="grade-c">10 – 13</td>
+          <td class="grade-c">C</td>
+          <td>Calculations are present but contain errors or cover fewer than the required bands. Geometry and material choices are not well connected to each other or to the RT60 target. Log entries are descriptive rather than analytical.</td>
+        </tr>
+        <tr>
+          <td class="grade-d">6 – 9</td>
+          <td class="grade-d">D</td>
+          <td>Major gaps in technical content — missing calculations, no material schedule, or no STC strategy. Log entries missing or one sentence each. The PDF does not demonstrate engagement with acoustic principles as a design driver.</td>
+        </tr>
+        <tr>
+          <td class="grade-f">≤ 5</td>
+          <td class="grade-f">F</td>
+          <td>Did not meaningfully engage with the acoustic design problem. Drawings are unchanged from Week 1 starter. Required elements absent. Contact the instructor immediately if you are in this range before the deadline.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+</body>
+</html>

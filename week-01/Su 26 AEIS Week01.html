@@ -1,0 +1,1312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · Week 01 · Sound, Hearing &amp; the Listening Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B;--ink-2:#161412;
+    --paper:#EDE4D3;--paper-2:#D9CFB9;--paper-dim:#8A8273;
+    --amber:#D4A24C;--amber-soft:rgba(212,162,76,.10);--amber-line:rgba(212,162,76,.45);
+    --red:#C8472F;--blue:#9FC8D4;
+    --rule:rgba(237,228,211,.18);--rule-strong:rgba(237,228,211,.42);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  body{
+    font-family:"Newsreader",Georgia,serif;font-weight:380;font-size:20px;line-height:1.6;
+    font-feature-settings:"ss01","onum";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.55;
+  }
+  ::selection{background:var(--amber);color:var(--ink);}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:48px 56px 120px;position:relative;}
+  @media (max-width:720px){.wrap{padding:32px 22px 80px}}
+
+  /* TOPBAR */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);padding-bottom:18px;border-bottom:1px solid var(--rule);
+  }
+  .topbar .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:8px;vertical-align:middle;animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{50%{opacity:.35}}
+
+  /* HERO */
+  .hero{padding:60px 0 40px;display:grid;grid-template-columns:1fr 220px;gap:48px;align-items:end;}
+  @media (max-width:820px){.hero{grid-template-columns:1fr}.hero .ornament{display:none}}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-bottom:18px;}
+  .kicker .pipe{color:var(--paper-dim);margin:0 10px;}
+  h1.title{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;
+    font-weight:380;font-size:clamp(48px,8vw,110px);line-height:.88;letter-spacing:-.03em;margin:0;
+  }
+  h1.title em{font-style:italic;color:var(--amber);font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+  .sub{margin-top:28px;max-width:760px;font-family:"Newsreader",serif;font-size:clamp(18px,1.8vw,22px);line-height:1.45;color:var(--paper-2);font-style:italic;}
+
+  /* META STRIP */
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);margin-top:48px;}
+  .meta > div{padding:18px 18px 18px 0;border-right:1px solid var(--rule);}
+  .meta > div:last-child{border-right:none}
+  .meta dt{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:6px;}
+  .meta dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:19px;line-height:1.2;font-variation-settings:"opsz" 36;}
+  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:12.5px;color:var(--paper-dim);margin-top:3px;font-style:italic;}
+  @media (max-width:820px){.meta{grid-template-columns:repeat(2,1fr)}.meta > div:nth-child(2){border-right:none}}
+
+  /* SECTION */
+  section{margin-top:96px;}
+  .sec-label{display:flex;align-items:baseline;gap:22px;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--rule-strong);}
+  .sec-num{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.18em;color:var(--amber);}
+  .sec-title{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(30px,4vw,46px);line-height:1;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 72,"SOFT" 40;}
+  .sec-title em{font-style:italic;color:var(--amber);}
+
+  .prose{max-width:820px;color:var(--paper-2);font-size:18px;line-height:1.65;}
+  .prose p{margin:0 0 1em;}
+  .prose em{color:var(--paper);font-style:italic;}
+  .prose strong{color:var(--paper);}
+  .prose ul{padding-left:20px;}
+  .prose ul li{margin-bottom:10px;}
+  .prose h5{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin:24px 0 10px;font-weight:500;}
+
+  /* TIMETABLE */
+  .timetable{margin-top:8px;border-top:1px solid var(--rule-strong);}
+  .timetable .row{display:grid;grid-template-columns:160px 70px 1fr;gap:20px;padding:14px 0;border-bottom:1px solid var(--rule);align-items:baseline;}
+  .timetable .row .when{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--amber);letter-spacing:.06em;}
+  .timetable .row .dur{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--paper-dim);letter-spacing:.14em;}
+  .timetable .row .what{font-size:15.5px;color:var(--paper);}
+  .timetable .row .what em{font-style:italic;color:var(--amber);}
+  .timetable .row.lab{background:var(--amber-soft);padding-left:14px;padding-right:14px;}
+  .timetable .row.lab .what{font-weight:500;}
+  .timetable .row.break{color:var(--paper-dim);}
+
+  /* LECTURE BLOCK */
+  .lec{
+    border:1px solid var(--rule-strong);padding:28px 30px;margin-top:24px;background:rgba(237,228,211,.02);
+  }
+  .lec .lec-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:1px solid var(--rule);padding-bottom:14px;margin-bottom:18px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);flex-wrap:wrap;gap:8px;
+  }
+  .lec .lec-head .name{color:var(--amber);}
+  .lec h3{font-family:"Fraunces",serif;font-weight:380;font-size:28px;line-height:1.1;margin:0 0 6px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .lec h3 em{font-style:italic;color:var(--amber);}
+  .lec .one-liner{margin:0 0 18px;color:var(--paper-2);font-style:italic;font-size:15.5px;}
+  .lec h4{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin:20px 0 8px;font-weight:500;}
+  .lec ul{margin:0;padding-left:18px;color:var(--paper-2);font-size:17px;line-height:1.6;}
+  .lec li{margin-bottom:8px;}
+  .lec li strong{color:var(--paper);}
+
+  /* PRECEDENT GRID */
+  .precedents{display:grid;grid-template-columns:repeat(2,1fr);gap:0;margin-top:24px;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);}
+  .precedent{padding:22px 22px 24px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+  .precedent:nth-child(2n){border-right:none;}
+  .precedent:nth-last-child(-n+2){border-bottom:none;}
+  .precedent .pname{font-family:"Fraunces",serif;font-weight:380;font-size:22px;line-height:1.1;font-variation-settings:"opsz" 48,"SOFT" 30;margin:0 0 4px;}
+  .precedent .pname em{font-style:italic;color:var(--amber);}
+  .precedent .pmeta{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:10px;}
+  .precedent p{margin:0 0 6px;color:var(--paper-2);font-size:14.5px;line-height:1.5;}
+  .precedent .stats{
+    display:flex;gap:14px;margin-top:10px;font-family:"JetBrains Mono",monospace;
+    font-size:10.5px;letter-spacing:.1em;color:var(--amber);
+  }
+  .precedent .photo{
+    width:calc(100% + 44px);margin:0 -22px 16px;height:200px;overflow:hidden;position:relative;
+  }
+  .precedent .photo img{
+    width:100%;height:100%;object-fit:cover;object-position:center 40%;
+    display:block;filter:sepia(.18) brightness(.88) contrast(1.05);
+    transition:filter .4s ease;
+  }
+  .precedent:hover .photo img{filter:sepia(.08) brightness(.96) contrast(1.05);}
+  .precedent .photo figcaption{
+    position:absolute;bottom:0;left:0;right:0;padding:6px 10px;
+    font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.1em;
+    color:rgba(237,228,211,.55);background:linear-gradient(transparent,rgba(14,13,11,.72));
+  }
+  @media (max-width:680px){.precedents{grid-template-columns:1fr}.precedent{border-right:none}.precedent:nth-child(n){border-bottom:1px solid var(--rule)}.precedent:last-child{border-bottom:none}}
+
+  /* LAB SHEET */
+  .lab-sheet{margin-top:24px;}
+  .lab-row{display:grid;grid-template-columns:60px 1fr 1.2fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule);align-items:start;}
+  .lab-row:last-child{border-bottom:1px solid var(--rule);}
+  .lab-row .g{
+    font-family:"Fraunces",serif;font-style:italic;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;
+    font-size:42px;color:var(--red);line-height:.9;font-weight:300;
+  }
+  .lab-row h5{font-family:"Fraunces",serif;font-weight:380;font-size:22px;line-height:1.1;margin:0 0 6px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .lab-row h5 em{font-style:italic;color:var(--amber);}
+  .lab-row .tag{
+    display:inline-block;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;padding:2px 8px;border:1px solid var(--rule-strong);color:var(--paper-dim);margin-bottom:6px;
+  }
+  .lab-row p{margin:0 0 8px;color:var(--paper-2);font-size:16px;line-height:1.55;}
+  .lab-row ul{margin:6px 0 0;padding-left:18px;color:var(--paper-2);font-size:16px;}
+  .lab-row li{margin-bottom:6px;}
+  @media (max-width:680px){.lab-row{grid-template-columns:50px 1fr}.lab-row .tasks{grid-column:1/-1;border-top:1px dashed var(--rule);padding-top:10px;}}
+
+  /* STARTER KIT */
+  .kit{display:grid;grid-template-columns:1.1fr 1fr;gap:32px;margin-top:24px;}
+  @media (max-width:820px){.kit{grid-template-columns:1fr}}
+  .panel{border:1px solid var(--rule-strong);padding:24px 26px;background:rgba(237,228,211,.02);}
+  .panel.accent{border-color:var(--amber-line);background:var(--amber-soft);}
+  .panel h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 12px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .panel h4 em{font-style:italic;color:var(--amber);}
+  .panel p{margin:0 0 10px;color:var(--paper-2);font-size:14.5px;line-height:1.55;}
+  .panel ul{margin:8px 0 0;padding-left:18px;color:var(--paper-2);font-size:14.5px;}
+  .panel li{margin-bottom:5px;}
+  .kit-specs{display:grid;grid-template-columns:140px 1fr;gap:8px 16px;font-size:14.5px;margin-top:8px;}
+  .kit-specs dt{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);align-self:start;padding-top:4px;}
+  .kit-specs dd{margin:0;color:var(--paper);}
+
+  /* GEOMETRY DIAGRAM GRID */
+  .geo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:28px;
+    border:1px solid var(--rule-strong);}
+  .geo-cell{padding:0;border-right:1px solid var(--rule);text-align:center;}
+  .geo-cell:last-child{border-right:none;}
+  .geo-cell svg{display:block;width:100%;height:auto;}
+  .geo-label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--amber);padding:10px 0 14px;display:block;}
+  .geo-note{font-size:13px;color:var(--paper-dim);padding:0 12px 14px;line-height:1.4;}
+  @media(max-width:820px){.geo-grid{grid-template-columns:repeat(2,1fr);}
+    .geo-cell:nth-child(2){border-right:none;}
+    .geo-cell:nth-child(n+3){border-top:1px solid var(--rule);}}
+  @media(max-width:500px){.geo-grid{grid-template-columns:1fr;}
+    .geo-cell{border-right:none;border-bottom:1px solid var(--rule);}
+    .geo-cell:last-child{border-bottom:none;}}
+
+  /* REFERENCE LINKS */
+  .ref-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .ref-links a{
+    font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--blue);border:1px solid rgba(159,200,212,.35);
+    padding:3px 10px;text-decoration:none;transition:background .2s,color .2s;
+  }
+  .ref-links a:hover{background:rgba(159,200,212,.12);color:var(--paper);}
+
+  /* LAYER TABLE */
+  .layer-table{width:100%;border-collapse:collapse;margin-top:20px;font-size:15px;}
+  .layer-table th{
+    padding:9px 14px;font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);
+    text-align:left;border-bottom:1px solid var(--rule-strong);font-weight:400;
+    background:rgba(14,13,11,.4);
+  }
+  .layer-table td{padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--paper-2);vertical-align:top;}
+  .layer-table tr:last-child td{border-bottom:none;}
+  .layer-table td:first-child{
+    font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--amber);
+    white-space:nowrap;letter-spacing:.06em;
+  }
+  .layer-table td:nth-child(2){color:var(--paper);font-size:14px;}
+  .layer-table tbody tr:hover{background:rgba(212,162,76,.04);}
+  .layer-group td{
+    padding:6px 14px 2px;font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);
+    background:rgba(14,13,11,.25);border-bottom:1px solid var(--rule);
+  }
+
+  /* TRANSITION BRIDGE */
+  .bridge{
+    margin-top:56px;padding:18px 24px;border-left:2px solid var(--amber-line);
+    background:rgba(212,162,76,.04);font-size:16px;color:var(--paper-2);
+    font-style:italic;line-height:1.6;
+  }
+  .bridge strong{color:var(--amber);font-style:normal;font-family:"JetBrains Mono",monospace;
+    font-size:11px;letter-spacing:.2em;text-transform:uppercase;display:block;margin-bottom:6px;}
+
+  /* DL TEMPLATE */
+  .dl-template{border:1px solid var(--amber-line);background:var(--amber-soft);padding:22px 28px;margin-top:20px;}
+  .dl-template .field{display:grid;grid-template-columns:140px 1fr;gap:18px;padding:6px 0;border-bottom:1px dashed var(--rule);}
+  .dl-template .field:last-child{border-bottom:none;}
+  .dl-template .field b{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);font-weight:500;align-self:start;padding-top:4px;}
+  .dl-template .field span{color:var(--paper-2);font-style:italic;font-size:14.5px;}
+
+  /* DELIVERABLE / CHECKLIST */
+  .deliverable{
+    border-left:3px solid var(--amber);background:var(--amber-soft);
+    padding:22px 28px;margin-top:24px;
+  }
+  .deliverable .label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-weight:500;}
+  .deliverable h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 12px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .deliverable ul{margin:8px 0;padding-left:20px;color:var(--paper);font-size:15px;line-height:1.6;}
+  .deliverable li{margin-bottom:6px;}
+
+  .checklist{margin-top:18px;}
+  .check{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--rule);align-items:flex-start;}
+  .check:last-child{border-bottom:none}
+  .check .box{
+    flex:0 0 auto;width:18px;height:18px;border:1.5px solid var(--paper-dim);margin-top:2px;
+    display:inline-block;
+  }
+  .check .text{font-size:15px;color:var(--paper-2);line-height:1.5;}
+  .check .text strong{color:var(--paper);}
+
+  /* FOOT */
+  footer{margin-top:120px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .hero, section{animation:rise .9s ease both;}
+
+  /* SYNOPSIS */
+  .synopsis{max-width:880px;}
+  .synopsis h3{
+    font-family:"Fraunces",serif;font-weight:380;font-size:26px;line-height:1.15;
+    margin:40px 0 12px;font-variation-settings:"opsz" 48,"SOFT" 30;letter-spacing:-.005em;
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  }
+  .synopsis h3 em{font-style:italic;color:var(--amber);}
+  .synopsis h3 .tag{
+    font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.22em;
+    color:var(--amber);border:1px solid var(--amber-line);padding:3px 9px;
+    text-transform:uppercase;font-weight:500;
+  }
+  .synopsis p{color:var(--paper-2);font-size:15.5px;line-height:1.65;margin:0 0 14px;}
+  .synopsis p em{color:var(--paper);font-style:italic;}
+  .synopsis p strong{color:var(--paper);}
+  .synopsis ul{padding-left:20px;color:var(--paper-2);font-size:15px;line-height:1.6;}
+  .synopsis ul li{margin-bottom:8px;}
+  .synopsis ul li em{color:var(--paper);font-style:italic;}
+  .synopsis ul li strong{color:var(--paper);}
+  .synopsis blockquote{
+    margin:20px 0;padding:14px 22px;border-left:2px solid var(--amber);
+    background:var(--amber-soft);font-size:15px;color:var(--paper);font-style:italic;line-height:1.55;
+  }
+  .synopsis blockquote p{color:var(--paper);font-style:italic;margin:0;}
+  .diagram{
+    margin:28px 0 20px;padding:26px 22px 18px;background:rgba(237,228,211,.03);
+    border:1px solid var(--rule);text-align:center;break-inside:avoid;page-break-inside:avoid;
+  }
+  .diagram svg{display:block;margin:0 auto;max-width:100%;height:auto;}
+  .diagram figcaption{
+    margin-top:16px;font-family:"JetBrains Mono",monospace;font-size:10.5px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);text-align:left;line-height:1.6;
+  }
+  .diagram figcaption b{color:var(--amber);font-weight:500;margin-right:10px;letter-spacing:.18em;}
+
+  /* PRINT */
+  @page{size:Letter;margin:0.55in 0.6in;}
+  @media print{
+    html{background:var(--ink) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact;}
+    body{background:var(--ink) !important;margin:0;padding:0;font-size:14.5px;line-height:1.5;}
+    body::before{display:none !important;}
+    .wrap{max-width:none;padding:0;background:transparent;}
+    .hero, section{animation:none !important;}
+    h1.title{font-size:64px !important;line-height:.92;}
+    .sec-title{font-size:32px !important;}
+    .lec, .panel, .deliverable, .dl-template, .precedent, .lab-row, .timetable .row, .meta, .kit{break-inside:avoid;page-break-inside:avoid;}
+    p, li{orphans:3;widows:3;break-inside:avoid;}
+    .sec-label{break-after:avoid;}
+    .pb-before{break-before:page !important;page-break-before:always !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <span><span class="dot"></span>Week 01 · Class Plan · v2 · 2026.05.18</span>
+    <span>ARC 5443 · Summer 2026 · 05·20</span>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div>
+      <div class="kicker">Week 01 <span class="pipe">/</span> Act I <span class="pipe">/</span> Acoustics</div>
+      <h1 class="title">Sound, Hearing, &amp; the <em>Listening Room.</em></h1>
+      <p class="sub">The first session. We meet the cohort, frame the ten-week problem, hand over the auditorium starter kit, and put hands to plan diagrams &mdash; before sound has even been calculated, the room is being shaped.</p>
+    </div>
+    <svg class="ornament" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g stroke="#D4A24C" stroke-width="1" fill="none" opacity=".85">
+        <circle cx="110" cy="110" r="20"/>
+        <circle cx="110" cy="110" r="50"/>
+        <circle cx="110" cy="110" r="80" stroke-dasharray="3 3"/>
+        <circle cx="110" cy="110" r="105" stroke-dasharray="2 5"/>
+      </g>
+      <circle cx="110" cy="110" r="3" fill="#C8472F"/>
+    </svg>
+  </header>
+
+  <!-- META -->
+  <dl class="meta">
+    <div><dt>Date</dt><dd>Wed 05·20<small>19:30 &ndash; 23:35</small></dd></div>
+    <div><dt>Format</dt><dd>Online · Zoom<small>cameras on, 100%</small></dd></div>
+    <div><dt>Cohort</dt><dd>15 students<small>graduate + undergrad mix</small></dd></div>
+    <div><dt>Read · Before</dt><dd>MEEB Ch. 7<small>Sound, Hearing &amp; Acoustical Comfort</small></dd></div>
+  </dl>
+
+  <!-- § 01 SESSION OBJECTIVES -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 01</span>
+      <h2 class="sec-title">Session <em>Objectives.</em></h2>
+    </div>
+    <div class="prose">
+      <p>By the end of tonight, each student should leave with:</p>
+      <ul>
+        <li><strong>A clear picture of the ten-week arc</strong> &mdash; three acts plus an encore, the auditorium as the through-line.</li>
+        <li><strong>The starter kit</strong> &mdash; program, site, climate, and the four seating-geometry diagrams &mdash; downloaded and understood.</li>
+        <li><strong>A working vocabulary</strong> for room acoustics: frequency, dB, equal-loudness, NC criteria, the listening room as a designed object.</li>
+        <li><strong>An exposure to four exemplar halls</strong> that anchor the precedent space.</li>
+        <li><strong>A committed starting geometry</strong> for their own 500-seat hall, with the first sketches in hand.</li>
+        <li><strong>A live Decision Log</strong> with at least one entry begun.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- § 02 RUN OF SHOW -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 02</span>
+      <h2 class="sec-title">Run of <em>Show.</em></h2>
+    </div>
+    <div class="timetable">
+      <div class="row"><div class="when">19:30 &middot; 19:40</div><div class="dur">10 min</div><div class="what"><em>Welcome &amp; orientation.</em> Roll call, camera-on reminder, brief instructor intro. Frame the syllabus arc &mdash; three acts and an encore.</div></div>
+      <div class="row"><div class="when">19:40 &middot; 20:10</div><div class="dur">30 min</div><div class="what"><em>Micro-Lecture A &mdash; The Book.</em> Sound fundamentals: frequency, dB scale, equal-loudness, NC criteria. Two short audio examples played live in Zoom.</div></div>
+      <div class="row break"><div class="when">20:10 &middot; 20:20</div><div class="dur">10 min</div><div class="what">Break &mdash; cameras off, move around.</div></div>
+      <div class="row"><div class="when">20:20 &middot; 20:50</div><div class="dur">30 min</div><div class="what"><em>Micro-Lecture B &mdash; The Halls.</em> Precedent tour: Boston Symphony, Berlin Philharmonie, Bayreuth, Disney. Plan/section comparison and what makes each one work.</div></div>
+      <div class="row"><div class="when">20:50 &middot; 21:00</div><div class="dur">10 min</div><div class="what"><em>Lab framing.</em> Hand over the starter kit; explain the four seating geometries; assign breakout groups.</div></div>
+      <div class="row lab"><div class="when">21:00 &middot; 23:20</div><div class="dur">140 min</div><div class="what"><em>Lab &mdash; Plan-Diagram Studio.</em> Breakouts of 3&ndash;4 students by geometry. Group discusses, sketches; each student then commits individually and begins their Rhino model. Instructor circulates.</div></div>
+      <div class="row"><div class="when">23:20 &middot; 23:35</div><div class="dur">15 min</div><div class="what"><em>Whole-group debrief.</em> One share per breakout room. Set the Week 1 deliverable due Tue 05·26 and the Week 2 reading.</div></div>
+    </div>
+  </section>
+
+  <!-- § 03 LECTURE A -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 03</span>
+      <h2 class="sec-title">Micro-Lecture <em>A &mdash; The Book.</em></h2>
+    </div>
+    <div class="lec">
+      <div class="lec-head">
+        <span><span class="name">Sound, Hearing &amp; Acoustical Comfort</span></span>
+        <span>30 min &middot; MEEB Ch. 7</span>
+      </div>
+      <h3>What sound <em>is</em>, before it is calculated.</h3>
+      <p class="one-liner">A vocabulary primer. We will run numbers next week; tonight we earn the words.</p>
+
+      <h4>1 &middot; Sound as a physical phenomenon (8 min)</h4>
+      <ul>
+        <li><strong>Frequency &amp; wavelength.</strong> 20 Hz &rarr; 20 kHz audible range; speech band ~250&ndash;4000 Hz; bass below 250 Hz; music up to 8 kHz and beyond.</li>
+        <li><strong>Amplitude &amp; pressure.</strong> Sound power vs. sound pressure; the dB scale is logarithmic; doubling distance loses 6 dB in free field.</li>
+        <li><strong>Wavelength &amp; building scale.</strong> A 100 Hz wave is ~11&nbsp;ft long &mdash; that is room-sized. High frequencies bounce off small features; low frequencies pass through them.</li>
+      </ul>
+
+      <h4>2 &middot; Hearing as a designed receiver (8 min)</h4>
+      <ul>
+        <li><strong>Equal-loudness curves</strong> &mdash; the ear is less sensitive at low and very high frequencies; loudness is not flat.</li>
+        <li><strong>Speech intelligibility.</strong> Consonants live in the 2&ndash;4 kHz band; lose those and meaning goes with them.</li>
+        <li><strong>Aging &amp; the back row.</strong> High-frequency loss with age means design for the worst-case listener, not the test subject.</li>
+      </ul>
+
+      <h4>3 &middot; Acoustical comfort &amp; NC criteria (8 min)</h4>
+      <ul>
+        <li><strong>NC curves</strong> &mdash; the standard way to specify a room&rsquo;s background-noise ceiling.</li>
+        <li><strong>Targets:</strong> auditorium NC 20&ndash;25; recording studio NC 15; library NC 30; lobby NC 35&ndash;40. Each step is audible.</li>
+        <li><strong>Why this matters for our project.</strong> Tonight&rsquo;s plan diagram already implies an NC target &mdash; loading dock adjacency, HVAC location, prefunction door swings.</li>
+      </ul>
+
+      <h4>4 &middot; Live demonstrations (6 min)</h4>
+      <ul>
+        <li>Tone sweep: 50 Hz &rarr; 8 kHz, listening for what your headphones reproduce vs. lose.</li>
+        <li>Speech in NC 20 vs. NC 40 noise floor &mdash; same talker, two different rooms.</li>
+        <li>Brief Q&amp;A; cue students to listen for these terms in next week&rsquo;s reading.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- § 04 CHAPTER 7 SYNOPSIS -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 04</span>
+      <h2 class="sec-title">Chapter 7 &mdash; <em>Synopsis.</em></h2>
+    </div>
+
+    <div class="prose" style="margin-bottom:16px;max-width:880px;">
+      <p>A distilled reading of MEEB Chapter 7 (Grondzik &amp; Kwok). Use this as the night-before refresher or in-class reference. Diagrams illustrate the relationships students need to <em>see</em>, not just hear about.</p>
+    </div>
+
+    <div class="synopsis">
+
+      <h3><span class="tag">7.1</span><span>Sound, Vibration, Noise &mdash; <em>three names for one thing.</em></span></h3>
+      <p>All three are pressure variations in an elastic medium. The difference lies in how the receiver experiences them.</p>
+      <ul>
+        <li><strong>Sound</strong> is <em>audible</em> pressure variation &mdash; energy a human can hear.</li>
+        <li><strong>Vibration</strong> is pressure variation <em>felt but not heard</em> &mdash; tactilely sensed; treated as a distinct subset of acoustics.</li>
+        <li><strong>Noise</strong> is <em>unwanted</em> sound &mdash; a perceptual judgment, not a measurable physical quantity. Analogous to glare. One person&rsquo;s music is another&rsquo;s noise.</li>
+      </ul>
+      <p>For airborne sound, the medium is air; for structure-borne, it is concrete, steel, wood, glass, or their combinations. <em>Sound moves through buildings &mdash; not just through their rooms.</em></p>
+
+      <!-- DIAGRAM 1: Wave + compression/rarefaction -->
+      <figure class="diagram">
+        <svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sound wave radiating from a source with compression and rarefaction labels">
+          <!-- Source -->
+          <g transform="translate(80,140)">
+            <circle r="9" fill="#C8472F"/>
+            <circle r="14" fill="none" stroke="#C8472F" stroke-width="1" opacity=".5"/>
+          </g>
+          <!-- Concentric wavefronts -->
+          <g stroke="#D4A24C" fill="none" stroke-linecap="round">
+            <circle cx="80" cy="140" r="40" stroke-width="2"/>
+            <circle cx="80" cy="140" r="68" stroke-width="1"/>
+            <circle cx="80" cy="140" r="96" stroke-width="2"/>
+            <circle cx="80" cy="140" r="124" stroke-width="1"/>
+            <circle cx="80" cy="140" r="152" stroke-width="2"/>
+            <circle cx="80" cy="140" r="180" stroke-width="1"/>
+          </g>
+          <text x="80" y="270" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">SOURCE</text>
+
+          <!-- Sine wave on right -->
+          <g transform="translate(330,140)">
+            <line x1="0" y1="0" x2="400" y2="0" stroke="#8A8273" stroke-dasharray="2 4" stroke-width=".75"/>
+            <path d="M 0,0 C 25,-55 50,-55 75,0 C 100,55 125,55 150,0 C 175,-55 200,-55 225,0 C 250,55 275,55 300,0 C 325,-55 350,-55 375,0" stroke="#EDE4D3" stroke-width="2" fill="none"/>
+            <!-- Wavelength bracket -->
+            <g stroke="#D4A24C" stroke-width="1" fill="none">
+              <line x1="0" y1="80" x2="150" y2="80"/>
+              <line x1="0" y1="74" x2="0" y2="86"/>
+              <line x1="150" y1="74" x2="150" y2="86"/>
+            </g>
+            <text x="75" y="100" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">&#955; &middot; WAVELENGTH</text>
+
+            <!-- Compression / Rarefaction callouts -->
+            <line x1="37" y1="-50" x2="37" y2="-72" stroke="#C8472F" stroke-width=".75"/>
+            <text x="37" y="-80" text-anchor="middle" fill="#C8472F" font-family="JetBrains Mono, monospace" font-size="9.5" letter-spacing="2">COMPRESSION</text>
+            <line x1="112" y1="50" x2="112" y2="72" stroke="#9FC8D4" stroke-width=".75"/>
+            <text x="112" y="86" text-anchor="middle" fill="#9FC8D4" font-family="JetBrains Mono, monospace" font-size="9.5" letter-spacing="2">RAREFACTION</text>
+          </g>
+        </svg>
+        <figcaption><b>Fig. 1</b>Sound radiates from a source as concentric pressure wavefronts; the same energy expressed against time becomes a sine wave with alternating compression and rarefaction. Amplitude = loudness; wavelength &lambda; = c &divide; f.</figcaption>
+      </figure>
+
+      <h3><span class="tag">7.1 a&middot;b&middot;c</span><span>Speed, Wavelength &amp; Frequency.</span></h3>
+      <p>Three numbers, tied by one equation: <strong>&lambda; = c &divide; f.</strong></p>
+      <ul>
+        <li><strong>Speed (c):</strong> 1130 fps (344 m/s) in air at sea level &mdash; effectively constant for design. Sound moves <em>much</em> faster through solids: wood ~10,800 fps, concrete ~12,100 fps, steel ~16,000 fps. <em>This is why structural transmission matters &mdash; the building is a faster sound path than the air.</em></li>
+        <li><strong>Wavelength (&lambda;):</strong> the distance one cycle travels. Audible wavelengths span 0.5 in. (20 kHz) to 50 ft (20 Hz). Architectural surfaces respond differently across this range &mdash; a 6-in. baffle does nothing to a 30-ft bass wavelength but absorbs high frequencies easily.</li>
+        <li><strong>Frequency (f):</strong> cycles per second, in hertz (Hz). Audible 20&ndash;20,000 Hz. Speech fundamentals 100&ndash;600 Hz with overtones to ~7,500 Hz; critical speech-intelligibility band <em>300&ndash;4,000 Hz</em>.</li>
+      </ul>
+
+      <!-- DIAGRAM 2: Wavelength vs frequency -->
+      <figure class="diagram">
+        <svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three waveforms comparing low mid and high frequency sound">
+          <g font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1.5" fill="#8A8273">
+            <text x="40" y="50">100 Hz</text>
+            <text x="40" y="56" dy="14" fill="#D4A24C" font-size="9">&lambda; &asymp; 11 ft</text>
+            <text x="40" y="138">1 kHz</text>
+            <text x="40" y="144" dy="14" fill="#D4A24C" font-size="9">&lambda; &asymp; 1.1 ft</text>
+            <text x="40" y="226">10 kHz</text>
+            <text x="40" y="232" dy="14" fill="#D4A24C" font-size="9">&lambda; &asymp; 1.3 in.</text>
+          </g>
+          <!-- Low freq -->
+          <g transform="translate(140,50)">
+            <line x1="0" y1="0" x2="600" y2="0" stroke="#8A8273" stroke-dasharray="2 4" stroke-width=".5"/>
+            <path d="M 0,0 C 75,-30 150,-30 225,0 S 375,30 450,0 S 600,-30 600,0" stroke="#EDE4D3" stroke-width="2" fill="none"/>
+          </g>
+          <!-- Mid freq -->
+          <g transform="translate(140,138)">
+            <line x1="0" y1="0" x2="600" y2="0" stroke="#8A8273" stroke-dasharray="2 4" stroke-width=".5"/>
+            <path d="M 0,0 C 15,-25 30,-25 45,0 S 75,25 90,0 S 120,-25 135,0 S 165,25 180,0 S 210,-25 225,0 S 255,25 270,0 S 300,-25 315,0 S 345,25 360,0 S 390,-25 405,0 S 435,25 450,0 S 480,-25 495,0 S 525,25 540,0 S 570,-25 585,0 S 600,0 600,0" stroke="#EDE4D3" stroke-width="2" fill="none"/>
+          </g>
+          <!-- High freq -->
+          <g transform="translate(140,226)">
+            <line x1="0" y1="0" x2="600" y2="0" stroke="#8A8273" stroke-dasharray="2 4" stroke-width=".5"/>
+            <path d="M 0,0 q 4,-22 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0 t 8,0" stroke="#EDE4D3" stroke-width="1.5" fill="none"/>
+          </g>
+        </svg>
+        <figcaption><b>Fig. 2</b>The same equation, three scales. Low frequencies have long wavelengths that ignore small architectural details; high frequencies bounce off everything. Speech intelligibility lives in the middle band.</figcaption>
+      </figure>
+
+      <h3><span class="tag">7.1 d</span><span>Octave Bands &mdash; <em>the design vocabulary.</em></span></h3>
+      <p>With 19,980 discrete audible frequencies, designers compress the spectrum into <strong>octave bands</strong> centered on internationally agreed values: <em>63 &middot; 125 &middot; 250 &middot; 500 &middot; 1000 &middot; 2000 &middot; 4000 &middot; 8000 Hz.</em> Each band is double the one below. Acoustic specifications, absorption coefficients (NRC), STC ratings, and noise criteria are all expressed in these bands rather than individual frequencies.</p>
+      <blockquote><p>Rule of thumb: if a material spec lists eight numbers, those are octave-band coefficients from 63 to 8 kHz.</p></blockquote>
+
+      <h3><span class="tag">7.2</span><span>Hearing &mdash; <em>the receiver is not flat.</em></span></h3>
+      <p>The ear is a sound-gathering funnel that ends in a mechanical-to-fluid-to-electrical signal chain. Three relevant facts for building design:</p>
+      <ul>
+        <li><strong>Presbycusis</strong> &mdash; high-frequency loss with age, more pronounced in men. By age 60, the threshold at 4,000 Hz has shifted by ~30 dB for men, ~20 dB for women. <em>Design for the worst-case listener, not the test subject.</em></li>
+        <li><strong>Equal-loudness contours (Fletcher&ndash;Munson).</strong> The ear is most sensitive between 3&ndash;4 kHz &mdash; precisely the band that carries consonants. It loses sensitivity sharply below 250 Hz and above 10 kHz. Loudness perception is <em>nonlinear in frequency and in level.</em></li>
+        <li><strong>Masking, directivity, discrimination.</strong> The ear can pick a single instrument from an orchestra (the cocktail-party effect) or be defeated by a steady fan; high frequencies localize, low frequencies do not.</li>
+      </ul>
+
+      <!-- DIAGRAM 3: Equal loudness -->
+      <figure class="diagram">
+        <svg viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Equal loudness contours showing ear sensitivity dip at 3 to 4 kHz">
+          <!-- Axes -->
+          <g stroke="#8A8273" stroke-width=".75" fill="none">
+            <line x1="80" y1="30" x2="80" y2="270"/>
+            <line x1="80" y1="270" x2="720" y2="270"/>
+          </g>
+          <!-- y axis labels (dB SPL) -->
+          <g fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1">
+            <text x="70" y="270" text-anchor="end">0</text>
+            <text x="70" y="210" text-anchor="end">40</text>
+            <text x="70" y="150" text-anchor="end">80</text>
+            <text x="70" y="90" text-anchor="end">120</text>
+            <text x="50" y="40" fill="#D4A24C">SPL (dB)</text>
+            <!-- x axis labels (Hz) -->
+            <text x="120" y="290" text-anchor="middle">20</text>
+            <text x="240" y="290" text-anchor="middle">100</text>
+            <text x="400" y="290" text-anchor="middle">1k</text>
+            <text x="560" y="290" text-anchor="middle">4k</text>
+            <text x="700" y="290" text-anchor="middle">20k</text>
+            <text x="400" y="310" text-anchor="middle" fill="#D4A24C">FREQUENCY (Hz)</text>
+          </g>
+          <!-- Threshold of hearing (bottom dashed curve) -->
+          <path d="M 120,180 C 200,225 300,255 400,260 C 500,258 560,250 600,240 C 660,230 700,220 720,200" stroke="#8A8273" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
+          <!-- 20 phon contour -->
+          <path d="M 120,130 C 200,175 300,210 400,215 C 500,212 560,200 600,188 C 660,182 700,180 720,170" stroke="#EDE4D3" stroke-width="1.25" fill="none"/>
+          <!-- 60 phon contour -->
+          <path d="M 120,90 C 200,120 300,150 400,155 C 500,152 560,140 600,128 C 660,125 700,128 720,120" stroke="#D4A24C" stroke-width="1.75" fill="none"/>
+          <!-- 100 phon contour -->
+          <path d="M 120,55 C 200,75 300,95 400,98 C 500,95 560,85 600,75 C 660,72 700,76 720,70" stroke="#EDE4D3" stroke-width="1.25" fill="none"/>
+          <!-- Labels -->
+          <text x="540" y="222" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1.5">THRESHOLD</text>
+          <text x="700" y="158" fill="#EDE4D3" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1.5" text-anchor="end">20 phon</text>
+          <text x="700" y="106" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1.5" text-anchor="end">60 phon &middot; speech</text>
+          <text x="700" y="48" fill="#EDE4D3" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1.5" text-anchor="end">100 phon</text>
+          <!-- Speech band highlight -->
+          <rect x="380" y="30" width="200" height="240" fill="#D4A24C" opacity=".06"/>
+          <text x="480" y="48" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="2">SPEECH BAND</text>
+        </svg>
+        <figcaption><b>Fig. 3</b>Equal-loudness contours. The ear&rsquo;s sensitivity dips most generously at 3&ndash;4 kHz &mdash; the same band that carries the consonants of speech. Below 250 Hz and above 10 kHz, you have to push much harder for the same perceived loudness.</figcaption>
+      </figure>
+
+      <h3><span class="tag">7.4</span><span>Magnitude &mdash; <em>power, pressure, intensity, &amp; the decibel.</em></span></h3>
+      <p>Sound has three absolute magnitudes (power, pressure, intensity) and three corresponding <em>levels</em> &mdash; logarithmic ratios expressed in <strong>decibels (dB)</strong>. The decibel scale exists because the physical range of audible sound is enormous &mdash; 10<sup>13</sup>:1 &mdash; and the ear responds logarithmically.</p>
+      <ul>
+        <li><strong>Sound power (W)</strong> is the source&rsquo;s output, independent of room. A jet: 100,000 W. A symphony orchestra: 10 W. Normal speech: 0.000010 W.</li>
+        <li><strong>Sound pressure (Pa)</strong> is what the receiver experiences at a given location.</li>
+        <li><strong>Sound intensity (W/cm&sup2;)</strong> is the energy density at a point.</li>
+        <li><strong>Sound Pressure Level (SPL)</strong> = 20 log(p/p&#8320;), with p&#8320; = 20 &micro;Pa (threshold of hearing). The reference is fixed; the level is dimensionless.</li>
+      </ul>
+      <blockquote><p>Three working rules for designers: <strong>+3 dB</strong> is barely perceptible. <strong>+10 dB</strong> sounds twice as loud. <strong>+20 dB</strong> sounds four times as loud. Decibels add logarithmically &mdash; two 60-dB sources do not make 120 dB, they make 63 dB.</p></blockquote>
+
+      <!-- DIAGRAM 4: dB scale -->
+      <figure class="diagram">
+        <svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decibel scale with common sound levels">
+          <!-- Vertical bar -->
+          <defs>
+            <linearGradient id="dbgrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#C8472F"/>
+              <stop offset=".5" stop-color="#D4A24C"/>
+              <stop offset="1" stop-color="#9FC8D4"/>
+            </linearGradient>
+          </defs>
+          <rect x="100" y="30" width="22" height="300" fill="url(#dbgrad)" opacity=".85"/>
+          <!-- Tick marks -->
+          <g stroke="#8A8273" stroke-width=".75">
+            <line x1="100" y1="30"  x2="130" y2="30"/>
+            <line x1="100" y1="60"  x2="130" y2="60"/>
+            <line x1="100" y1="90"  x2="130" y2="90"/>
+            <line x1="100" y1="120" x2="130" y2="120"/>
+            <line x1="100" y1="150" x2="130" y2="150"/>
+            <line x1="100" y1="180" x2="130" y2="180"/>
+            <line x1="100" y1="210" x2="130" y2="210"/>
+            <line x1="100" y1="240" x2="130" y2="240"/>
+            <line x1="100" y1="270" x2="130" y2="270"/>
+            <line x1="100" y1="300" x2="130" y2="300"/>
+            <line x1="100" y1="330" x2="130" y2="330"/>
+          </g>
+          <g fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="1" text-anchor="end">
+            <text x="92" y="34">130</text>
+            <text x="92" y="64">120</text>
+            <text x="92" y="94">110</text>
+            <text x="92" y="124">100</text>
+            <text x="92" y="154">90</text>
+            <text x="92" y="184">80</text>
+            <text x="92" y="214">70</text>
+            <text x="92" y="244">60</text>
+            <text x="92" y="274">50</text>
+            <text x="92" y="304">40</text>
+            <text x="92" y="334">20</text>
+          </g>
+          <text x="42" y="180" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" transform="rotate(-90 42 180)" text-anchor="middle">dB SPL</text>
+          <!-- Labels (right column) -->
+          <g font-family="Newsreader, serif" font-size="14" fill="#EDE4D3">
+            <text x="150" y="34">Threshold of pain</text>
+            <text x="150" y="64" fill="#C8472F">Jet flyby &middot; rock band</text>
+            <text x="150" y="94">Chain saw &middot; jackhammer</text>
+            <text x="150" y="124">Subway &middot; loud street</text>
+            <text x="150" y="154" fill="#D4A24C">Heavy truck (10 m)</text>
+            <text x="150" y="184">Noisy factory &middot; alarm</text>
+            <text x="150" y="214">Busy office &middot; vacuum</text>
+            <text x="150" y="244" fill="#D4A24C">Conversation @ 3 ft</text>
+            <text x="150" y="274">Quiet restaurant</text>
+            <text x="150" y="304">Soft whisper &middot; library</text>
+            <text x="150" y="334" fill="#9FC8D4">Empty auditorium &middot; rustle</text>
+          </g>
+          <!-- Auditorium target band -->
+          <rect x="100" y="312" width="22" height="20" fill="none" stroke="#9FC8D4" stroke-width="1.5"/>
+          <text x="550" y="320" fill="#9FC8D4" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">&larr; AUDITORIUM TARGET (NC 20&ndash;25)</text>
+        </svg>
+        <figcaption><b>Fig. 4</b>Common sound levels mapped to the dBA scale. The auditorium sits at the quiet end &mdash; a working hall has the same background noise floor as an empty room with rustling paper. Every 10 dB feels like a doubling.</figcaption>
+      </figure>
+
+      <h3><span class="tag">7.4 (c)</span><span>The Inverse Square Law.</span></h3>
+      <p>A point source in free field radiates equally in all directions. The same energy crossing a sphere of radius <em>r</em> spreads over surface area 4&pi;r&sup2; &mdash; so intensity falls with the <em>square</em> of distance.</p>
+      <ul>
+        <li><strong>Every doubling of distance from a point source loses 6 dB.</strong> 80 dB at 5 ft becomes 74 dB at 10 ft, 68 dB at 20 ft.</li>
+        <li>Line sources (a long road, a row of speakers) lose only 3 dB per doubling &mdash; they spread cylindrically, not spherically.</li>
+        <li>This holds only in <em>free field</em>. Inside an enclosed space, reflected energy fills the room and the rule breaks down past the &ldquo;critical distance.&rdquo;</li>
+      </ul>
+
+      <!-- DIAGRAM 5: Inverse square law -->
+      <figure class="diagram">
+        <svg viewBox="0 0 760 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Inverse square law diagram showing sound intensity drop with distance">
+          <!-- Point source -->
+          <g transform="translate(80,140)">
+            <circle r="8" fill="#C8472F"/>
+            <circle r="14" fill="none" stroke="#C8472F" stroke-width="1" opacity=".4"/>
+          </g>
+          <!-- Cone expanding -->
+          <g fill="none" stroke="#D4A24C" stroke-width="1.25">
+            <line x1="80" y1="140" x2="700" y2="40"/>
+            <line x1="80" y1="140" x2="700" y2="240"/>
+          </g>
+          <!-- Squares at r, 2r, 4r -->
+          <g fill="rgba(212,162,76,.10)" stroke="#D4A24C" stroke-width="1.5">
+            <rect x="200" y="115" width="50" height="50"/>
+            <rect x="360" y="90" width="100" height="100"/>
+            <rect x="560" y="40" width="200" height="200"/>
+          </g>
+          <!-- Distance markers -->
+          <g stroke="#8A8273" stroke-dasharray="2 3" stroke-width=".5">
+            <line x1="225" y1="170" x2="225" y2="260"/>
+            <line x1="410" y1="195" x2="410" y2="260"/>
+            <line x1="660" y1="245" x2="660" y2="265"/>
+          </g>
+          <g font-family="JetBrains Mono, monospace" font-size="11" fill="#8A8273" letter-spacing="1.5" text-anchor="middle">
+            <text x="225" y="278">r</text>
+            <text x="410" y="278">2r</text>
+            <text x="660" y="280">4r</text>
+          </g>
+          <!-- dB labels -->
+          <g font-family="JetBrains Mono, monospace" font-size="11" fill="#D4A24C" letter-spacing="1.5" text-anchor="middle">
+            <text x="225" y="108">80 dB</text>
+            <text x="410" y="82">74 dB</text>
+            <text x="660" y="32">68 dB</text>
+          </g>
+          <text x="80" y="195" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" text-anchor="middle">SOURCE</text>
+          <text x="730" y="265" fill="#C8472F" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2" text-anchor="end">&minus;6 dB PER DOUBLING</text>
+        </svg>
+        <figcaption><b>Fig. 5</b>Energy crossing an expanding sphere of area 4&pi;r&sup2;. Area quadruples each time distance doubles &mdash; intensity drops by a factor of 4, which is &minus;6 dB. This is why the back row of a hall always needs help, whether from geometry, reflection, or amplification.</figcaption>
+      </figure>
+
+      <h3><span class="tag">7.5</span><span>Noise &mdash; <em>annoyance, NC, and RC.</em></span></h3>
+      <p>Noise is judged, not measured. Annoyance research (per MEEB) finds annoyance is greater for:</p>
+      <ul>
+        <li>louder sound &middot; high-frequency over low &middot; intermittent over continuous</li>
+        <li>pure tones over broadband &middot; moving or unlocatable sources &middot; <em>information-bearing sound</em> (a phone call) over nonsense noise</li>
+      </ul>
+      <p>For specification, <strong>Noise Criteria (NC) curves</strong> (Beranek) give a single-number ceiling that describes a room&rsquo;s acceptable continuous background noise across octave bands. A space rated NC-30 means <em>no octave-band level may exceed the NC-30 contour</em>. The NC rating typically falls 5&ndash;10 dB below the dBA reading of the same sound.</p>
+      <ul>
+        <li>Concert / recital hall &middot; <strong>NC 15&ndash;20</strong></li>
+        <li>Auditorium / theater &middot; <strong>NC 20&ndash;25</strong></li>
+        <li>Classroom / conference room &middot; <strong>NC 25&ndash;30</strong></li>
+        <li>Library / private office &middot; <strong>NC 30&ndash;35</strong></li>
+        <li>Lobby / open office &middot; <strong>NC 35&ndash;40</strong></li>
+        <li>Restaurant / retail &middot; <strong>NC 40&ndash;45</strong></li>
+      </ul>
+      <p><strong>Room Criteria (RC)</strong> curves are ASHRAE&rsquo;s revision of NC, with straight &minus;5 dB/octave slope and regions flagging vibration risk at very low frequencies. RC Mark II is the contemporary update. NC remains the most commonly cited spec in architectural drawings.</p>
+
+      <!-- DIAGRAM 6: NC curves -->
+      <figure class="diagram">
+        <svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simplified Noise Criteria curves">
+          <!-- Axes -->
+          <g stroke="#8A8273" stroke-width=".75" fill="none">
+            <line x1="80" y1="30" x2="80" y2="290"/>
+            <line x1="80" y1="290" x2="720" y2="290"/>
+          </g>
+          <!-- y labels SPL -->
+          <g fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1">
+            <text x="70" y="294" text-anchor="end">10</text>
+            <text x="70" y="244" text-anchor="end">30</text>
+            <text x="70" y="194" text-anchor="end">50</text>
+            <text x="70" y="144" text-anchor="end">70</text>
+            <text x="70" y="94" text-anchor="end">90</text>
+            <text x="52" y="44" fill="#D4A24C">SPL (dB)</text>
+          </g>
+          <!-- x labels octave centers -->
+          <g fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="9.5" letter-spacing="1" text-anchor="middle">
+            <text x="115" y="308">63</text>
+            <text x="195" y="308">125</text>
+            <text x="275" y="308">250</text>
+            <text x="355" y="308">500</text>
+            <text x="435" y="308">1k</text>
+            <text x="515" y="308">2k</text>
+            <text x="595" y="308">4k</text>
+            <text x="675" y="308">8k</text>
+            <text x="395" y="328" fill="#D4A24C">OCTAVE BAND CENTER (Hz)</text>
+          </g>
+          <!-- Auditorium target band shaded -->
+          <rect x="80" y="200" width="640" height="50" fill="#9FC8D4" opacity=".10"/>
+          <text x="710" y="220" fill="#9FC8D4" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="2" text-anchor="end">AUDITORIUM TARGET ZONE</text>
+          <!-- Curves NC 60 / 45 / 30 / 20 / 15 (descending) -->
+          <g fill="none" stroke-width="1.5">
+            <path d="M 115,90 C 200,100 300,118 400,130 S 550,148 675,160" stroke="#EDE4D3"/>
+            <path d="M 115,140 C 200,152 300,170 400,185 S 550,205 675,220" stroke="#D4A24C"/>
+            <path d="M 115,180 C 200,195 300,215 400,230 S 550,250 675,265" stroke="#EDE4D3"/>
+            <path d="M 115,210 C 200,225 300,242 400,255 S 550,272 675,283" stroke="#9FC8D4" stroke-width="2"/>
+            <path d="M 115,225 C 200,242 300,258 400,272 S 550,283 675,288" stroke="#9FC8D4" stroke-dasharray="3 3"/>
+          </g>
+          <g font-family="JetBrains Mono, monospace" font-size="9.5" letter-spacing="1.5">
+            <text x="690" y="162" fill="#EDE4D3">NC 60</text>
+            <text x="690" y="222" fill="#D4A24C">NC 45</text>
+            <text x="690" y="266" fill="#EDE4D3">NC 30</text>
+            <text x="690" y="282" fill="#9FC8D4">NC 20</text>
+            <text x="690" y="296" fill="#9FC8D4">NC 15</text>
+          </g>
+        </svg>
+        <figcaption><b>Fig. 6</b>Simplified NC curves. A space is &ldquo;rated&rdquo; by the lowest curve that lies <em>entirely above</em> its measured background spectrum. The blue band marks the design target for our 500-seat hall &mdash; quiet enough that an unamplified voice carries to the back row.</figcaption>
+      </figure>
+
+      <h3><span class="tag">7.4 g</span><span>dBA, dBB, dBC &mdash; <em>weighting the meter to the ear.</em></span></h3>
+      <p>A sound-level meter reads pressure with equal weight at every frequency &mdash; but the ear does not. Three filter networks were standardized to better mimic human response:</p>
+      <ul>
+        <li><strong>A-weighting (dBA)</strong> &mdash; derived from the 40-phon contour; rolls off low frequencies sharply. The universal default for environmental and code work today.</li>
+        <li><strong>B-weighting (dBB)</strong> &mdash; 70-phon contour; rarely used now.</li>
+        <li><strong>C-weighting (dBC)</strong> &mdash; nearly flat; used for peak and high-level measurements.</li>
+      </ul>
+      <p>Always identify the weighting alongside the level: <em>&ldquo;50 dBA&rdquo; is not the same number as &ldquo;50 dBC&rdquo;</em> for the same source.</p>
+
+      <h3><span class="tag">7.6 &middot; 7.7</span><span>Vibration &amp; Acoustical Comfort.</span></h3>
+      <p>Vibration is sound felt below ~20 Hz &mdash; usually unwanted, almost always sourced from mechanical or electrical equipment. Its mitigation strategy is different from noise control (mass and isolation rather than absorption).</p>
+      <p>MEEB closes the chapter with a working definition for an Owner&rsquo;s Project Requirements (OPR) on acoustics. <em>This is the most useful single page in the chapter for a design course.</em> Typical acoustic design intents:</p>
+      <ul>
+        <li>Adequate loudness</li>
+        <li>Appropriate reverberation</li>
+        <li>Acceptable articulation (speech intelligibility)</li>
+        <li>Spatial flexibility</li>
+        <li>Acceptable background sound levels (the NC target)</li>
+        <li>Avoidance of anomalies: echoes, creep, focusing, distortion</li>
+        <li>Cultural appropriateness (a concert hall is not a worship space is not a lecture hall)</li>
+      </ul>
+
+      <h3><span class="tag">Bridge</span><span>What this means for <em>your hall.</em></span></h3>
+      <p>For Week 1, the chapter gives you the vocabulary you need to make your first design move &mdash; the choice of seating geometry &mdash; <em>defensibly</em>. By next week we will add Sabine, Eyring, RT60, and the math of room shaping (Ch. 22). Tonight:</p>
+      <ul>
+        <li>You can specify an <strong>NC target</strong> for the hall and the prefunction (and they should not be the same).</li>
+        <li>You know that <strong>geometry determines reflection paths</strong>, and reflections in the speech / early-music band (300&ndash;4,000 Hz) carry intelligibility.</li>
+        <li>You know that <strong>distance kills the back row</strong> (inverse square law) unless geometry or amplification compensates.</li>
+        <li>You know the <strong>OPR categories</strong> that an acoustician would ask you about. Your Decision Log entry tonight should at least name one of them.</li>
+      </ul>
+    </div>
+
+    <div class="bridge">
+      <strong>Coming up → Micro-Lecture B</strong>
+      These principles are not abstract. The next 30 minutes put them inside four real halls you can walk around virtually. You will see Sabine's shoebox, Scharoun's vineyards, Wagner's hidden pit, and Gehry's sails — each a direct answer to the acoustic problem the architect was trying to solve.
+    </div>
+
+  </section>
+
+  <!-- § 05 LECTURE B -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 05</span>
+      <h2 class="sec-title">Micro-Lecture <em>B &mdash; The Halls.</em></h2>
+    </div>
+    <div class="lec">
+      <div class="lec-head">
+        <span><span class="name">Precedent Tour &mdash; Four Listening Rooms</span></span>
+        <span>30 min &middot; supporting material</span>
+      </div>
+      <h3>The four geometries, as <em>built</em>.</h3>
+      <p class="one-liner">Each is a real instance of the diagrams you are about to choose between. We look at plan, section, and what acousticians say about why it works.</p>
+
+      <div class="precedents">
+        <div class="precedent">
+          <figure class="photo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Symphony_Hall_Boston_interior.agr.jpg" alt="Interior of Symphony Hall, Boston — view from the stage toward the rear balcony" loading="lazy" />
+            <figcaption>Wikimedia Commons / CC-BY-SA</figcaption>
+          </figure>
+          <div class="pname">Symphony Hall, <em>Boston</em></div>
+          <div class="pmeta">1900 &middot; McKim, Mead &amp; White + Wallace Sabine &middot; Shoebox</div>
+          <p>The reference room for the modern concert hall. Tall narrow rectangular plan; coffered ceiling and side balconies generate strong lateral reflections; statues in niches act as deliberate scatterers. Wallace Sabine tuned the room using his own equation — the first scientifically designed concert hall.</p>
+          <div class="stats">RT60 ~1.85 s &middot; 2,625 seats &middot; W ~75&prime;</div>
+          <div class="ref-links">
+            <a href="https://en.wikipedia.org/wiki/Symphony_Hall,_Boston" target="_blank">Wikipedia</a>
+            <a href="https://www.bso.org/venues/symphony-hall" target="_blank">BSO Official</a>
+            <a href="https://en.wikipedia.org/wiki/Wallace_Clement_Sabine" target="_blank">Wallace Sabine</a>
+          </div>
+        </div>
+        <div class="precedent">
+          <figure class="photo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Berliner_Philharmonie_Concert_Hall.JPG" alt="Interior of the Berliner Philharmonie — vineyard terraces surrounding the central stage" loading="lazy" />
+            <figcaption>Wikimedia Commons / CC-BY-SA</figcaption>
+          </figure>
+          <div class="pname">Philharmonie, <em>Berlin</em></div>
+          <div class="pmeta">1963 &middot; Hans Scharoun + Lothar Cremer &middot; Vineyard</div>
+          <p>Orchestra in the round; terraced seating banks wrap the stage as &ldquo;vineyards.&rdquo; Balcony fronts are tuned reflectors. The audience itself becomes part of the room&rsquo;s acoustic envelope. Acoustic consultant Lothar Cremer shaped each terrace angle specifically for lateral reflection.</p>
+          <div class="stats">RT60 ~1.95 s &middot; 2,440 seats &middot; ~360&deg;</div>
+          <div class="ref-links">
+            <a href="https://en.wikipedia.org/wiki/Berliner_Philharmonie" target="_blank">Wikipedia</a>
+            <a href="https://www.berliner-philharmoniker.de/en/philharmonie/" target="_blank">Official Site</a>
+            <a href="https://en.wikipedia.org/wiki/Hans_Scharoun" target="_blank">Hans Scharoun</a>
+          </div>
+        </div>
+        <div class="precedent">
+          <figure class="photo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Zuschauerraum_des_Bayreuther_Festspielhauses.jpg" alt="Interior of the Bayreuth Festspielhaus — fan-plan auditorium looking toward the stage" loading="lazy" />
+            <figcaption>Wikimedia Commons / CC-BY-SA</figcaption>
+          </figure>
+          <div class="pname">Festspielhaus, <em>Bayreuth</em></div>
+          <div class="pmeta">1876 &middot; Otto Br&uuml;ckwald for Richard Wagner &middot; Fan</div>
+          <p>Steep fan plan derived from a singer&rsquo;s problem: how to balance an orchestra of 100 against unamplified voice. Orchestra pit hidden under the stage lip; wood-shell envelope wraps the house. Every sightline aimed at the stage. The room is the argument.</p>
+          <div class="stats">RT60 ~1.55 s &middot; 1,925 seats &middot; covered pit</div>
+          <div class="ref-links">
+            <a href="https://en.wikipedia.org/wiki/Bayreuth_Festival_Theatre" target="_blank">Wikipedia</a>
+            <a href="https://www.bayreuther-festspiele.de/en/" target="_blank">Official Festival</a>
+            <a href="https://en.wikipedia.org/wiki/Richard_Wagner" target="_blank">Wagner Brief</a>
+          </div>
+        </div>
+        <div class="precedent">
+          <figure class="photo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/WD_concert_hall_stage.jpg" alt="Walt Disney Concert Hall interior — stage and Douglas-fir sail ceiling, Los Angeles" loading="lazy" />
+            <figcaption>Wikimedia Commons / CC-BY-SA</figcaption>
+          </figure>
+          <div class="pname">Walt Disney Concert Hall, <em>Los Angeles</em></div>
+          <div class="pmeta">2003 &middot; Frank Gehry + Yasuhisa Toyota &middot; Vineyard / Sail</div>
+          <p>Vineyard plan inside an asymmetric sculptural envelope. Douglas-fir convex-curved ceiling sails are individually aimed to redirect energy into the seating. The room was iteratively adjusted in a digital acoustic model before construction. The canonical example of acoustician-architect integration.</p>
+          <div class="stats">RT60 ~2.00 s &middot; 2,265 seats &middot; sail ceiling</div>
+          <div class="ref-links">
+            <a href="https://en.wikipedia.org/wiki/Walt_Disney_Concert_Hall" target="_blank">Wikipedia</a>
+            <a href="https://www.laphil.com/visit/walt-disney-concert-hall" target="_blank">LA Phil Official</a>
+            <a href="https://en.wikipedia.org/wiki/Yasuhisa_Toyota" target="_blank">Yasuhisa Toyota</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- GEOMETRY PLAN DIAGRAMS -->
+      <h4 style="margin-top:36px;">The four plan types &mdash; <em>schematic.</em></h4>
+      <p style="font-size:16px;color:var(--paper-2);margin:8px 0 0;max-width:700px;">Each is a top-down schematic. Stage is amber. Seating is the dark field. Arrows show where early reflections go — or fail to go. Choose which problem you want to solve.</p>
+
+      <div class="geo-grid">
+
+        <!-- SHOEBOX -->
+        <div class="geo-cell">
+          <svg viewBox="0 0 200 190" xmlns="http://www.w3.org/2000/svg">
+            <!-- Hall outline -->
+            <rect x="30" y="15" width="140" height="160" fill="none" stroke="#EDE4D3" stroke-width="1.5"/>
+            <!-- Stage -->
+            <rect x="60" y="155" width="80" height="18" fill="#D4A24C" opacity=".85"/>
+            <text x="100" y="167" text-anchor="middle" fill="#0E0D0B" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="1">STAGE</text>
+            <!-- Seat rows -->
+            <g fill="none" stroke="#8A8273" stroke-width=".75">
+              <line x1="40" y1="135" x2="160" y2="135"/>
+              <line x1="40" y1="120" x2="160" y2="120"/>
+              <line x1="40" y1="105" x2="160" y2="105"/>
+              <line x1="40" y1="90"  x2="160" y2="90"/>
+              <line x1="40" y1="75"  x2="160" y2="75"/>
+              <line x1="40" y1="60"  x2="160" y2="60"/>
+              <line x1="40" y1="45"  x2="160" y2="45"/>
+              <line x1="40" y1="30"  x2="160" y2="30"/>
+            </g>
+            <!-- Lateral reflection arrows left wall -->
+            <g stroke="#D4A24C" stroke-width="1" fill="none" stroke-dasharray="3 2" opacity=".8">
+              <polyline points="100,148 35,100 100,52"/>
+            </g>
+            <!-- Right wall -->
+            <g stroke="#9FC8D4" stroke-width="1" fill="none" stroke-dasharray="3 2" opacity=".7">
+              <polyline points="100,148 165,100 100,52"/>
+            </g>
+            <!-- Arrowheads -->
+            <polygon points="98,53 100,44 102,53" fill="#9FC8D4" opacity=".7"/>
+            <polygon points="98,53 100,44 102,53" fill="#D4A24C" opacity=".0"/>
+            <polygon points="97,44 100,44 99,54" fill="#D4A24C" opacity=".8"/>
+          </svg>
+          <span class="geo-label">Shoebox</span>
+          <p class="geo-note">Parallel side walls deliver strong bilateral early reflections. Classic concert-hall geometry. Risk: flutter echo if walls are too smooth.</p>
+        </div>
+
+        <!-- FAN -->
+        <div class="geo-cell">
+          <svg viewBox="0 0 200 190" xmlns="http://www.w3.org/2000/svg">
+            <!-- Fan outline -->
+            <path d="M100,173 L20,20 L180,20 Z" fill="none" stroke="#EDE4D3" stroke-width="1.5"/>
+            <!-- Stage -->
+            <rect x="65" y="155" width="70" height="17" fill="#D4A24C" opacity=".85"/>
+            <text x="100" y="167" text-anchor="middle" fill="#0E0D0B" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="1">STAGE</text>
+            <!-- Curved seat rows -->
+            <g fill="none" stroke="#8A8273" stroke-width=".75">
+              <path d="M35,140 Q100,128 165,140"/>
+              <path d="M28,118 Q100,104 172,118"/>
+              <path d="M26,96  Q100,80  174,96"/>
+              <path d="M25,74  Q100,58  175,74"/>
+              <path d="M24,52  Q100,36  176,52"/>
+              <path d="M23,30  Q100,16  177,30"/>
+            </g>
+            <!-- Side wall reflection arrows showing problematic back corner bounce -->
+            <g stroke="#C8472F" stroke-width="1" fill="none" stroke-dasharray="3 2" opacity=".8">
+              <polyline points="100,148 25,60 100,28"/>
+              <polyline points="100,148 175,60 100,28"/>
+            </g>
+            <text x="100" y="12" text-anchor="middle" fill="#C8472F" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="1" opacity=".9">BACK WALL FOCUS RISK</text>
+          </svg>
+          <span class="geo-label">Fan</span>
+          <p class="geo-note">Excellent sightlines; all seats face the source. Angled side walls deflect laterals away. Curved back wall can focus sound — must be broken up.</p>
+        </div>
+
+        <!-- VINEYARD -->
+        <div class="geo-cell">
+          <svg viewBox="0 0 200 190" xmlns="http://www.w3.org/2000/svg">
+            <!-- Stage block -->
+            <rect x="72" y="110" width="56" height="36" fill="#D4A24C" opacity=".85"/>
+            <text x="100" y="131" text-anchor="middle" fill="#0E0D0B" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="1">STAGE</text>
+            <!-- Terrace blocks -->
+            <rect x="10"  y="95"  width="55" height="65" rx="3" fill="none" stroke="#EDE4D3" stroke-width="1.5"/>
+            <rect x="135" y="95"  width="55" height="65" rx="3" fill="none" stroke="#EDE4D3" stroke-width="1.5"/>
+            <rect x="30"  y="15"  width="140" height="72" rx="3" fill="none" stroke="#EDE4D3" stroke-width="1.5"/>
+            <!-- Seat rows in rear block -->
+            <g fill="none" stroke="#8A8273" stroke-width=".75">
+              <line x1="38"  y1="35" x2="162" y2="35"/>
+              <line x1="38"  y1="50" x2="162" y2="50"/>
+              <line x1="38"  y1="65" x2="162" y2="65"/>
+              <line x1="38"  y1="78" x2="162" y2="78"/>
+              <!-- Side terrace rows -->
+              <line x1="16"  y1="110" x2="60" y2="110"/>
+              <line x1="16"  y1="122" x2="60" y2="122"/>
+              <line x1="16"  y1="134" x2="60" y2="134"/>
+              <line x1="140" y1="110" x2="184" y2="110"/>
+              <line x1="140" y1="122" x2="184" y2="122"/>
+              <line x1="140" y1="134" x2="184" y2="134"/>
+            </g>
+            <!-- Arrows from stage to terraces -->
+            <g stroke="#D4A24C" stroke-width="1" fill="none" stroke-dasharray="3 2" opacity=".8">
+              <line x1="100" y1="110" x2="38" y2="87"/>
+              <line x1="100" y1="110" x2="162" y2="87"/>
+              <line x1="100" y1="110" x2="100" y2="85"/>
+            </g>
+          </svg>
+          <span class="geo-label">Vineyard</span>
+          <p class="geo-note">Audience surrounds the stage; balcony fronts are tuned reflectors. High intimacy. Demands more complex BOH and circulation routing.</p>
+        </div>
+
+        <!-- HORSESHOE -->
+        <div class="geo-cell">
+          <svg viewBox="0 0 200 190" xmlns="http://www.w3.org/2000/svg">
+            <!-- Stage -->
+            <rect x="62" y="155" width="76" height="18" fill="#D4A24C" opacity=".85"/>
+            <text x="100" y="167" text-anchor="middle" fill="#0E0D0B" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="1">STAGE</text>
+            <!-- Outer U wall -->
+            <path d="M30,155 L30,90 Q30,15 100,15 Q170,15 170,90 L170,155" fill="none" stroke="#EDE4D3" stroke-width="1.5"/>
+            <!-- Tier arcs (nested) -->
+            <path d="M45,155 L45,92 Q45,30 100,30 Q155,30 155,92 L155,155" fill="none" stroke="#8A8273" stroke-width=".75" stroke-dasharray="4 2"/>
+            <path d="M60,155 L60,94 Q60,46 100,46 Q140,46 140,94 L140,155" fill="none" stroke="#8A8273" stroke-width=".75" stroke-dasharray="4 2"/>
+            <path d="M75,155 L75,96 Q75,62 100,62 Q125,62 125,96 L125,155" fill="none" stroke="#8A8273" stroke-width=".75" stroke-dasharray="4 2"/>
+            <!-- Tier labels -->
+            <text x="34" y="55" fill="#8A8273" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="1">TIER 3</text>
+            <text x="48" y="72" fill="#8A8273" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="1">TIER 2</text>
+            <text x="62" y="89" fill="#8A8273" font-family="JetBrains Mono,monospace" font-size="8" letter-spacing="1">TIER 1</text>
+            <!-- Side box problem arrows -->
+            <g stroke="#C8472F" stroke-width="1" fill="none" stroke-dasharray="3 2" opacity=".7">
+              <line x1="38" y1="130" x2="100" y2="155"/>
+            </g>
+            <text x="14" y="143" fill="#C8472F" font-family="JetBrains Mono,monospace" font-size="7" letter-spacing=".5">SIDE BOX</text>
+            <text x="14" y="152" fill="#C8472F" font-family="JetBrains Mono,monospace" font-size="7" letter-spacing=".5">SIGHTLINE</text>
+          </svg>
+          <span class="geo-label">Horseshoe</span>
+          <p class="geo-note">Stacked tiers wrap a deep stage. High social intimacy; traditional opera format. Acoustic compromise in side boxes. Tall, complex BOH.</p>
+        </div>
+
+      </div><!-- /geo-grid -->
+
+      <div class="bridge">
+        <strong>Transition → Lab</strong>
+        You have the four types in your head now as real built things and as diagrams. In the breakout you will pick one, argue for it acoustically, and start placing it in Rhino. The geometry you commit to tonight shapes every calculation you run in Week 2.
+      </div>
+
+    </div>
+  </section>
+
+  <!-- § 06 STARTER KIT -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 06</span>
+      <h2 class="sec-title">The <em>Starter Kit.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>Every student receives the same kit at the open of class. It defines the constraints we share &mdash; the design decisions are entirely yours.</p>
+    </div>
+    <div class="kit">
+      <div class="panel">
+        <h4>Program &mdash; <em>500-seat Auditorium + Prefunction</em></h4>
+        <dl class="kit-specs">
+          <dt>House</dt><dd>500 fixed seats, mixed speech + music program.</dd>
+          <dt>Stage</dt><dd>Proscenium, ~40&prime; W &times; 30&prime; D, fly height TBD by you.</dd>
+          <dt>Prefunction</dt><dd>~2,500 sf lobby with restrooms, box office, coat &amp; bar.</dd>
+          <dt>Back-of-house</dt><dd>Green room, dressing, loading dock, mech room.</dd>
+          <dt>Site</dt><dd>Open suburban site, latitude 35&deg;N. South long axis available.</dd>
+          <dt>Climate</dt><dd>Mixed-humid; hot summer, mild winter; high solar availability.</dd>
+        </dl>
+      </div>
+      <div class="panel accent">
+        <h4>Files in the Canvas Module</h4>
+        <ul>
+          <li><strong>Starter plan diagrams (PDF + DWG):</strong> shoebox, fan, vineyard, horseshoe &mdash; all at 500-seat capacity, same scale.</li>
+          <li><strong>Section reference set</strong> for each geometry.</li>
+          <li><strong>Site &amp; climate brief</strong> (one page).</li>
+          <li><strong>10-week decision map</strong> &mdash; every decision you will make, on one sheet.</li>
+          <li><strong>Decision Log template</strong> (Google Doc — make a copy and share with instructor).</li>
+          <li><strong>Rhino starter file (.3dm)</strong> &mdash; AEIS_ layers pre-named, site volume and seating block placed.</li>
+          <li><strong>Python RT60 script</strong> &mdash; the analysis tool you will run in Week 2. No setup needed; run it from Rhino&rsquo;s <em>RunPythonScript</em> command.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 07 RHINO LAYER SETUP -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 07</span>
+      <h2 class="sec-title">Rhino Layer <em>Setup.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Before you start modeling, set up your layers correctly. The Python RT60 script you will run in Week 2 reads layer names directly &mdash; if your layers are not named with the <code style="font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--blue);background:rgba(14,13,11,.4);padding:1px 6px;">AEIS_</code> prefix, the script skips them silently and your calculations will be wrong.</p>
+      <p>The convention is simple: every room surface lives on a layer named <strong>AEIS_</strong> followed by one of the material keys below. Your sound source lives on <strong>AEIS_SOURCE</strong>. That is the entire system.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px;">
+      <div style="padding:20px 22px;border:1px solid var(--amber-line);background:rgba(212,162,76,.05);">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:12px;">Naming Convention</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--paper);margin-bottom:8px;">AEIS_<span style="color:var(--amber);">MATERIAL_KEY</span></div>
+        <div style="font-size:15px;color:var(--paper-2);line-height:1.6;">
+          Examples:<br>
+          <code style="color:var(--blue);">AEIS_CONCRETE_BARE</code> — bare concrete wall<br>
+          <code style="color:var(--blue);">AEIS_SEATS_UPHOLSTERED</code> — seating block<br>
+          <code style="color:var(--blue);">AEIS_CEILING_CLOUD</code> — reflector panel<br>
+          <code style="color:var(--blue);">AEIS_SOURCE</code> — place one Point object here
+        </div>
+      </div>
+      <div style="padding:20px 22px;border:1px solid var(--rule-strong);background:rgba(237,228,211,.02);">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:12px;">Minimum Week 1 Setup</div>
+        <ul style="font-size:15px;color:var(--paper-2);padding-left:18px;line-height:1.7;margin:0;">
+          <li>Floor surface → <code style="color:var(--blue);">AEIS_WOOD_FLOOR</code> or <code style="color:var(--blue);">AEIS_CONCRETE_FLOOR</code></li>
+          <li>Side walls → <code style="color:var(--blue);">AEIS_CONCRETE_BARE</code> or <code style="color:var(--blue);">AEIS_PLASTER_HARD</code></li>
+          <li>Ceiling → <code style="color:var(--blue);">AEIS_GYPSUM_BOARD</code> or <code style="color:var(--blue);">AEIS_CEILING_CLOUD</code></li>
+          <li>Seating area → <code style="color:var(--blue);">AEIS_SEATS_UPHOLSTERED</code></li>
+          <li>Sound source → one Point on <code style="color:var(--blue);">AEIS_SOURCE</code>, stage center ~5 ft above floor</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top:28px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--rule-strong);">Full Material Library — 23 keys available in the script</div>
+      <table class="layer-table">
+        <thead>
+          <tr><th>Layer name (prefix: AEIS_)</th><th>Description</th><th>NRC approx.</th></tr>
+        </thead>
+        <tbody>
+          <tr class="layer-group"><td colspan="3">— Floors</td></tr>
+          <tr><td>CARPET_THICK</td><td>Heavy carpet on concrete</td><td>0.55</td></tr>
+          <tr><td>CARPET_THIN</td><td>Thin carpet / felt underlay</td><td>0.44</td></tr>
+          <tr><td>WOOD_FLOOR</td><td>Hardwood on joist construction</td><td>0.08</td></tr>
+          <tr><td>CONCRETE_FLOOR</td><td>Sealed / painted concrete slab</td><td>0.02</td></tr>
+          <tr class="layer-group"><td colspan="3">— Ceilings</td></tr>
+          <tr><td>GYPSUM_BOARD</td><td>½&Prime; GWB on metal studs</td><td>0.07</td></tr>
+          <tr><td>ACOUSTIC_TILE</td><td>¾&Prime; lay-in acoustic ceiling tile</td><td>0.76</td></tr>
+          <tr><td>PLASTER_HARD</td><td>Hard plaster on lath</td><td>0.03</td></tr>
+          <tr><td>PLASTER_ACOUSTIC</td><td>Sprayed acoustic plaster</td><td>0.34</td></tr>
+          <tr><td>WOOD_PANEL</td><td>¾&Prime; wood panel with air gap</td><td>0.09</td></tr>
+          <tr><td>CEILING_CLOUD</td><td>Suspended reflector / absorber panel</td><td>0.53</td></tr>
+          <tr class="layer-group"><td colspan="3">— Walls</td></tr>
+          <tr><td>CONCRETE_BARE</td><td>Poured or painted concrete</td><td>0.02</td></tr>
+          <tr><td>CONCRETE_BLOCK</td><td>Unpainted CMU / concrete masonry</td><td>0.36</td></tr>
+          <tr><td>BRICK</td><td>Unglazed brick</td><td>0.04</td></tr>
+          <tr><td>GLASS</td><td>¼&Prime; plate glass</td><td>0.10</td></tr>
+          <tr><td>FABRIC_CURTAIN</td><td>Heavy draped fabric</td><td>0.64</td></tr>
+          <tr><td>GRC_CONVEX</td><td>GRC convex reflector panel</td><td>0.06</td></tr>
+          <tr><td>WOOD_DIFFUSER</td><td>QRD / wood diffuser panel</td><td>0.09</td></tr>
+          <tr class="layer-group"><td colspan="3">— Seating &amp; Audience</td></tr>
+          <tr><td>SEATS_UPHOLSTERED</td><td>Fully upholstered seats (empty)</td><td>0.74</td></tr>
+          <tr><td>SEATS_OCCUPIED</td><td>Upholstered seats with audience</td><td>0.88</td></tr>
+          <tr><td>SEATS_WOOD</td><td>Unupholstered wood seats</td><td>0.05</td></tr>
+          <tr class="layer-group"><td colspan="3">— Special</td></tr>
+          <tr><td>ACOUSTIC_PANEL</td><td>2&Prime; fabric-wrapped acoustic panel</td><td>0.94</td></tr>
+          <tr><td>BASS_TRAP</td><td>Corner bass absorber</td><td>0.83</td></tr>
+          <tr><td>OPEN_WINDOW</td><td>Calibration / opening (α = 1.00)</td><td>1.00</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:14px;color:var(--paper-dim);margin-top:8px;font-style:italic;">NRC is the average of α at 250, 500, 1000, and 2000 Hz. Full six-band absorption coefficients are in the script. Source: MEEB 13th ed. Table 27.1 / Knudsen &amp; Harris.</p>
+    </div>
+
+    <div class="bridge">
+      <strong>Transition → Lab</strong>
+      Layer names locked in. Now go build the room. You do not need every material tonight — pick four or five that cover floor, walls, ceiling, and seating. The script will flag any layer it cannot match, so you can always refine in Week 2.
+    </div>
+
+  </section>
+
+  <!-- § 08 LAB BREAKOUT -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 08</span>
+      <h2 class="sec-title">Lab &mdash; <em>Volume Studio.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:16px;">
+      <p>Four breakout rooms, one per geometry. Three to four students per room. The geometry is the <em>group&rsquo;s</em> conversation; the chosen scheme is the <em>student&rsquo;s</em> commitment.</p>
+      <h5>Per-group tasks (90 min collaborative)</h5>
+      <ul>
+        <li>Identify two acoustic <em>strengths</em> and two acoustic <em>concerns</em> of your geometry, in your own words.</li>
+        <li>Sketch one shared section over the assigned plan &mdash; ceiling height, slope, balcony if any.</li>
+        <li>Name two design moves that <em>leverage</em> the geometry (e.g., splay angles, balcony fronts) and two moves that <em>compensate</em> for its weaknesses.</li>
+      </ul>
+      <h5>Per-student tasks (50 min individual, back in main room or staying in breakout)</h5>
+      <ul>
+        <li>Choose your starting geometry &mdash; it does not have to be the one your breakout discussed.</li>
+        <li>Open the Rhino starter file; lay in the seating block, stage, and a section line.</li>
+        <li>Begin Decision Log entry &#35;01 documenting <em>why</em> you chose what you chose.</li>
+      </ul>
+    </div>
+
+    <div class="lab-sheet">
+      <div class="lab-row">
+        <div class="g">I.</div>
+        <div>
+          <span class="tag">Room 1</span>
+          <h5>Shoebox &mdash; <em>The Reference</em></h5>
+          <p>Tall narrow rectangle; lateral reflections from parallel side walls.</p>
+        </div>
+        <div class="tasks">
+          <p><strong>Discussion seeds:</strong></p>
+          <ul>
+            <li>How do parallel walls deliver lateral energy &mdash; and what is the risk?</li>
+            <li>What height-to-width ratio is the textbook starting point? Does 500 seats support it?</li>
+            <li>Where do you put the balcony, if any?</li>
+          </ul>
+        </div>
+      </div>
+      <div class="lab-row">
+        <div class="g">II.</div>
+        <div>
+          <span class="tag">Room 2</span>
+          <h5>Fan &mdash; <em>The Sightline Solver</em></h5>
+          <p>Audience splayed outward from stage; all seats face the source. Beware focusing.</p>
+        </div>
+        <div class="tasks">
+          <p><strong>Discussion seeds:</strong></p>
+          <ul>
+            <li>Why is fan plan popular for cinemas and speech &mdash; and historically fraught for music?</li>
+            <li>How do you break up the back wall to prevent focused echoes?</li>
+            <li>Could a reverse fan (narrowing back) be useful here?</li>
+          </ul>
+        </div>
+      </div>
+      <div class="lab-row">
+        <div class="g">III.</div>
+        <div>
+          <span class="tag">Room 3</span>
+          <h5>Vineyard &mdash; <em>The Surround</em></h5>
+          <p>Terraces around the stage; balcony fronts as tuned reflectors.</p>
+        </div>
+        <div class="tasks">
+          <p><strong>Discussion seeds:</strong></p>
+          <ul>
+            <li>What does the audience do for the room&rsquo;s acoustic response?</li>
+            <li>How does a vineyard handle a single proscenium event vs. an orchestra in the round?</li>
+            <li>What does it cost in back-of-house and circulation?</li>
+          </ul>
+        </div>
+      </div>
+      <div class="lab-row">
+        <div class="g">IV.</div>
+        <div>
+          <span class="tag">Room 4</span>
+          <h5>Horseshoe &mdash; <em>The Opera Logic</em></h5>
+          <p>Stacked tiers wrapping a deep stage; intimacy + sight at the cost of even sound.</p>
+        </div>
+        <div class="tasks">
+          <p><strong>Discussion seeds:</strong></p>
+          <ul>
+            <li>Why do horseshoe halls feel intimate even at large capacities?</li>
+            <li>What is the acoustic compromise in the side boxes?</li>
+            <li>Can a 500-seat hall justify the back-of-house demands?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 09 DECISION LOG -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 09</span>
+      <h2 class="sec-title">Decision Log &mdash; <em>First Entry.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Before tonight ends, open your <strong>Google Doc Decision Log</strong> (template in the Canvas module) and write Entry 1. The log runs continuously for the full term. You will update it after every weekly work session and it will be reviewed at each Act close. The first entry is about the starting choice — which geometry you committed to, and why. Even a thin entry is better than no entry; the log is meant to evolve.</p>
+      <p style="font-size:16px;color:var(--paper-dim);font-style:italic;">The instructor has view access to your shared Google Doc throughout the term. At each Act Review, you will also paste your entries into the Canvas text submission as a timestamped snapshot — but the live doc is the primary record.</p>
+    </div>
+    <div class="dl-template">
+      <div class="field"><b>Week / Act</b><span>Week 01 &middot; Act I &mdash; Acoustics</span></div>
+      <div class="field"><b>System</b><span>Acoustics &mdash; starting room geometry</span></div>
+      <div class="field"><b>Space</b><span>Main Hall (500 seats)</span></div>
+      <div class="field"><b>Decision</b><span>e.g., &ldquo;Chose vineyard plan with terraced seating wrapping a thrust stage.&rdquo;</span></div>
+      <div class="field"><b>Reasoning</b><span>Why this geometry, in your own words &mdash; gut response to the precedents counts here.</span></div>
+      <div class="field"><b>Trade-off</b><span>What you suspect you are giving up &mdash; circulation, BOH area, fly height, etc.</span></div>
+      <div class="field"><b>What I&rsquo;d Reconsider</b><span>(Leave blank tonight &mdash; you will revisit at Act I Review in Week 3.)</span></div>
+    </div>
+
+    <div class="bridge">
+      <strong>Transition → Deliverable</strong>
+      Log entry written, Rhino model started, geometry committed. Here is exactly what to upload to Canvas before Tuesday night.
+    </div>
+
+  </section>
+
+  <!-- § 10 DELIVERABLE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 10</span>
+      <h2 class="sec-title">Deliverable &mdash; <em>Due Tue 05·26.</em></h2>
+    </div>
+    <div class="deliverable">
+      <div class="label">Submit to Canvas &middot; Tuesday 05·26 &middot; 11:59 PM</div>
+      <h4>Week 1 Package</h4>
+      <ul>
+        <li><strong>Rhino model file (.3dm)</strong> &mdash; your hall volume with <code style="font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--blue);">AEIS_</code> layers assigned to all room surfaces and an <code style="font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--blue);">AEIS_SOURCE</code> point placed at stage center. Minimum four surface types (floor, walls, ceiling, seating). The Week 2 script will run directly on this file.</li>
+        <li><strong>Two Rhino screenshots</strong> &mdash; one plan view, one section view. The Rhino layer panel must be visible in at least one screenshot so material assignments are legible. Annotate: seat count, stage dimensions, ceiling height.</li>
+        <li><strong>Program declaration (150&ndash;200 words)</strong> &mdash; geometry type, program (speech / music / mixed), NC target for the hall and for the prefunction (they should differ), and one acoustic trade-off you have already accepted.</li>
+        <li><strong>Update your Google Doc Decision Log</strong> &mdash; Entry 1 must be written before submission. Share the doc link in the Canvas text entry box if you have not already done so.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- § 11 INSTRUCTOR CHECKLIST -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 11</span>
+      <h2 class="sec-title">Pre-Class <em>Checklist.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:8px;">
+      <p>Instructor notes for the night before.</p>
+    </div>
+    <div class="checklist">
+      <div class="check"><span class="box"></span><span class="text"><strong>Starter kit posted</strong> in the Week 1 Canvas module &mdash; plans (PDF + DWG), program brief, site/climate, decision map, Rhino starter file, Decision Log template.</span></div>
+      <div class="check"><span class="box"></span><span class="text"><strong>Intake survey</strong> live in Canvas &mdash; review responses 24 hr before class to calibrate pacing.</span></div>
+      <div class="check"><span class="box"></span><span class="text"><strong>Audio examples</strong> queued: tone sweep, NC 20 vs. NC 40 speech demo. Test Zoom audio share.</span></div>
+      <div class="check"><span class="box"></span><span class="text"><strong>Slide deck</strong> for Lectures A &amp; B finalized; precedent plans/sections in shared resolution.</span></div>
+      <div class="check"><span class="box"></span><span class="text"><strong>Breakout rooms</strong> pre-named in Zoom: Shoebox / Fan / Vineyard / Horseshoe.</span></div>
+      <div class="check"><span class="box"></span><span class="text"><strong>Group assignments</strong> drafted (3&ndash;4 per geometry, balanced grad/undergrad and Rhino-experience).</span></div>
+      <div class="check"><span class="box"></span><span class="text"><strong>Snapshot Thread</strong> created on Canvas with an example post pinned.</span></div>
+      <div class="check"><span class="box"></span><span class="text"><strong>Recording on</strong> at 19:30; chapter markers ready (Lecture A / Break / Lecture B / Lab Intro).</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>ARC 5443 · Week 01 · Class Plan v2</span>
+    <span>Kurt Neiswender, AIA · CoAD · LTU</span>
+  </footer>
+
+</div>
+</body>
+</html>

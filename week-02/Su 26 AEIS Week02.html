@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · Week 02 · RT60 &amp; the Calculated Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B;--ink-2:#161412;
+    --paper:#EDE4D3;--paper-2:#D9CFB9;--paper-dim:#8A8273;
+    --amber:#D4A24C;--amber-soft:rgba(212,162,76,.10);--amber-line:rgba(212,162,76,.45);
+    --red:#C8472F;--blue:#9FC8D4;--green:#7FAF78;
+    --rule:rgba(237,228,211,.18);--rule-strong:rgba(237,228,211,.42);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  body{
+    font-family:"Newsreader",Georgia,serif;font-weight:380;font-size:20px;line-height:1.6;
+    font-feature-settings:"ss01","onum";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.55;
+  }
+  ::selection{background:var(--amber);color:var(--ink);}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:48px 56px 120px;position:relative;}
+  @media(max-width:720px){.wrap{padding:32px 22px 80px}}
+
+  /* TOPBAR */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);padding-bottom:18px;border-bottom:1px solid var(--rule);
+  }
+  .topbar .badge{
+    background:rgba(159,200,212,.12);border:1px solid rgba(159,200,212,.35);
+    color:var(--blue);padding:3px 10px;font-size:10px;letter-spacing:.22em;
+  }
+
+  /* HERO */
+  .hero{padding:60px 0 40px;display:grid;grid-template-columns:1fr 220px;gap:48px;align-items:end;}
+  @media(max-width:820px){.hero{grid-template-columns:1fr}.hero .ornament{display:none}}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-bottom:18px;}
+  .kicker .pipe{color:var(--paper-dim);margin:0 10px;}
+  h1.title{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;
+    font-weight:380;font-size:clamp(48px,8vw,110px);line-height:.88;letter-spacing:-.03em;margin:0;
+  }
+  h1.title em{font-style:italic;color:var(--amber);font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+  .sub{margin-top:28px;max-width:760px;font-family:"Newsreader",serif;font-size:clamp(18px,1.8vw,22px);line-height:1.45;color:var(--paper-2);font-style:italic;}
+
+  /* NOTICE BANNER */
+  .notice{
+    margin-top:36px;padding:18px 24px;
+    border:1px solid rgba(159,200,212,.40);background:rgba(159,200,212,.07);
+    display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;
+  }
+  .notice-icon{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--blue);white-space:nowrap;padding-top:2px;}
+  .notice-body{font-size:16px;color:var(--paper-2);line-height:1.6;}
+  .notice-body strong{color:var(--paper);}
+
+  /* META STRIP */
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);margin-top:48px;}
+  .meta>div{padding:18px 18px 18px 0;border-right:1px solid var(--rule);}
+  .meta>div:last-child{border-right:none}
+  .meta dt{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:6px;}
+  .meta dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:19px;line-height:1.2;font-variation-settings:"opsz" 36;}
+  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:12.5px;color:var(--paper-dim);margin-top:3px;font-style:italic;}
+  @media(max-width:820px){.meta{grid-template-columns:repeat(2,1fr)}.meta>div:nth-child(2){border-right:none}}
+
+  /* SECTION */
+  section{margin-top:96px;}
+  .sec-label{display:flex;align-items:baseline;gap:22px;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--rule-strong);}
+  .sec-num{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.18em;color:var(--amber);}
+  .sec-title{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(30px,4vw,46px);line-height:1;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 72,"SOFT" 40;}
+  .sec-title em{font-style:italic;color:var(--amber);}
+
+  .prose{max-width:820px;color:var(--paper-2);font-size:18px;line-height:1.65;}
+  .prose p{margin:0 0 1em;}
+  .prose em{color:var(--paper);font-style:italic;}
+  .prose strong{color:var(--paper);}
+  .prose ul{padding-left:20px;}
+  .prose ul li{margin-bottom:10px;}
+  .prose h5{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin:24px 0 10px;font-weight:500;}
+
+  /* TIMETABLE */
+  .timetable{margin-top:8px;border-top:1px solid var(--rule-strong);}
+  .timetable .row{display:grid;grid-template-columns:160px 70px 1fr;gap:20px;padding:14px 0;border-bottom:1px solid var(--rule);align-items:baseline;}
+  .timetable .row .when{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--amber);letter-spacing:.06em;}
+  .timetable .row .dur{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--paper-dim);letter-spacing:.14em;}
+  .timetable .row .what{font-size:15.5px;color:var(--paper);}
+  .timetable .row .what em{font-style:italic;color:var(--amber);}
+  .timetable .row.lab{background:var(--amber-soft);padding-left:14px;padding-right:14px;}
+  .timetable .row.break{color:var(--paper-dim);}
+  .timetable .row.async{background:rgba(159,200,212,.06);padding-left:14px;padding-right:14px;}
+
+  /* PRE-CLASS CHECKLIST */
+  .pre-class{margin-top:24px;border:1px solid var(--blue);background:rgba(159,200,212,.05);}
+  .pre-class-head{
+    padding:14px 20px;border-bottom:1px solid rgba(159,200,212,.25);
+    font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--blue);
+  }
+  .pre-row{
+    display:grid;grid-template-columns:36px 1fr;padding:14px 18px;
+    border-bottom:1px solid var(--rule);align-items:start;gap:0;
+  }
+  .pre-row:last-child{border-bottom:none;}
+  .pre-check{
+    width:18px;height:18px;border:1.5px solid rgba(159,200,212,.5);margin-top:2px;flex-shrink:0;
+  }
+  .pre-body{padding-left:4px;}
+  .pre-body strong{color:var(--paper);font-size:15.5px;}
+  .pre-body p{margin:4px 0 0;font-size:14px;color:var(--paper-dim);line-height:1.45;}
+
+  /* BUG TABLE */
+  .bug-table{width:100%;margin-top:20px;border-collapse:collapse;}
+  .bug-table th{
+    padding:10px 16px;font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);
+    text-align:left;border-bottom:1px solid var(--rule-strong);font-weight:400;
+    background:rgba(14,13,11,.4);
+  }
+  .bug-table td{padding:14px 16px;border-bottom:1px solid var(--rule);font-size:15px;color:var(--paper-2);vertical-align:top;line-height:1.55;}
+  .bug-table tr:last-child td{border-bottom:none;}
+  .bug-table td:first-child{
+    font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--red);
+    white-space:normal;line-height:1.4;min-width:220px;
+  }
+  .bug-table td:nth-child(2){color:var(--paper-dim);font-size:14px;}
+  .bug-table td:nth-child(3){color:var(--green);font-size:14px;}
+  .bug-table .code{
+    display:inline-block;font-family:"JetBrains Mono",monospace;font-size:11.5px;
+    color:var(--blue);background:rgba(14,13,11,.4);padding:1px 6px;
+  }
+
+  /* QA PROTOCOL */
+  .qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:20px;border:1px solid var(--rule-strong);}
+  .qa-cell{padding:22px 24px;border-right:1px solid var(--rule);}
+  .qa-cell:last-child{border-right:none;}
+  .qa-cell h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 12px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .qa-cell h4 em{font-style:italic;color:var(--amber);}
+  .qa-cell ul{padding-left:18px;color:var(--paper-2);font-size:15px;line-height:1.65;margin:0;}
+  .qa-cell li{margin-bottom:8px;}
+  .qa-cell li strong{color:var(--paper);}
+  @media(max-width:720px){.qa-grid{grid-template-columns:1fr}.qa-cell{border-right:none;border-bottom:1px solid var(--rule)}.qa-cell:last-child{border-bottom:none}}
+
+  /* EQUATION BLOCK */
+  .eq-block{
+    margin:24px 0;padding:22px 28px;border:1px solid var(--amber-line);
+    background:var(--amber-soft);break-inside:avoid;
+  }
+  .eq-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--amber);margin-bottom:12px;}
+  .eq-formula{
+    font-family:"JetBrains Mono",monospace;font-size:18px;color:var(--paper);
+    margin:0 0 12px;letter-spacing:.04em;
+  }
+  .eq-vars{font-size:14px;color:var(--paper-2);line-height:1.7;}
+  .eq-vars dt{display:inline;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--amber);}
+  .eq-vars dd{display:inline;margin:0 0 0 8px;}
+  .eq-vars dl{margin:4px 0;}
+
+  /* BRIDGE */
+  .bridge{
+    margin-top:56px;padding:18px 24px;border-left:2px solid var(--amber-line);
+    background:rgba(212,162,76,.04);font-size:16px;color:var(--paper-2);
+    font-style:italic;line-height:1.6;
+  }
+  .bridge strong{color:var(--amber);font-style:normal;font-family:"JetBrains Mono",monospace;
+    font-size:11px;letter-spacing:.2em;text-transform:uppercase;display:block;margin-bottom:6px;}
+
+  /* DELIVERABLE */
+  .deliverable{
+    border-left:3px solid var(--amber);background:var(--amber-soft);
+    padding:22px 28px;margin-top:24px;
+  }
+  .deliverable .label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-weight:500;}
+  .deliverable h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 12px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .deliverable ul{margin:8px 0;padding-left:20px;color:var(--paper);font-size:15px;line-height:1.6;}
+  .deliverable li{margin-bottom:6px;}
+
+  /* CHECKLIST */
+  .checklist{margin-top:18px;}
+  .check{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--rule);align-items:flex-start;}
+  .check:last-child{border-bottom:none}
+  .check .box{flex:0 0 auto;width:18px;height:18px;border:1.5px solid var(--paper-dim);margin-top:2px;}
+  .check .text{font-size:15px;color:var(--paper-2);line-height:1.5;}
+  .check .text strong{color:var(--paper);}
+
+  /* FOOT */
+  footer{margin-top:120px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .hero,section{animation:rise .9s ease both;}
+
+  /* PRINT */
+  @page{size:Letter;margin:0.55in 0.6in;}
+  @media print{
+    html{background:var(--ink) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    body{background:var(--ink) !important;font-size:14px;line-height:1.5;}
+    body::before{display:none !important;}
+    .wrap{max-width:none;padding:0;}
+    .hero,section{animation:none !important;}
+    h1.title{font-size:60px !important;}
+    .sec-title{font-size:30px !important;}
+    .bug-table,.pre-class,.deliverable,.eq-block,.qa-cell{break-inside:avoid;}
+    .pb-before{break-before:page !important;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span>Week 02 · Class Plan · 2026.05.27</span>
+    <span>ARC 5443 · Summer 2026 · Act I — Acoustics</span>
+    <span class="badge">Async + Q&amp;A Format</span>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div>
+      <div class="kicker">Week 02 <span class="pipe">/</span> Act I <span class="pipe">/</span> Acoustics</div>
+      <h1 class="title">The Room,<br><em>Calculated.</em></h1>
+      <p class="sub">RT60. Sabine. Eyring. The equations that turn a volume sketch into a quantifiable acoustic argument — and the script that checks your math against a ray-traced model.</p>
+    </div>
+    <svg class="ornament" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g stroke="#D4A24C" stroke-width="1" fill="none" opacity=".8">
+        <rect x="55" y="55" width="110" height="110" stroke-dasharray="4 4"/>
+        <rect x="75" y="75" width="70" height="70"/>
+        <line x1="110" y1="30" x2="110" y2="190" stroke-dasharray="2 4" opacity=".5"/>
+        <line x1="30" y1="110" x2="190" y2="110" stroke-dasharray="2 4" opacity=".5"/>
+      </g>
+      <circle cx="110" cy="110" r="5" fill="#C8472F"/>
+      <circle cx="110" cy="110" r="12" fill="none" stroke="#D4A24C" stroke-width="1"/>
+    </svg>
+  </header>
+
+  <!-- FORMAT NOTICE -->
+  <div class="notice">
+    <div class="notice-icon">Format Note</div>
+    <div class="notice-body">
+      This week's class is <strong>abbreviated — live session is Q&amp;A and Rhino debugging only.</strong>
+      Lecture content is delivered via pre-recorded video and the RT60 Tutorial document (linked in the Canvas module).
+      Watch the recording and work through the tutorial <strong>before Tuesday's session.</strong>
+      Come with your script run attempted — even if it failed.
+    </div>
+  </div>
+
+  <!-- META -->
+  <dl class="meta">
+    <div><dt>Date</dt><dd>Tue 05·27<small>time TBD · abbreviated</small></dd></div>
+    <div><dt>Format</dt><dd>Async + Live<small>pre-recorded lecture, live Q&amp;A</small></dd></div>
+    <div><dt>Before Class</dt><dd>Watch + Run<small>tutorial + script attempt</small></dd></div>
+    <div><dt>Read · Before</dt><dd>MEEB Ch. 22<small>Room Acoustics Design</small></dd></div>
+  </dl>
+
+
+  <!-- § 01 SESSION OBJECTIVES -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 01</span>
+      <h2 class="sec-title">Session <em>Objectives.</em></h2>
+    </div>
+    <div class="prose">
+      <p>By the end of this week — between the recorded lecture and the live Q&amp;A — each student should be able to:</p>
+      <ul>
+        <li><strong>State their RT60 target</strong> by program type and cite the published range it comes from.</li>
+        <li><strong>Calculate RT60 by hand</strong> using both Sabine and Eyring at 500 Hz, 1 kHz, and 2 kHz using their own room geometry and material assignments.</li>
+        <li><strong>Run the aeis_rt60.py script</strong> in Rhino and read the HTML output report.</li>
+        <li><strong>Compare</strong> script output to hand calculation and either confirm agreement within ±0.2 s or explain the discrepancy.</li>
+        <li><strong>Identify the dominant absorptive surface</strong> in their room by area × coefficient and know whether to add or remove absorption to hit target.</li>
+      </ul>
+    </div>
+  </section>
+
+
+  <!-- § 02 BEFORE CLASS -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 02</span>
+      <h2 class="sec-title">Before <em>Tuesday.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>The pre-recorded lecture covers everything in §03–04 below. Do not come to the live session cold — the Q&amp;A assumes you have already watched the recording and made at least one script attempt.</p>
+    </div>
+    <div class="pre-class">
+      <div class="pre-class-head">Complete before the live session</div>
+      <div class="pre-row">
+        <div class="pre-check"></div>
+        <div class="pre-body">
+          <strong>Watch the pre-recorded lecture</strong>
+          <p>Posted in the Week 2 Canvas module. Covers RT60 concept, Sabine and Eyring equations, octave band targets, and hand-calculation walkthrough. ~45 min.</p>
+        </div>
+      </div>
+      <div class="pre-row">
+        <div class="pre-check"></div>
+        <div class="pre-body">
+          <strong>Read the RT60 Tutorial document</strong>
+          <p>The tutorial (also in Canvas) is the written companion to the lecture — diagrams, equations, and an interactive Sabine calculator. §07 is the Rhino workflow section; read it carefully before running the script.</p>
+        </div>
+      </div>
+      <div class="pre-row">
+        <div class="pre-check"></div>
+        <div class="pre-body">
+          <strong>Run the RT60 script — at least once, even if it errors</strong>
+          <p>Open your Week 1 Rhino file. In Rhino, run <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--blue);background:rgba(14,13,11,.4);padding:1px 5px;">RunPythonScript</code>, navigate to <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--blue);background:rgba(14,13,11,.4);padding:1px 5px;">aeis_rt60.py</code>, and run it. If it errors, screenshot or copy the error text and bring it Tuesday. If it runs, bring your HTML report.</p>
+        </div>
+      </div>
+      <div class="pre-row">
+        <div class="pre-check"></div>
+        <div class="pre-body">
+          <strong>Start your hand calculation — 500 Hz octave band minimum</strong>
+          <p>Measure or estimate your room volume (V) and total surface area. List each surface with its material and area. Look up the absorption coefficient at 500 Hz from the material table (Tutorial §04 or Week 1 layer table). Plug into Sabine: <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--amber);">RT60 = 0.049 × V / A</span>. Even a rough number is enough to compare with the script.</p>
+        </div>
+      </div>
+      <div class="pre-row">
+        <div class="pre-check"></div>
+        <div class="pre-body">
+          <strong>Read MEEB Chapter 22</strong>
+          <p>Room Acoustics Design. Focus on the RT60 target tables by room type and the material absorption data. These are the numbers you will cite in your Act I submission.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- § 03 RT60 REFERENCE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 03</span>
+      <h2 class="sec-title">RT60 — <em>Reference Card.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>Key facts from the pre-recorded lecture, condensed for the live session and your hand calculation. Use the Tutorial document for full derivations.</p>
+    </div>
+
+    <!-- Target table -->
+    <div style="margin-bottom:28px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--rule-strong);">RT60 Targets by Program Type — Mid-frequency (500 Hz – 2 kHz)</div>
+      <table class="bug-table">
+        <thead>
+          <tr>
+            <th>Program</th>
+            <th>Target range (s)</th>
+            <th>Rationale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--blue);">Speech-primary</td>
+            <td style="color:var(--paper);">0.8 – 1.2 s</td>
+            <td>Short reverb preserves consonant intelligibility. Lecture halls, courtrooms, houses of worship (sermon-primary).</td>
+          </tr>
+          <tr>
+            <td style="color:var(--amber);">Mixed program</td>
+            <td style="color:var(--paper);">1.4 – 1.8 s</td>
+            <td>Compromise between speech clarity and musical warmth. Multipurpose auditoriums, community halls.</td>
+          </tr>
+          <tr>
+            <td style="color:var(--green);">Music-primary</td>
+            <td style="color:var(--paper);">1.8 – 2.2 s</td>
+            <td>Longer reverb supports harmonic blend. Orchestral and choral halls. Speech intelligibility sacrificed at the far end.</td>
+          </tr>
+          <tr>
+            <td style="color:var(--paper-dim);">Opera</td>
+            <td style="color:var(--paper);">1.3 – 1.6 s</td>
+            <td>Hybrid: singers project over orchestra; text intelligibility still matters. Tighter than orchestral.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Sabine equation -->
+    <div class="eq-block">
+      <div class="eq-label">Sabine Equation — use for rooms with ᾱ &lt; 0.20</div>
+      <div class="eq-formula">RT60 = 0.049 × V / A</div>
+      <div class="eq-vars">
+        <dl><dt>V</dt><dd>= room volume (ft³)</dd></dl>
+        <dl><dt>A</dt><dd>= total absorption (sabins) = Σ ( Sᵢ × αᵢ ) for each surface</dd></dl>
+        <dl><dt>αᵢ</dt><dd>= absorption coefficient at the octave band of interest</dd></dl>
+        <dl><dt>Sᵢ</dt><dd>= surface area (ft²)</dd></dl>
+      </div>
+    </div>
+
+    <!-- Eyring equation -->
+    <div class="eq-block" style="margin-top:16px;">
+      <div class="eq-label">Eyring Equation — use for rooms with ᾱ ≥ 0.20 (more accurate for absorptive halls)</div>
+      <div class="eq-formula">RT60 = 0.049 × V / [ –S × ln(1 – ᾱ) ]</div>
+      <div class="eq-vars">
+        <dl><dt>S</dt><dd>= total room surface area (ft²)</dd></dl>
+        <dl><dt>ᾱ</dt><dd>= mean absorption coefficient = A / S</dd></dl>
+        <dl><dt>ln</dt><dd>= natural logarithm — use a calculator; ln(1–0.30) = ln(0.70) ≈ –0.357</dd></dl>
+      </div>
+      <p style="margin-top:14px;font-size:14px;color:var(--paper-dim);font-style:italic;">Rule of thumb: if your Sabine and Eyring results diverge by more than 0.3 s, your mean absorption is above 0.25 and Eyring is the number to trust. The script reports both.</p>
+    </div>
+
+    <div class="bridge">
+      <strong>Key Insight</strong>
+      Volume is not the dominant variable — absorption is. Two rooms with the same volume but different materials can differ by a full second of RT60. Your material choices this week are not cosmetic; they are the primary acoustic lever you have at this stage of the project.
+    </div>
+  </section>
+
+
+  <!-- § 04 RUN OF SHOW -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 04</span>
+      <h2 class="sec-title">Run of <em>Show.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:8px;">
+      <p>Abbreviated live session. No new lecture content — that was async. All time goes to Q&amp;A and script debugging.</p>
+    </div>
+    <div class="timetable">
+      <div class="row async"><div class="when">Before class</div><div class="dur">Async</div><div class="what"><em>Pre-recorded lecture + tutorial.</em> Watch recording, read RT60 Tutorial, attempt script run, start hand calculation. This is the prerequisite for the live session.</div></div>
+      <div class="row"><div class="when">Open · 00:10</div><div class="dur">10 min</div><div class="what"><em>Check-in.</em> Quick poll: did your script run, produce errors, or did you not attempt it? Sets the room for Q&amp;A. No shame in errors — debugging is the point of this session.</div></div>
+      <div class="row"><div class="when">00:10 · 00:50</div><div class="dur">40 min</div><div class="what"><em>Open Q&amp;A — concepts.</em> Sabine vs. Eyring questions, target selection, hand-calc process. Any conceptual question from the recording is fair game. Instructor works through one hand-calc example live if requested.</div></div>
+      <div class="row lab"><div class="when">00:50 · end</div><div class="dur">remaining</div><div class="what"><em>Script debugging + working time.</em> Students share screens in sequence; instructor diagnoses errors. Students who have a clean run spend the time on hand-calc comparison and material revision. See §05 for the most common errors before you join.</div></div>
+    </div>
+  </section>
+
+
+  <!-- § 05 SCRIPT DEBUGGING -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 05</span>
+      <h2 class="sec-title">Script <em>Debugging.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>Read this before class. Most errors fall into one of six categories. If your error matches one here, fix it before the live session — you do not need to wait for Q&amp;A to unblock yourself.</p>
+    </div>
+
+    <table class="bug-table">
+      <thead>
+        <tr>
+          <th>Error / Symptom</th>
+          <th>Cause</th>
+          <th>Fix</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Script runs but reports <span class="code">0 surfaces found</span> or RT60 = 0</td>
+          <td>Layer names don't match the AEIS_ convention. Hyphens instead of underscores, wrong case, missing prefix, or surfaces are on sublayers.</td>
+          <td>Check each surface layer in Rhino. Must be exactly <span class="code">AEIS_MATERIAL_KEY</span> — uppercase, underscores, no spaces. Rename via Properties panel or Layer dialog. Run script again.</td>
+        </tr>
+        <tr>
+          <td>Script runs but RT60 result is wildly off (e.g., 0.02 s or 45 s)</td>
+          <td>Surfaces assigned to highly absorptive or reflective materials don't match their physical role, or a single very large surface is on the wrong layer (e.g., the site plane accidentally included).</td>
+          <td>Check your total absorption A = Σ(S × α). A very large slab (site ground, background surface) with α = 1.00 will dominate. Delete or exclude non-room geometry from AEIS_ layers.</td>
+        </tr>
+        <tr>
+          <td><span class="code">AttributeError: Point3d has no attribute 't'</span> or similar RayShoot error</td>
+          <td>Version mismatch — an older script version assumed RayShoot returned floats. The current script handles this correctly.</td>
+          <td>Confirm you are using the version posted in the Canvas module (filename: <span class="code">aeis_rt60.py</span>, not <span class="code">aeis_rt60_old.py</span>). Re-download from Canvas if uncertain.</td>
+        </tr>
+        <tr>
+          <td><span class="code">SyntaxError</span> or garbled output on first line</td>
+          <td>Encoding issue — Rhino's IronPython 2.7 requires an explicit UTF-8 declaration if the file was edited in an external editor that added a BOM.</td>
+          <td>Open the .py file in a plain text editor (TextEdit on Mac — plain text mode; Notepad on Windows). Confirm the first line is exactly: <span class="code"># -*- coding: utf-8 -*-</span> with no invisible characters before it. Save and re-run.</td>
+        </tr>
+        <tr>
+          <td>No source point — script errors or skips ray trace</td>
+          <td>The source point is missing, on the wrong layer, or is a curve/surface object rather than a Point object.</td>
+          <td>In Rhino: draw a <span class="code">Point</span> (not a dot or a surface vertex) at stage center, approximately 5 ft above the floor. Place it on layer <span class="code">AEIS_SOURCE</span>. Confirm object type in Properties: must say <em>Point</em>.</td>
+        </tr>
+        <tr>
+          <td>Script runs, HTML report saves, but PNG viewport capture fails or is blank</td>
+          <td>Viewport capture requires a visible Rhino window and an active perspective or named view. Running Rhino minimized or via RemoteDesktop can cause this.</td>
+          <td>Maximize Rhino before running the script. Switch to the Perspective viewport. The ray lines (colored by energy on layer <span class="code">AEIS_RAYS</span>) must be visible. Run the script from the command line, not from an external terminal.</td>
+        </tr>
+        <tr>
+          <td>Correct Eyring output but large divergence from hand calculation</td>
+          <td>Not a bug — usually a modeling discrepancy. Most common: hand calc used a different volume estimate, audience area was not modeled in Rhino, or a material key was approximated in the hand calc but is different in the script's lookup table.</td>
+          <td>Note the discrepancy, measure volume in Rhino (<span class="code">Volume</span> command), and compare to your hand-calc V. Check that your hand-calc material coefficients match the script's table (Week 1 §07 layer table). A note in your Act I submission explaining the discrepancy satisfies the rubric.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+  <!-- § 06 HAND CALC WALKTHROUGH -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 06</span>
+      <h2 class="sec-title">Hand Calc — <em>Worked Example.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:24px;">
+      <p>A sample calculation for a 500-seat rectangular hall. Use this structure for your own worksheet. The numbers here are illustrative — your room will differ.</p>
+    </div>
+
+    <!-- Example room -->
+    <div style="border:1px solid var(--rule-strong);padding:24px 28px;margin-bottom:28px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:14px;">Example Room — Shoebox, Mixed Program</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--rule);">
+        <div style="padding:12px 16px 12px 0;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--paper-dim);text-transform:uppercase;margin-bottom:4px;">Volume</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--paper);">280,000 ft³</div>
+          <div style="font-size:13px;color:var(--paper-dim);margin-top:2px;">140′ × 80′ × 25′ average height</div>
+        </div>
+        <div style="padding:12px 16px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--paper-dim);text-transform:uppercase;margin-bottom:4px;">Target RT60</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--amber);">1.4 – 1.8 s</div>
+          <div style="font-size:13px;color:var(--paper-dim);margin-top:2px;">Mixed program</div>
+        </div>
+        <div style="padding:12px 0 12px 16px;border-bottom:1px solid var(--rule);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;color:var(--paper-dim);text-transform:uppercase;margin-bottom:4px;">Total Surface Area S</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--paper);">36,400 ft²</div>
+          <div style="font-size:13px;color:var(--paper-dim);margin-top:2px;">sum of all room surfaces</div>
+        </div>
+      </div>
+
+      <!-- Surface table -->
+      <table class="bug-table" style="margin-top:0;">
+        <thead>
+          <tr>
+            <th style="min-width:180px;">Surface / Layer</th>
+            <th>Area (ft²)</th>
+            <th>α @ 500 Hz</th>
+            <th>α @ 1 kHz</th>
+            <th>A @ 500 Hz (sabins)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--blue);">AEIS_SEATS_UPHOLSTERED</td>
+            <td style="color:var(--paper);">5,000</td>
+            <td style="color:var(--paper);">0.76</td>
+            <td style="color:var(--paper);">0.89</td>
+            <td style="color:var(--amber);">3,800</td>
+          </tr>
+          <tr>
+            <td style="color:var(--blue);">AEIS_PLASTER_HARD (ceiling)</td>
+            <td style="color:var(--paper);">11,200</td>
+            <td style="color:var(--paper);">0.03</td>
+            <td style="color:var(--paper);">0.02</td>
+            <td style="color:var(--amber);">336</td>
+          </tr>
+          <tr>
+            <td style="color:var(--blue);">AEIS_CONCRETE_BARE (side walls)</td>
+            <td style="color:var(--paper);">8,400</td>
+            <td style="color:var(--paper);">0.02</td>
+            <td style="color:var(--paper);">0.03</td>
+            <td style="color:var(--amber);">168</td>
+          </tr>
+          <tr>
+            <td style="color:var(--blue);">AEIS_WOOD_FLOOR</td>
+            <td style="color:var(--paper);">11,200</td>
+            <td style="color:var(--paper);">0.10</td>
+            <td style="color:var(--paper);">0.07</td>
+            <td style="color:var(--amber);">1,120</td>
+          </tr>
+          <tr>
+            <td style="color:var(--blue);">AEIS_FABRIC_CURTAIN (rear wall)</td>
+            <td style="color:var(--paper);">600</td>
+            <td style="color:var(--paper);">0.49</td>
+            <td style="color:var(--paper);">0.75</td>
+            <td style="color:var(--amber);">294</td>
+          </tr>
+          <tr>
+            <td style="color:var(--paper);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;">Total A (sabins)</td>
+            <td style="color:var(--paper-dim);">—</td>
+            <td style="color:var(--paper-dim);">—</td>
+            <td style="color:var(--paper-dim);">—</td>
+            <td style="color:var(--paper);font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:500;">5,718</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Sabine result -->
+      <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div style="padding:16px 20px;border:1px solid var(--amber-line);background:var(--amber-soft);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;">Sabine @ 500 Hz</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--paper);">0.049 × 280,000 / 5,718</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:22px;color:var(--amber);margin-top:6px;">= 2.40 s</div>
+          <div style="font-size:13px;color:var(--red);margin-top:6px;font-style:italic;">Above target — room is too reverberant. Add absorption.</div>
+        </div>
+        <div style="padding:16px 20px;border:1px solid var(--rule-strong);background:rgba(237,228,211,.03);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:8px;">What to do</div>
+          <div style="font-size:14.5px;color:var(--paper-2);line-height:1.6;">
+            ᾱ = 5718 / 36400 = 0.157 &lt; 0.20 → Sabine is valid.<br><br>
+            To reach 1.6 s: need A = 0.049 × 280,000 / 1.6 ≈ <strong style="color:var(--amber);">8,575 sabins.</strong><br>
+            Gap: 8,575 − 5,718 = <strong style="color:var(--red);">2,857 sabins</strong> to add.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bridge">
+      <strong>Your Turn</strong>
+      Build this same table for your own room. Measure V and S in Rhino (Volume command; AreaMassProperties for surfaces). If you already have your script output, check whether the Eyring result from the script matches your hand-calc Sabine within ±0.3 s. If they diverge more than that, the surface table is the place to find why.
+    </div>
+  </section>
+
+
+  <!-- § 07 Q&A PROTOCOL -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 07</span>
+      <h2 class="sec-title">Q&amp;A <em>Protocol.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>The live session is student-driven. To make it useful for everyone, follow this structure.</p>
+    </div>
+    <div class="qa-grid">
+      <div class="qa-cell">
+        <h4>Concept <em>Questions</em></h4>
+        <ul>
+          <li><strong>Ask in chat first</strong> — instructor will address in batches. Similar questions will be grouped.</li>
+          <li>Good: "Why does Eyring give a lower RT60 than Sabine for the same room?" Good: "How do I find α for a material not on the layer list?"</li>
+          <li>Questions from the recording are welcome — there are no dumb questions in Week 2.</li>
+        </ul>
+      </div>
+      <div class="qa-cell">
+        <h4>Script <em>Debugging</em></h4>
+        <ul>
+          <li><strong>Check §05 first.</strong> If your error is in that table, fix it before the session.</li>
+          <li>To share your screen: unmute, say "I have a script error," and share your Rhino window. Keep the Layer panel visible.</li>
+          <li>Post your error text in chat before screen sharing — it speeds diagnosis.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- § 08 DELIVERABLE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 08</span>
+      <h2 class="sec-title">Deliverable &mdash; <em>Due Tue 06·03.</em></h2>
+    </div>
+    <div class="deliverable">
+      <div class="label">Submit to Canvas · Tuesday 06·03 · 11:59 PM</div>
+      <h4>Week 2 Package</h4>
+      <ul>
+        <li><strong>Updated Rhino model (.3dm)</strong> — surfaces refined based on RT60 results. Layer assignments should now be final or near-final for Act I close.</li>
+        <li><strong>RT60 hand calculation worksheet</strong> — Sabine and Eyring at 500 Hz, 1 kHz, and 2 kHz. Show: V, each surface with Sᵢ and αᵢ, total A, mean ᾱ, and both RT60 values. Note which equation is more conservative and why.</li>
+        <li><strong>RT60 script HTML report</strong> — the generated report from aeis_rt60.py. Include at least one viewport screenshot showing the ray paths (layer AEIS_RAYS visible).</li>
+        <li><strong>Comparison note (3–5 sentences)</strong> — does your hand-calc agree with the script's Eyring result within ±0.2 s? If not, identify which surface or volume discrepancy explains the gap.</li>
+        <li><strong>Updated Decision Log</strong> — Entry 2 must address a material or geometry change made in response to your RT60 result. If you hit target on the first run, note that and describe why your first choice worked.</li>
+      </ul>
+    </div>
+  </section>
+
+
+  <!-- § 09 INSTRUCTOR CHECKLIST -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 09</span>
+      <h2 class="sec-title">Instructor <em>Checklist.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:8px;">
+      <p>Pre-session notes for the abbreviated format.</p>
+    </div>
+    <div class="checklist">
+      <div class="check"><span class="box"></span><span class="text"><strong>Pre-recorded lecture posted</strong> in Canvas Week 2 module before Friday 05·23. Include chapter markers: RT60 concept / Sabine / Eyring / hand-calc walkthrough.</span></div>
+      <div class="check"><span class="box"></span><span class="text"><strong>RT60 Tutorial document</strong> linked in the same module. Confirm the interactive calculator JavaScript works in Canvas's embedded viewer.</span></div>
+      <div class="check"><span class="box"></span><span class="text"><strong>aeis_rt60.py</strong> posted (or re-confirmed) in Canvas. Students downloading for the first time should get the current version.</span></div>
+      <div class="check"><span class="box"></span><span class="text"><strong>Review Week 1 submissions</strong> before Tuesday — check that AEIS_ layer names are in place so script errors are predictable. Note students with missing source points or non-Rhino submissions (Revit users need a parallel Rhino file).</span></div>
+      <div class="check"><span class="box"></span><span class="text"><strong>Confirm Zoom session time</strong> with students — abbreviated class, communicate exact start and expected duration (90 min).</span></div>
+      <div class="check"><span class="box"></span><span class="text"><strong>Prepare one live hand-calc example</strong> — a simple shoebox room in a shared screen, if students request it during Q&amp;A.</span></div>
+      <div class="check"><span class="box"></span><span class="text"><strong>d276kelly</strong> — Physics Lab ends 7:20; arrives ~8:05. Pre-recorded lecture is the solution; the live session starting ~8:00 means they will miss very little.</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>ARC 5443 · Week 02 · Class Plan v1</span>
+    <span>Kurt Neiswender, AIA · CoAD · LTU</span>
+  </footer>
+
+</div>
+</body>
+</html>

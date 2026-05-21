@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · Acoustics, Electrical &amp; Illumination Systems · Summer 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B;--ink-2:#161412;--ink-3:#1E1B17;
+    --paper:#EDE4D3;--paper-2:#D9CFB9;--paper-dim:#8A8273;
+    --amber:#D4A24C;--amber-soft:rgba(212,162,76,.10);--amber-line:rgba(212,162,76,.45);
+    --red:#C8472F;--blue:#9FC8D4;
+    --rule:rgba(237,228,211,.18);--rule-strong:rgba(237,228,211,.42);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  body{
+    font-family:"Newsreader",Georgia,serif;font-weight:380;font-size:18px;line-height:1.6;
+    font-feature-settings:"ss01","onum";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.55;
+  }
+  ::selection{background:var(--amber);color:var(--ink);}
+
+  .wrap{max-width:1260px;margin:0 auto;padding:48px 56px 120px;position:relative;}
+  @media(max-width:720px){.wrap{padding:32px 22px 80px}}
+
+  /* TOPBAR */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);padding-bottom:18px;border-bottom:1px solid var(--rule);
+  }
+  .topbar .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:8px;vertical-align:middle;animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{50%{opacity:.35}}
+
+  /* HERO */
+  .hero{padding:72px 0 56px;}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-bottom:24px;}
+  .kicker .pipe{color:var(--paper-dim);margin:0 10px;}
+  h1.title{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;
+    font-weight:380;font-size:clamp(52px,9vw,130px);line-height:.88;letter-spacing:-.035em;margin:0;
+  }
+  h1.title em{font-style:italic;color:var(--amber);font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+  .sub{margin-top:28px;max-width:780px;font-family:"Newsreader",serif;font-size:clamp(17px,1.6vw,21px);line-height:1.5;color:var(--paper-2);font-style:italic;}
+
+  /* META STRIP */
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);margin-top:52px;}
+  .meta>div{padding:18px 18px 18px 0;border-right:1px solid var(--rule);}
+  .meta>div:last-child{border-right:none}
+  .meta dt{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:6px;}
+  .meta dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:18px;line-height:1.2;font-variation-settings:"opsz" 36;}
+  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:12px;color:var(--paper-dim);margin-top:3px;font-style:italic;}
+  @media(max-width:820px){.meta{grid-template-columns:repeat(2,1fr)}.meta>div:nth-child(2){border-right:none}}
+
+  /* SECTION HEADER */
+  .sec-label{display:flex;align-items:baseline;gap:22px;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--rule-strong);}
+  .sec-num{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.18em;color:var(--amber);}
+  .sec-title{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(28px,3.5vw,42px);line-height:1;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 72,"SOFT" 40;}
+  .sec-title em{font-style:italic;color:var(--amber);}
+  .sec-desc{max-width:680px;font-size:16px;color:var(--paper-dim);margin-bottom:32px;font-style:italic;}
+
+  /* CARD GRID */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:2px;margin-bottom:80px;}
+
+  .card{
+    background:var(--ink-2);border:1px solid var(--rule);
+    display:flex;flex-direction:column;gap:0;
+    transition:border-color .2s,background .2s;
+    text-decoration:none;color:inherit;
+    position:relative;overflow:hidden;
+  }
+  .card:hover{border-color:var(--amber-line);background:var(--ink-3);}
+  .card:hover .card-arrow{color:var(--amber);transform:translate(3px,-3px);}
+
+  .card-inner{padding:28px 28px 24px;}
+  .card-tag{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:14px;}
+  .card-tag.tag-lecture{color:var(--blue);}
+  .card-tag.tag-assign{color:var(--amber);}
+  .card-tag.tag-resource{color:var(--red);}
+  .card-tag.tag-syl{color:var(--paper-2);}
+
+  .card-title{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 48,"SOFT" 20,"WONK" 0;
+    font-weight:380;font-size:22px;line-height:1.1;letter-spacing:-.02em;margin:0 0 10px;
+  }
+  .card-desc{font-size:14px;color:var(--paper-dim);line-height:1.5;margin:0;}
+  .card-footer{
+    margin-top:auto;padding:14px 28px;border-top:1px solid var(--rule);
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);
+  }
+  .card-arrow{transition:color .2s,transform .2s;color:var(--paper-dim);font-style:normal;font-size:16px;}
+
+  /* COMING SOON CARD */
+  .card.soon{opacity:.38;pointer-events:none;}
+  .card.soon .card-tag::after{content:" · soon";}
+
+  /* SYLLABUS FEATURE CARD */
+  .card-feature{
+    grid-column:1/-1;
+    background:var(--ink-2);border:1px solid var(--rule);
+    display:grid;grid-template-columns:1fr auto;align-items:center;
+    text-decoration:none;color:inherit;
+    transition:border-color .2s,background .2s;overflow:hidden;
+  }
+  .card-feature:hover{border-color:var(--amber-line);background:var(--ink-3);}
+  .card-feature:hover .card-arrow{color:var(--amber);transform:translate(3px,-3px);}
+  .card-feature .card-inner{padding:32px 36px;}
+  .card-feature .card-title{font-size:28px;}
+  .card-feature .card-badge{
+    padding:32px 40px;border-left:1px solid var(--rule);
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);
+    white-space:nowrap;
+  }
+  @media(max-width:680px){.card-feature{grid-template-columns:1fr}.card-feature .card-badge{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span><span class="dot"></span>ARC 5443 · Lawrence Technological University</span>
+    <span>Summer 2026</span>
+  </div>
+
+  <div class="hero">
+    <div class="kicker">Course Hub<span class="pipe">|</span>Acoustics, Electrical &amp; Illumination Systems</div>
+    <h1 class="title">Building<br><em>Systems</em><br>Studio</h1>
+    <p class="sub">All lecture notes, assignments, and resources for ARC 5443 — organized and available whenever you need them.</p>
+  </div>
+
+  <dl class="meta">
+    <div><dt>Course</dt><dd>ARC 5443<small>Graduate Architecture</small></dd></div>
+    <div><dt>Session</dt><dd>Summer 2026<small>May – July</small></dd></div>
+    <div><dt>Format</dt><dd>Hybrid<small>Online + Zoom</small></dd></div>
+    <div><dt>Instructor</dt><dd>Kurt Neiswender<small>AIA · urbancolab</small></dd></div>
+  </dl>
+
+  <!-- ── SYLLABUS ─────────────────────────────────────── -->
+  <section style="margin-top:80px;">
+    <div class="sec-label">
+      <span class="sec-num">00</span>
+      <h2 class="sec-title">Syllabus &amp; <em>Course Plan</em></h2>
+    </div>
+    <p class="sec-desc">Course policies, schedule, grading structure, and learning objectives.</p>
+    <div class="cards">
+      <a class="card card-feature" href="syl/Su%2026%20AEIS%20Syllabus-draft-v2.html">
+        <div class="card-inner">
+          <div class="card-tag tag-syl">Syllabus</div>
+          <h3 class="card-title">Su 26 AEIS Syllabus</h3>
+          <p class="card-desc">Full course syllabus — policies, schedule, grading breakdown, and learning outcomes for Summer 2026.</p>
+        </div>
+        <div class="card-badge">Summer 2026 · Draft v2 <span class="card-arrow">↗</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── LECTURES ──────────────────────────────────────── -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title"><em>Lecture</em> Notes</h2>
+    </div>
+    <p class="sec-desc">Weekly lecture pages — readings, diagrams, examples, and key concepts.</p>
+    <div class="cards">
+
+      <a class="card" href="week-01/Su%2026%20AEIS%20Week01.html">
+        <div class="card-inner">
+          <div class="card-tag tag-lecture">Week 01 · Acoustics</div>
+          <h3 class="card-title">Sound, Hearing &amp; the Listening Room</h3>
+          <p class="card-desc">Fundamentals of sound physics, the Haas effect, RT60, and how room geometry shapes acoustic experience.</p>
+        </div>
+        <div class="card-footer">
+          <span>May 2026</span>
+          <em class="card-arrow">↗</em>
+        </div>
+      </a>
+
+      <a class="card" href="week-02/Su%2026%20AEIS%20Week02.html">
+        <div class="card-inner">
+          <div class="card-tag tag-lecture">Week 02 · Acoustics</div>
+          <h3 class="card-title">Room Acoustics &amp; RT60</h3>
+          <p class="card-desc">Reverberation time calculations, Sabine formula, material absorption, and acoustic design strategies.</p>
+        </div>
+        <div class="card-footer">
+          <span>May 2026</span>
+          <em class="card-arrow">↗</em>
+        </div>
+      </a>
+
+      <div class="card soon">
+        <div class="card-inner">
+          <div class="card-tag tag-lecture">Week 03</div>
+          <h3 class="card-title">Illumination Systems</h3>
+          <p class="card-desc">Daylighting strategies, electric light sources, luminaire selection and layout.</p>
+        </div>
+        <div class="card-footer"><span>Coming soon</span></div>
+      </div>
+
+      <div class="card soon">
+        <div class="card-inner">
+          <div class="card-tag tag-lecture">Week 04</div>
+          <h3 class="card-title">Electrical Systems</h3>
+          <p class="card-desc">Electrical service, wiring design, panels, and photovoltaics.</p>
+        </div>
+        <div class="card-footer"><span>Coming soon</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── ASSIGNMENTS ────────────────────────────────────── -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">02</span>
+      <h2 class="sec-title"><em>Assignments</em></h2>
+    </div>
+    <p class="sec-desc">Project briefs, rubrics, and submission requirements for each act.</p>
+    <div class="cards">
+
+      <a class="card" href="assignments/act-one/Su%2026%20AEIS%20Act%20I%20Assignment.html">
+        <div class="card-inner">
+          <div class="card-tag tag-assign">Act I · Acoustics</div>
+          <h3 class="card-title">Act I — Acoustic Analysis</h3>
+          <p class="card-desc">RT60 calculation, acoustic deficiency identification, and material correction strategy for an assigned room type.</p>
+        </div>
+        <div class="card-footer">
+          <span>Due Week 03</span>
+          <em class="card-arrow">↗</em>
+        </div>
+      </a>
+
+      <div class="card soon">
+        <div class="card-inner">
+          <div class="card-tag tag-assign">Act II</div>
+          <h3 class="card-title">Act II — Illumination Design</h3>
+          <p class="card-desc">Daylighting and electric lighting analysis for a building project.</p>
+        </div>
+        <div class="card-footer"><span>Coming soon</span></div>
+      </div>
+
+      <div class="card soon">
+        <div class="card-inner">
+          <div class="card-tag tag-assign">Act III</div>
+          <h3 class="card-title">Act III — Integrated Systems</h3>
+          <p class="card-desc">Comprehensive building systems integration and final documentation.</p>
+        </div>
+        <div class="card-footer"><span>Coming soon</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── RESOURCES ─────────────────────────────────────── -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">03</span>
+      <h2 class="sec-title">Tools &amp; <em>Resources</em></h2>
+    </div>
+    <p class="sec-desc">Tutorials, calculators, and supplemental reference material.</p>
+    <div class="cards">
+
+      <a class="card" href="week-02/Su_26_AEIS_Week02_RT60_Tutorial.html">
+        <div class="card-inner">
+          <div class="card-tag tag-resource">Tutorial · Python</div>
+          <h3 class="card-title">RT60 Calculator Tutorial</h3>
+          <p class="card-desc">Step-by-step walkthrough of the RT60 Python script — inputs, outputs, and how to read the generated report.</p>
+        </div>
+        <div class="card-footer">
+          <span>Week 02</span>
+          <em class="card-arrow">↗</em>
+        </div>
+      </a>
+
+      <a class="card" href="python/rt60_repor-2.html">
+        <div class="card-inner">
+          <div class="card-tag tag-resource">Sample Report</div>
+          <h3 class="card-title">RT60 Report — Metric Example</h3>
+          <p class="card-desc">Sample output from the RT60 Python script in metric units — use this as a formatting reference for your submission.</p>
+        </div>
+        <div class="card-footer">
+          <span>Reference</span>
+          <em class="card-arrow">↗</em>
+        </div>
+      </a>
+
+      <a class="card" href="python/rt60_report-feet.html">
+        <div class="card-inner">
+          <div class="card-tag tag-resource">Sample Report</div>
+          <h3 class="card-title">RT60 Report — Imperial Example</h3>
+          <p class="card-desc">Sample output from the RT60 Python script in imperial (feet) units.</p>
+        </div>
+        <div class="card-footer">
+          <span>Reference</span>
+          <em class="card-arrow">↗</em>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

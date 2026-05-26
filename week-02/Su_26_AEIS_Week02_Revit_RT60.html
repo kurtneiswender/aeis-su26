@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · RT60 in Revit &amp; Dynamo · Week 02</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B;--ink-2:#161412;--ink-3:#1E1B17;
+    --paper:#EDE4D3;--paper-2:#D9CFB9;--paper-dim:#8A8273;
+    --amber:#D4A24C;--amber-soft:rgba(212,162,76,.10);--amber-line:rgba(212,162,76,.45);
+    --red:#C8472F;--blue:#9FC8D4;--green:#7FAF78;
+    --rule:rgba(237,228,211,.18);--rule-strong:rgba(237,228,211,.42);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  body{
+    font-family:"Newsreader",Georgia,serif;font-weight:380;font-size:18px;line-height:1.65;
+    font-feature-settings:"ss01","onum";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.55;
+  }
+  ::selection{background:var(--amber);color:var(--ink);}
+
+  .wrap{max-width:1160px;margin:0 auto;padding:48px 56px 120px;position:relative;}
+  @media(max-width:720px){.wrap{padding:32px 22px 80px}}
+
+  /* TOPBAR */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);padding-bottom:18px;border-bottom:1px solid var(--rule);
+  }
+  .back{color:var(--paper-dim);text-decoration:none;transition:color .15s;}
+  .back:hover{color:var(--amber);}
+  .topbar .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:8px;vertical-align:middle;animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{50%{opacity:.35}}
+
+  /* HERO */
+  .hero{padding:64px 0 48px;}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-bottom:22px;}
+  .kicker .pipe{color:var(--paper-dim);margin:0 10px;}
+  h1.title{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;
+    font-weight:380;font-size:clamp(48px,8vw,112px);line-height:.88;letter-spacing:-.035em;margin:0;
+  }
+  h1.title em{font-style:italic;color:var(--amber);font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+  .sub{margin-top:28px;max-width:740px;font-family:"Newsreader",serif;font-size:clamp(17px,1.7vw,21px);line-height:1.5;color:var(--paper-2);font-style:italic;}
+
+  /* WEEK BRIDGE BANNER */
+  .bridge{
+    margin-top:36px;display:grid;grid-template-columns:1fr 40px 1fr;gap:0;
+    border:1px solid var(--rule-strong);align-items:stretch;
+  }
+  .bridge-col{padding:20px 24px;}
+  .bridge-col.done{background:rgba(127,175,120,.06);border-right:1px solid var(--rule);}
+  .bridge-col.now{background:var(--amber-soft);}
+  .bridge-arrow{display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--amber);border-right:1px solid var(--rule);}
+  .bridge-col dt{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:8px;}
+  .bridge-col dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:17px;line-height:1.2;font-variation-settings:"opsz" 36;}
+  .bridge-col dd small{display:block;font-size:13px;color:var(--paper-dim);margin-top:5px;font-style:italic;font-family:"Newsreader",serif;}
+  .bridge-col.done dd{color:var(--green);}
+  .bridge-col.now dd{color:var(--amber);}
+  @media(max-width:640px){.bridge{grid-template-columns:1fr}.bridge-arrow{display:none}.bridge-col.done{border-right:none;border-bottom:1px solid var(--rule)}}
+
+  /* META STRIP */
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);margin-top:44px;}
+  .meta>div{padding:16px 16px 16px 0;border-right:1px solid var(--rule);}
+  .meta>div:last-child{border-right:none}
+  .meta dt{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:5px;}
+  .meta dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:18px;line-height:1.2;font-variation-settings:"opsz" 36;}
+  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:12px;color:var(--paper-dim);margin-top:3px;font-style:italic;}
+  @media(max-width:820px){.meta{grid-template-columns:repeat(2,1fr)}.meta>div:nth-child(2){border-right:none}}
+
+  /* SECTION */
+  section{margin-top:88px;}
+  .sec-label{display:flex;align-items:baseline;gap:22px;margin-bottom:26px;padding-bottom:12px;border-bottom:1px solid var(--rule-strong);}
+  .sec-num{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.18em;color:var(--amber);}
+  .sec-title{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(28px,3.8vw,46px);line-height:1;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 72,"SOFT" 40;}
+  .sec-title em{font-style:italic;color:var(--amber);}
+
+  .prose{max-width:800px;color:var(--paper-2);font-size:17px;line-height:1.65;}
+  .prose p{margin:0 0 1em;}
+  .prose em{color:var(--paper);font-style:italic;}
+  .prose strong{color:var(--paper);}
+  .prose ul,.prose ol{padding-left:20px;margin-bottom:1em;}
+  .prose ul li,.prose ol li{margin-bottom:8px;}
+  .prose code{font-family:"JetBrains Mono",monospace;font-size:.82em;background:rgba(237,228,211,.08);padding:2px 7px;border-radius:3px;color:var(--paper);}
+
+  /* CALLOUT */
+  .callout{
+    max-width:800px;margin:24px 0;padding:18px 22px;
+    border-left:3px solid var(--amber-line);background:var(--amber-soft);
+    font-size:15.5px;color:var(--paper-2);line-height:1.55;
+  }
+  .callout strong{color:var(--paper);}
+  .callout.blue{border-left-color:rgba(159,200,212,.5);background:rgba(159,200,212,.07);}
+  .callout.green{border-left-color:rgba(127,175,120,.5);background:rgba(127,175,120,.06);}
+  .callout.red{border-left-color:rgba(200,71,47,.4);background:rgba(200,71,47,.05);}
+
+  /* COMPARISON TABLE: Rhino vs Revit */
+  .compare{width:100%;max-width:800px;border-collapse:collapse;margin-top:24px;font-size:15px;}
+  .compare th{
+    padding:10px 16px;font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.18em;text-transform:uppercase;text-align:left;font-weight:400;
+    border-bottom:1px solid var(--rule-strong);
+  }
+  .compare th:first-child{color:var(--green);}
+  .compare th:last-child{color:var(--amber);}
+  .compare td{padding:11px 16px;border-bottom:1px solid var(--rule);color:var(--paper-2);vertical-align:top;}
+  .compare td:first-child{color:var(--green);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.04em;}
+  .compare td:nth-child(2){color:var(--paper-dim);}
+  .compare td:last-child{color:var(--amber);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.04em;}
+  .compare tr:last-child td{border-bottom:none;}
+
+  /* STEP LIST */
+  .steps{max-width:820px;margin-top:24px;}
+  .step{
+    display:grid;grid-template-columns:56px 1fr;gap:0;
+    border-top:1px solid var(--rule-strong);padding:28px 0 24px;
+    position:relative;
+  }
+  .step:last-child{border-bottom:1px solid var(--rule-strong);}
+  .step-num{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 60,"WONK" 1;
+    font-style:italic;font-size:52px;color:var(--amber);line-height:.9;font-weight:300;
+    padding-top:4px;
+  }
+  .step-body{padding-left:8px;}
+  .step-body h3{
+    font-family:"Fraunces",serif;font-weight:380;font-size:24px;line-height:1.1;
+    margin:0 0 8px;font-variation-settings:"opsz" 48,"SOFT" 30;
+  }
+  .step-body h3 em{font-style:italic;color:var(--amber);}
+  .step-body p{margin:0 0 10px;color:var(--paper-2);font-size:16px;line-height:1.6;}
+  .step-body p:last-child{margin:0;}
+  .step-body strong{color:var(--paper);}
+  .step-body code{font-family:"JetBrains Mono",monospace;font-size:.82em;background:rgba(237,228,211,.08);padding:2px 7px;border-radius:3px;color:var(--paper);}
+
+  /* DYNAMO DIAGRAM */
+  .dynamo-diagram{
+    margin:20px 0;border:1px solid var(--rule-strong);padding:24px;
+    background:rgba(237,228,211,.02);max-width:800px;
+  }
+  .dynamo-diagram .d-label{
+    font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--paper-dim);margin-bottom:16px;
+  }
+  .dynamo-flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;}
+  .d-node{
+    border:1px solid var(--rule-strong);padding:10px 16px;background:var(--ink-2);
+    font-family:"JetBrains Mono",monospace;font-size:12px;min-width:130px;
+  }
+  .d-node .d-type{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:4px;}
+  .d-node .d-name{color:var(--paper);font-size:13px;}
+  .d-node .d-port{color:var(--amber);font-size:10px;margin-top:3px;}
+  .d-arrow{padding:0 10px;color:var(--paper-dim);font-size:18px;flex-shrink:0;}
+  .d-node.python{border-color:var(--amber-line);background:var(--amber-soft);}
+  .d-node.python .d-name{color:var(--amber);}
+  .d-node.watch{border-color:rgba(159,200,212,.35);background:rgba(159,200,212,.06);}
+  .d-node.watch .d-name{color:var(--blue);}
+  @media(max-width:680px){.dynamo-flow{flex-direction:column;align-items:flex-start}.d-arrow{transform:rotate(90deg)}  }
+
+  /* CODE BLOCK */
+  .code-block{
+    max-width:800px;margin:16px 0;
+    background:rgba(14,13,11,.6);border:1px solid var(--rule-strong);
+    padding:20px 22px;
+    font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.7;
+    color:var(--paper-2);overflow-x:auto;
+    border-left:3px solid var(--amber-line);
+  }
+  .code-block .c-comment{color:var(--paper-dim);}
+  .code-block .c-key{color:var(--amber);}
+  .code-block .c-val{color:var(--blue);}
+  .code-block .c-str{color:var(--green);}
+
+  /* MATERIAL MAP TABLE */
+  .mat-table{width:100%;max-width:800px;border-collapse:collapse;margin-top:20px;font-size:14.5px;}
+  .mat-table th{
+    padding:9px 14px;font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);
+    text-align:left;font-weight:400;
+    background:rgba(14,13,11,.4);border-bottom:1px solid var(--rule-strong);
+  }
+  .mat-table td{padding:10px 14px;border-bottom:1px solid var(--rule);color:var(--paper-2);vertical-align:top;}
+  .mat-table td:first-child{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--paper);letter-spacing:.03em;}
+  .mat-table td:nth-child(2){color:var(--amber);font-family:"JetBrains Mono",monospace;font-size:11.5px;}
+  .mat-table tr:last-child td{border-bottom:none;}
+
+  /* REPORT ANATOMY */
+  .report-anatomy{
+    max-width:800px;margin-top:24px;
+    border:1px solid var(--rule-strong);
+  }
+  .ra-row{
+    display:grid;grid-template-columns:160px 1fr;
+    border-bottom:1px solid var(--rule);
+  }
+  .ra-row:last-child{border-bottom:none;}
+  .ra-label{
+    padding:16px 18px;border-right:1px solid var(--rule);
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--amber);background:rgba(212,162,76,.04);
+    display:flex;align-items:flex-start;
+  }
+  .ra-body{padding:16px 20px;font-size:15px;color:var(--paper-2);line-height:1.55;}
+  .ra-body strong{color:var(--paper);}
+  .ra-body code{font-family:"JetBrains Mono",monospace;font-size:.85em;background:rgba(237,228,211,.08);padding:2px 6px;}
+  @media(max-width:600px){.ra-row{grid-template-columns:1fr}.ra-label{border-right:none;border-bottom:1px solid var(--rule)}}
+
+  /* DELIVERABLE CHECKLIST */
+  .checklist{max-width:800px;margin-top:20px;border:1px solid var(--rule-strong);}
+  .cl-row{display:grid;grid-template-columns:36px 1fr;align-items:start;padding:14px 18px;border-bottom:1px solid var(--rule);gap:0;}
+  .cl-row:last-child{border-bottom:none;}
+  .cl-box{width:18px;height:18px;border:1.5px solid var(--amber-line);margin-top:2px;flex-shrink:0;}
+  .cl-body strong{color:var(--paper);font-size:15.5px;}
+  .cl-body p{margin:4px 0 0;font-size:14px;color:var(--paper-dim);line-height:1.45;}
+
+  /* FOOTER NAV */
+  .footnav{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:80px;padding-top:24px;border-top:1px solid var(--rule-strong);
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  }
+  .footnav a{color:var(--paper-dim);text-decoration:none;transition:color .15s;}
+  .footnav a:hover{color:var(--amber);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <span><span class="dot"></span>ARC 5443 &nbsp;·&nbsp; Lawrence Technological University</span>
+    <a class="back" href="../index.html">← Course Hub</a>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="kicker">Week 02 <span class="pipe">|</span> Tutorial <span class="pipe">|</span> Revit &amp; Dynamo</div>
+    <h1 class="title">RT60 in<br><em>Revit.</em></h1>
+    <p class="sub">Your Week 1 geometry is the starting point. This tutorial shows you how to run the same acoustic analysis inside Revit — pulling room volumes and boundary surfaces directly from the model instead of from Rhino layers.</p>
+
+    <!-- WEEK BRIDGE -->
+    <div class="bridge">
+      <dl class="bridge-col done">
+        <dt>Week 1 — Complete</dt>
+        <dd>Rhino massing
+          <small>Hall geometry, seating capacity, AEIS_ layer materials, RT60 script run — Sabine + Eyring results confirmed.</small>
+        </dd>
+      </dl>
+      <div class="bridge-arrow">→</div>
+      <dl class="bridge-col now">
+        <dt>Week 2 — Now</dt>
+        <dd>Revit Dynamo RT60
+          <small>Same calculation, same report format — geometry and materials read from your Revit model instead of Rhino layers.</small>
+        </dd>
+      </dl>
+    </div>
+  </div>
+
+  <!-- META STRIP -->
+  <dl class="meta">
+    <div><dt>Tool</dt><dd>Dynamo<small>ships with Revit</small></dd></div>
+    <div><dt>Script</dt><dd>aeis_rt60_revit.py<small>paste into Python node</small></dd></div>
+    <div><dt>Output</dt><dd>HTML Report<small>same format as Rhino</small></dd></div>
+    <div><dt>Act I</dt><dd>Due Week 03<small>Tue 06·10 · Canvas</small></dd></div>
+  </dl>
+
+
+  <!-- §01 WHY REVIT -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 01</span>
+      <h2 class="sec-title">Same <em>Math,</em> Different Source.</h2>
+    </div>
+    <div class="prose">
+      <p>The Rhino script reads surfaces from <em>layers</em> named <code>AEIS_&lt;MATERIAL&gt;</code>. The Revit script reads the same information from <em>your Revit model</em> — room volumes come from the Room element, wall areas come from boundary segment lengths, and material assignments come from wall and ceiling type names.</p>
+      <p>The Sabine and Eyring formulas are identical. The material absorption table is identical. The HTML report is identical. The only difference is where the script finds your geometry and material data.</p>
+    </div>
+
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>Rhino (Week 1)</th>
+          <th>What it stores</th>
+          <th>Revit (this tutorial)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>AEIS_CONCRETE_BARE<br>AEIS_ACOUSTIC_TILE</td>
+          <td>Material assignment per surface</td>
+          <td>Wall type name &rarr; matched by substring<br>Ceiling type name &rarr; matched by substring</td>
+        </tr>
+        <tr>
+          <td>Closed brep volume<br>or bounding box fallback</td>
+          <td>Room volume (m³)</td>
+          <td>Room.Volume parameter<br>(converted from internal feet³)</td>
+        </tr>
+        <tr>
+          <td>Surface area from RhinoCommon<br>AreaMassProperties</td>
+          <td>Surface area per element (m²)</td>
+          <td>Boundary segment length × room height<br>Floor area from Room.Area</td>
+        </tr>
+        <tr>
+          <td>Manual source point on<br>AEIS_SOURCE layer</td>
+          <td>Ray trace origin</td>
+          <td>No ray trace (Revit version)<br>Statistical RT60 only</td>
+        </tr>
+        <tr>
+          <td>Run via<br>_RunPythonScript in Rhino</td>
+          <td>How to run</td>
+          <td>Python node in Dynamo<br>(or pyRevit panel)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="margin-top:24px;">
+      <strong>Working in Rhino only?</strong> You don't need this tutorial. Use the Rhino script and the Week 02 RT60 Tutorial for your Act I submission. This page is for students whose design has moved into Revit or who want to run the analysis from both tools and compare.
+    </div>
+  </section>
+
+
+  <!-- §02 SETUP -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 02</span>
+      <h2 class="sec-title">Before You <em>Start.</em></h2>
+    </div>
+    <div class="prose">
+      <p>You need two things: your Revit model with at least one bounded Room element, and the script file. Dynamo is built into Revit — no additional software required.</p>
+    </div>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Your Revit model needs a <em>Room</em></h3>
+          <p>The script reads acoustic data from Revit's <strong>Room</strong> element. If your model doesn't have one yet, place one now: Architecture tab → Room &amp; Area panel → Room. Click inside your enclosed space. Revit will compute the room's volume automatically from the bounding walls, floors, and ceilings.</p>
+          <p>The room must be <strong>bounded</strong> — all four walls, a floor, and a ceiling must close the space or Revit will report a zero-volume room and the script will error. Use the Room Separation Line tool to close open edges if needed.</p>
+          <div class="callout blue" style="margin-top:12px;">
+            <strong>Volume check:</strong> Select your Room and look at the Properties panel. The <em>Volume</em> parameter should read a realistic number — a 500-seat concert hall might be 8,000–15,000 m³. If it shows 0, the room isn't fully bounded.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Download <em>aeis_rt60_revit.py</em></h3>
+          <p>The script is in the course repository. Download <code>python/aeis_rt60_revit.py</code> from the course files on Canvas (or copy it from the instructor's shared drive). Save it somewhere you'll remember — your Desktop or a course folder.</p>
+          <p>You won't run this file directly. You'll <strong>paste its contents</strong> into a Dynamo Python node. The file is the source of truth; keep it around for reference and to re-paste when you update your model.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Open <em>Dynamo</em> from inside Revit</h3>
+          <p>In Revit: <strong>Manage tab → Visual Programming → Dynamo</strong>. A new Dynamo window will open. Create a new Dynamo graph (File → New).</p>
+          <p>Dynamo version matters for the Python engine. <strong>Dynamo 2.13+</strong> (ships with Revit 2023+) uses CPython 3 by default. Older versions use IronPython 2.7. The script works with both — if you get a <code>SyntaxError</code>, check your Python engine setting in Dynamo preferences and switch to CPython 3 if available.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- §03 DYNAMO SETUP -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 03</span>
+      <h2 class="sec-title">Building the <em>Dynamo Graph.</em></h2>
+    </div>
+    <div class="prose">
+      <p>The graph has three input nodes, one Python Script node, and one Watch node for output. Build it left to right — inputs flow into the Python node, results flow out to Watch.</p>
+    </div>
+
+    <!-- DYNAMO DIAGRAM -->
+    <div class="dynamo-diagram">
+      <div class="d-label">Dynamo graph — connect left to right</div>
+      <div class="dynamo-flow">
+        <div>
+          <div class="d-node" style="margin-bottom:8px;">
+            <div class="d-type">Select Model Element</div>
+            <div class="d-name">Room element</div>
+            <div class="d-port">→ IN[0]</div>
+          </div>
+          <div class="d-node" style="margin-bottom:8px;">
+            <div class="d-type">String</div>
+            <div class="d-name">"mixed"</div>
+            <div class="d-port">→ IN[1]</div>
+          </div>
+          <div class="d-node">
+            <div class="d-type">File Path (optional)</div>
+            <div class="d-name">C:/…/rt60.html</div>
+            <div class="d-port">→ IN[2]</div>
+          </div>
+        </div>
+        <div class="d-arrow">→</div>
+        <div class="d-node python" style="min-height:130px;display:flex;flex-direction:column;justify-content:center;">
+          <div class="d-type">Python Script</div>
+          <div class="d-name">aeis_rt60_revit.py</div>
+          <div class="d-port" style="margin-top:8px;">IN[0] IN[1] IN[2]</div>
+        </div>
+        <div class="d-arrow">→</div>
+        <div class="d-node watch" style="min-height:130px;display:flex;flex-direction:column;justify-content:center;">
+          <div class="d-type">Watch</div>
+          <div class="d-name">RT60 results<br>text report</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps" style="margin-top:32px;">
+
+      <div class="step">
+        <div class="step-num">A</div>
+        <div class="step-body">
+          <h3>Add the <em>Python Script</em> node</h3>
+          <p>Right-click on the canvas → Script → Python Script. A node will appear with two input ports by default. You need three. Click the <strong>+</strong> button at the bottom-left of the Python node to add a third port (<code>IN[2]</code>).</p>
+          <p>Double-click the Python node to open the editor. Select all the default code and delete it. Paste the entire contents of <code>aeis_rt60_revit.py</code>. Close the editor — the node will show a green checkmark if the script loaded without errors.</p>
+          <div class="callout red" style="margin-top:12px;">
+            <strong>Error on paste?</strong> Make sure you've deleted all the default stub code before pasting. If you see a Python engine error, open Dynamo Preferences → Python Engine and switch to CPython 3.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">B</div>
+        <div class="step-body">
+          <h3>Wire <em>IN[0]</em> — the Room element</h3>
+          <p>Add a <strong>Select Model Element</strong> node (Search: "Select Model Element" in the node library). Click the "Select" button on the node, then click your Room in the Revit viewport. The node will show the room's name and number.</p>
+          <p>Draw a wire from this node's output to the Python node's <code>IN[0]</code> port.</p>
+          <p>Alternatively, use <strong>All Elements of Category</strong> → Category: Rooms → then an <strong>List.GetItemAtIndex</strong> node at index 0 to select the first room. This is useful if your model has multiple rooms and you want to switch between them.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">C</div>
+        <div class="step-body">
+          <h3>Wire <em>IN[1]</em> — program type</h3>
+          <p>Add a <strong>String</strong> node (Search: "String" → Core → Input → String). Type one of the following program type keys exactly:</p>
+          <div class="code-block">
+<span class="c-str">"speech"</span>        <span class="c-comment"># conference rooms, classrooms    — target 0.6–1.0 s</span>
+<span class="c-str">"mixed"</span>         <span class="c-comment"># multipurpose, lecture halls      — target 1.4–1.8 s</span>
+<span class="c-str">"music_opera"</span>   <span class="c-comment"># opera houses, lyric halls        — target 1.6–2.0 s</span>
+<span class="c-str">"music_symph"</span>   <span class="c-comment"># symphony / orchestral halls      — target 1.8–2.2 s</span>
+<span class="c-str">"cinema"</span>        <span class="c-comment"># film theaters, screening rooms   — target 0.3–0.5 s</span>
+          </div>
+          <p>Wire this node's output to <code>IN[1]</code>. Use the same program type you selected in Week 1 for a direct comparison.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">D</div>
+        <div class="step-body">
+          <h3>Wire <em>IN[2]</em> — HTML report path <em>(optional)</em></h3>
+          <p>Add a <strong>File Path</strong> node (Search: "File Path" → Core → Input). Click the folder icon and choose a save location, or type a path directly: <code>C:\Users\you\Desktop\rt60_report.html</code>. Wire to <code>IN[2]</code>.</p>
+          <p>If you leave IN[2] disconnected or wire a <strong>String</strong> node containing <code>None</code>, the script skips the HTML report and only outputs the text summary to the Watch node.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">E</div>
+        <div class="step-body">
+          <h3>Add a <em>Watch</em> node and run</h3>
+          <p>Add a <strong>Watch</strong> node from the library. Wire the Python node's output to Watch. Click <strong>Run</strong> (the triangle button in the Dynamo toolbar, or press F5).</p>
+          <p>The Watch node will display a formatted text table of RT60 results per octave band. If you wired a report path, the HTML report opens automatically in your browser.</p>
+          <div class="callout green" style="margin-top:12px;">
+            <strong>First run successful?</strong> Check that the volume number in the report matches your Revit Room's Volume property. If there's a big discrepancy, your room boundary may not be fully closed — see §02, Step 1.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- §04 MATERIAL MAPPING -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 04</span>
+      <h2 class="sec-title">Connecting Your <em>Materials.</em></h2>
+    </div>
+    <div class="prose">
+      <p>In Rhino you tagged surfaces by renaming their layer to <code>AEIS_ACOUSTIC_TILE</code> or <code>AEIS_CONCRETE_BARE</code>. In Revit, the equivalent is your <strong>wall and ceiling type names</strong>. The script looks for keyword substrings inside those type names to assign an absorption coefficient.</p>
+      <p>This means you don't need to rename anything in Revit — you edit the <code>MATERIAL_MAP</code> list inside the script to match the naming conventions you already used in your project.</p>
+    </div>
+
+    <div class="callout" style="max-width:800px;margin-top:0;">
+      <strong>Example:</strong> If your wall type is named <code>Interior - Gypsum on Stud - 4"</code>, the script finds the substring <code>"gypsum"</code> and assigns <code>GYPSUM_BOARD</code> absorption coefficients. If your ceiling type is <code>Acoustic Ceiling Tile 2x2</code>, it matches <code>"acoustic tile"</code> → <code>ACOUSTIC_TILE</code>.
+    </div>
+
+    <div class="prose" style="margin-top:20px;">
+      <p>Open the script in any text editor and locate the <code>MATERIAL_MAP</code> list near the top. Each entry is a pair: a substring to look for (case-insensitive), and the material key to assign.</p>
+    </div>
+
+    <div class="code-block">
+MATERIAL_MAP = [
+    <span class="c-comment"># ─ Walls ──────────────────────────────────────────────────────────</span>
+    (<span class="c-str">"gypsum"</span>,        <span class="c-str">"GYPSUM_BOARD"</span>),      <span class="c-comment"># matches "Gypsum on Stud", "GWB", etc.</span>
+    (<span class="c-str">"drywall"</span>,       <span class="c-str">"GYPSUM_BOARD"</span>),
+    (<span class="c-str">"cmu"</span>,           <span class="c-str">"CONCRETE_BLOCK"</span>),     <span class="c-comment"># matches "CMU", "CMU 8-inch"</span>
+    (<span class="c-str">"masonry"</span>,       <span class="c-str">"CONCRETE_BLOCK"</span>),
+    (<span class="c-str">"concrete"</span>,      <span class="c-str">"CONCRETE_BARE"</span>),
+    (<span class="c-str">"brick"</span>,         <span class="c-str">"BRICK"</span>),
+    (<span class="c-str">"glass"</span>,         <span class="c-str">"GLASS"</span>),
+    (<span class="c-str">"curtain wall"</span>,  <span class="c-str">"GLASS"</span>),
+    <span class="c-comment"># ─ Ceilings ────────────────────────────────────────────────────────</span>
+    (<span class="c-str">"acoustic tile"</span>, <span class="c-str">"ACOUSTIC_TILE"</span>),
+    (<span class="c-str">"lay-in"</span>,        <span class="c-str">"ACOUSTIC_TILE"</span>),
+    (<span class="c-str">"cloud"</span>,         <span class="c-str">"CEILING_CLOUD"</span>),
+    (<span class="c-str">"gypsum ceil"</span>,   <span class="c-str">"GYPSUM_BOARD"</span>),
+    <span class="c-comment"># ─ Floors ──────────────────────────────────────────────────────────</span>
+    (<span class="c-str">"carpet"</span>,        <span class="c-str">"CARPET_THICK"</span>),
+    (<span class="c-str">"hardwood"</span>,      <span class="c-str">"WOOD_FLOOR"</span>),
+    (<span class="c-str">"tile"</span>,          <span class="c-str">"CONCRETE_FLOOR"</span>),     <span class="c-comment"># careful: also matches "acoustic tile"</span>
+]
+    </div>
+
+    <div class="prose" style="margin-top:20px;">
+      <p><strong>First match wins.</strong> Rules are checked top to bottom. Put more-specific substrings before broad ones. Note that <code>"tile"</code> would match <code>"Acoustic Ceiling Tile"</code> — which is why <code>"acoustic tile"</code> appears higher in the list.</p>
+      <p>If no rule matches a wall or ceiling type, the script falls back to the category default: <code>GYPSUM_BOARD</code> for walls, <code>ACOUSTIC_TILE</code> for ceilings, <code>CONCRETE_FLOOR</code> for floors. These defaults are set near the top of the script.</p>
+    </div>
+
+    <table class="mat-table" style="margin-top:28px;">
+      <thead>
+        <tr>
+          <th>Your Revit type name contains…</th>
+          <th>Maps to material key</th>
+          <th>αavg at 500 Hz</th>
+          <th>NRC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>gypsum, drywall, gwb</td><td>GYPSUM_BOARD</td><td>0.05</td><td>0.06</td></tr>
+        <tr><td>acoustic tile, lay-in, layin</td><td>ACOUSTIC_TILE</td><td>0.78</td><td>0.89</td></tr>
+        <tr><td>cmu, masonry, block</td><td>CONCRETE_BLOCK</td><td>0.31</td><td>0.36</td></tr>
+        <tr><td>concrete</td><td>CONCRETE_BARE</td><td>0.02</td><td>0.02</td></tr>
+        <tr><td>brick</td><td>BRICK</td><td>0.03</td><td>0.04</td></tr>
+        <tr><td>glass, curtain wall, glazing</td><td>GLASS</td><td>0.18</td><td>0.10</td></tr>
+        <tr><td>carpet</td><td>CARPET_THICK</td><td>0.57</td><td>0.68</td></tr>
+        <tr><td>hardwood, wood floor</td><td>WOOD_FLOOR</td><td>0.10</td><td>0.07</td></tr>
+        <tr><td>cloud</td><td>CEILING_CLOUD</td><td>0.55</td><td>0.63</td></tr>
+        <tr><td><em>(no match)</em> — wall category</td><td>GYPSUM_BOARD</td><td>0.05</td><td>0.06</td></tr>
+        <tr><td><em>(no match)</em> — ceiling category</td><td>ACOUSTIC_TILE</td><td>0.78</td><td>0.89</td></tr>
+        <tr><td><em>(no match)</em> — floor category</td><td>CONCRETE_FLOOR</td><td>0.02</td><td>0.02</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="margin-top:24px;">
+      <strong>Cross-check against Week 1.</strong> Open your Week 1 RT60 report. Look at the Material Schedule table. Every surface material you assigned in Rhino should appear — or have an equivalent — in the Revit report. If a material is missing or wrong, add a rule to <code>MATERIAL_MAP</code> matching your Revit type name substring.
+    </div>
+  </section>
+
+
+  <!-- §05 READING THE REPORT -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 05</span>
+      <h2 class="sec-title">Reading the <em>Report.</em></h2>
+    </div>
+    <div class="prose">
+      <p>The HTML report output is identical in structure to the Rhino RT60 report. The same six-section layout, the same status bar, the same octave-band table. Here's what each section is telling you and where to focus your attention for Act I.</p>
+    </div>
+
+    <div class="report-anatomy">
+      <div class="ra-row">
+        <div class="ra-label">500 Hz Summary</div>
+        <div class="ra-body">
+          <strong>This is your primary result.</strong> The Eyring RT60 at 500 Hz is the single number that represents your room's reverberation. Check it against your program target. The status badge reads IN RANGE, TOO DRY, or TOO LIVE.
+          <br><br>
+          The Sabine value is the hand-calculation reference — it should be within ~15% of Eyring for rooms with mean absorption below 0.3. A larger gap means your room is highly absorptive; use the Eyring value in your submission.
+        </div>
+      </div>
+      <div class="ra-row">
+        <div class="ra-label">Status Bar</div>
+        <div class="ra-body">
+          The horizontal bar shows your 500 Hz Eyring result on a 0–3 s scale. The green zone is your program target range. The needle is your result. If the needle is outside the green zone, your material strategy needs revision — see §06.
+        </div>
+      </div>
+      <div class="ra-row">
+        <div class="ra-label">Octave Band Table</div>
+        <div class="ra-body">
+          RT60 values at 125, 250, 500, 1000, 2000, and 4000 Hz. For speech-primary rooms, look at <strong>500 and 1000 Hz</strong> most carefully. For music rooms, <strong>125 and 250 Hz</strong> bass RT60 matters — it should stay within range or slightly above. A bass RT60 that's much higher than mid-frequency indicates insufficient low-frequency absorption.
+        </div>
+      </div>
+      <div class="ra-row">
+        <div class="ra-label">Material Schedule</div>
+        <div class="ra-body">
+          Each surface category, Revit type name, assigned material key, area, α at 500 Hz, NRC, and absorption sabins. <strong>Verify this table carefully.</strong> If a surface shows an unexpected material key, your type name didn't match any rule — the script used the category default. Add a rule to MATERIAL_MAP to fix it.
+          <br><br>
+          The total sabins in the last row is your room's total 500 Hz absorption. Divide by total surface area to get mean α — if mean α is above 0.5, Eyring diverges significantly from Sabine.
+        </div>
+      </div>
+      <div class="ra-row">
+        <div class="ra-label">Room Parameters</div>
+        <div class="ra-body">
+          Volume, total surface area, total absorption, and mean α. <strong>Volume</strong> should match your Revit Room's Volume property. If there's a significant discrepancy, check your room boundaries. Use these numbers in your Act I hand-calculation comparison worksheet.
+        </div>
+      </div>
+      <div class="ra-row">
+        <div class="ra-label">Footer Note</div>
+        <div class="ra-body">
+          A reminder of the script's assumptions: wall areas are calculated from boundary segment lengths × room height; ceiling area equals floor area (flat ceiling assumed); window and door areas are not subtracted from wall areas. These simplifications matter most for highly glazed rooms — if your design has significant glazing, note the discrepancy in your Decision Log.
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- §06 COMPARING RHINO AND REVIT RESULTS -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 06</span>
+      <h2 class="sec-title">Comparing Rhino and <em>Revit Results.</em></h2>
+    </div>
+    <div class="prose">
+      <p>If you ran both the Rhino and Revit scripts on the same room, you may see slightly different RT60 values. That's expected — here's how to interpret the differences.</p>
+    </div>
+
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>If the Revit result is…</th>
+          <th>Most likely reason</th>
+          <th>What to do</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Within ±0.2 s of Rhino</td>
+          <td style="color:var(--paper-dim);">Normal modeling tolerance — surface area approximations and bounding box vs. solid volume differ slightly.</td>
+          <td style="color:var(--paper-dim);">No action needed. Use the Revit result if Revit is your primary model.</td>
+        </tr>
+        <tr>
+          <td>Significantly higher (longer) than Rhino</td>
+          <td style="color:var(--paper-dim);">Revit is assigning less-absorptive materials — likely a MATERIAL_MAP match failure falling back to defaults.</td>
+          <td style="color:var(--paper-dim);">Check the Material Schedule. Find surfaces with unexpected material keys. Add matching rules.</td>
+        </tr>
+        <tr>
+          <td>Significantly lower (shorter) than Rhino</td>
+          <td style="color:var(--paper-dim);">Revit wall area is larger than Rhino (boundary segment count is higher, or room height differs). Or Revit assigned a more-absorptive ceiling type.</td>
+          <td style="color:var(--paper-dim);">Verify room height in Revit matches Rhino model. Check ceiling type assignment.</td>
+        </tr>
+        <tr>
+          <td>Volume is wrong</td>
+          <td style="color:var(--paper-dim);">Room element isn't fully bounded. Open edges, or ceiling/floor elements not framing the room.</td>
+          <td style="color:var(--paper-dim);">Use Room Separation Lines to close open boundaries. Verify Room.Volume in Revit properties.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout" style="margin-top:24px;">
+      <strong>For your Act I submission,</strong> you only need one RT60 analysis — Rhino or Revit, not both. But if you ran both, comparing them is excellent material for your Decision Log. Note the discrepancy, explain the cause, and state which result you trust and why.
+    </div>
+  </section>
+
+
+  <!-- §07 REVISING YOUR DESIGN -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 07</span>
+      <h2 class="sec-title">Your Result is <em>Out of Range.</em></h2>
+    </div>
+    <div class="prose">
+      <p>The script's job is to tell you the truth about your current design. If the result is outside your program target, that's the assignment working — you now have a diagnostic and a design problem to solve.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">↑</div>
+        <div class="step-body">
+          <h3>RT60 too <em>long</em> — room is too live</h3>
+          <p><strong>The fix is more absorption.</strong> Look at your largest surfaces first — walls (highest area) make the biggest per-change impact. Switching a concrete wall type to gypsum board adds moderate absorption. Adding acoustic tile ceiling coverage or fabric panels adds significant absorption in mid-high frequencies.</p>
+          <p>In Revit: change the wall or ceiling type. In your MATERIAL_MAP, confirm the new type name maps to a more absorptive key. Re-run the Dynamo script. The HTML report will update.</p>
+          <p>For bass frequencies (125–250 Hz) that are still too live: add <code>BASS_TRAP</code> or <code>ACOUSTIC_PANEL</code> surfaces — these are thick fabric-wrapped panels. You'd need to model them as additional surface elements in Revit or manually add their area to the script's surface data.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">↓</div>
+        <div class="step-body">
+          <h3>RT60 too <em>short</em> — room is too dry</h3>
+          <p><strong>The fix is less absorption or more volume.</strong> If you have acoustic tile ceilings everywhere, consider reducing ceiling coverage or switching portions to hard plaster or GRC panels. If you have heavy carpet, consider hard flooring in non-seating areas.</p>
+          <p>Volume also matters directly — Sabine RT60 = 0.161 × V / A. If your room volume is small relative to the absorption, add volume (raise the ceiling, add fly space above the stage). Document this in your Decision Log: "I added X m³ of volume to bring 500 Hz RT60 from Y to Z."</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout green" style="margin-top:4px;">
+      <strong>Each design iteration is a Decision Log entry.</strong> Log the before RT60, what you changed (material or geometry), and the after RT60. Three to five iterations is a credible acoustic design process for Act I.
+    </div>
+  </section>
+
+
+  <!-- §08 ACT I CONNECTION -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 08</span>
+      <h2 class="sec-title">Act I <em>Deliverable.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Act I is due <strong>Tuesday 06·10 at 11:59 PM on Canvas</strong>. The submission has two parts: a PDF package and a pasted Decision Log text entry. This Revit workflow contributes to both.</p>
+    </div>
+
+    <div class="checklist">
+      <div class="cl-row">
+        <div class="cl-box"></div>
+        <div class="cl-body">
+          <strong>Acoustic Plan + Section from Revit</strong>
+          <p>Export a plan and at least one section from Revit showing your room geometry. Tag surface materials with a legend. If you ran the script, the Material Schedule table shows which type name mapped to which absorption key — use that as your legend source.</p>
+        </div>
+      </div>
+      <div class="cl-row">
+        <div class="cl-box"></div>
+        <div class="cl-body">
+          <strong>RT60 Report (HTML → PDF)</strong>
+          <p>Open your saved HTML report in Chrome. Print → Save as PDF. Include this in your PDF package. The report's Material Schedule and octave-band table are your primary technical evidence. You can use either the Rhino or Revit report — or both, if you're comparing them.</p>
+        </div>
+      </div>
+      <div class="cl-row">
+        <div class="cl-box"></div>
+        <div class="cl-body">
+          <strong>Hand calculation at 500 Hz (Sabine)</strong>
+          <p>The Sabine value in the report is your hand-calculation reference. Reproduce the calculation by hand or in a spreadsheet: RT60 = 0.161 × V / Σ(αᵢ × Aᵢ). Your result should match the script's Sabine value within ±0.1 s. Include this worksheet in the PDF.</p>
+        </div>
+      </div>
+      <div class="cl-row">
+        <div class="cl-box"></div>
+        <div class="cl-body">
+          <strong>Acoustic deficiency identification</strong>
+          <p>State whether your design is IN RANGE, TOO DRY, or TOO LIVE, and which frequency bands are most problematic. The octave-band table gives you this directly. Reference at least two specific octave bands.</p>
+        </div>
+      </div>
+      <div class="cl-row">
+        <div class="cl-box"></div>
+        <div class="cl-body">
+          <strong>Material correction strategy</strong>
+          <p>If your result was out of range, describe the change you made (material substitution or volume adjustment), show the revised RT60, and explain why the change worked acoustically. If you're in range, explain which material choices drove you there.</p>
+        </div>
+      </div>
+      <div class="cl-row">
+        <div class="cl-box"></div>
+        <div class="cl-body">
+          <strong>Decision Log entries (Weeks 1–3) — pasted as text</strong>
+          <p>Copy your Decision Log entries from Weeks 1, 2, and 3 and paste them into the Canvas text field. The log should document your material reasoning, your RT60 results at each iteration, and what you changed between runs. Entries from this Revit workflow (if used) count toward Week 2 and Week 3 log entries.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- FOOTER NAV -->
+  <div class="footnav">
+    <a href="Su%2026%20AEIS%20Week02.html">← Week 02 Lecture Notes</a>
+    <a href="../index.html">Course Hub</a>
+    <a href="Su_26_AEIS_Week02_RT60_Tutorial.html">Rhino RT60 Tutorial →</a>
+  </div>
+
+</div>
+</body>
+</html>

@@ -372,7 +372,17 @@
         <div class="step-body">
           <h3>Open <em>Dynamo</em> from inside Revit</h3>
           <p>In Revit: <strong>Manage tab → Visual Programming → Dynamo</strong>. A new Dynamo window will open. Create a new Dynamo graph (File → New).</p>
-          <p>Dynamo version matters for the Python engine. <strong>Dynamo 2.13+</strong> (ships with Revit 2023+) uses CPython 3 by default. Older versions use IronPython 2.7. The script works with both — if you get a <code>SyntaxError</code>, check your Python engine setting in Dynamo preferences and switch to CPython 3 if available.</p>
+          <p><strong>Revit 2022 or later is recommended.</strong> The script has been tested on Revit 2026 and works on 2022–2026. Revit 2020–2021 is not officially supported but may work. If you are on an older version and get unit-related errors, notify the instructor.</p>
+          <div class="callout" style="margin-top:12px;margin-bottom:12px;">
+            <strong>Revit version → Dynamo Python engine quick reference:</strong>
+            <div style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:2;">
+              <div><span style="color:var(--amber);min-width:120px;display:inline-block;">Revit 2025–2026</span> CPython 3 — default, no action needed</div>
+              <div><span style="color:var(--amber);min-width:120px;display:inline-block;">Revit 2024</span> CPython 3 — set manually in Dynamo Preferences → Python Engine</div>
+              <div><span style="color:var(--amber);min-width:120px;display:inline-block;">Revit 2023</span> IronPython 2.7 default — switch to CPython 3 if available, or leave as-is</div>
+              <div><span style="color:var(--amber);min-width:120px;display:inline-block;">Revit 2022</span> IronPython 2.7 — script works as-is, no switch needed</div>
+            </div>
+          </div>
+          <p>The script is written to run on either engine — no f-strings or Python 3-only syntax. The engine setting only matters if you see a <code>SyntaxError</code> on paste. If that happens, open <strong>Dynamo Preferences → Python Engine</strong> and switch to CPython 3.</p>
         </div>
       </div>
 

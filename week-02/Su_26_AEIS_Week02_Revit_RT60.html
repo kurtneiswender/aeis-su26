@@ -9,22 +9,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#0E0D0B;--ink-2:#161412;--ink-3:#1E1B17;
+    --ink:#0E0D0B;--ink-2:#161412;
     --paper:#EDE4D3;--paper-2:#D9CFB9;--paper-dim:#8A8273;
     --amber:#D4A24C;--amber-soft:rgba(212,162,76,.10);--amber-line:rgba(212,162,76,.45);
-    --red:#C8472F;--blue:#9FC8D4;--green:#7FAF78;
-    --rule:rgba(237,228,211,.18);--rule-strong:rgba(237,228,211,.42);
+    --red:#C8472F;--blue:#4A8FA0;--green:#3D7A52;
+    /* light-mode rules — ink-on-paper */
+    --rule:rgba(14,13,11,.12);--rule-strong:rgba(14,13,11,.24);
+    /* semantic aliases for light mode */
+    --body-bg:var(--paper);
+    --body-text:var(--ink);
+    --body-text-2:rgba(14,13,11,.66);
+    --body-text-dim:rgba(14,13,11,.44);
+    --surface:rgba(255,255,255,.55);
+    --surface-hover:rgba(255,255,255,.85);
   }
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  html,body{margin:0;padding:0;background:var(--body-bg);color:var(--body-text);}
   body{
     font-family:"Newsreader",Georgia,serif;font-weight:380;font-size:18px;line-height:1.65;
     font-feature-settings:"ss01","onum";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
-  }
-  body::before{
-    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-    mix-blend-mode:overlay;opacity:.55;
   }
   ::selection{background:var(--amber);color:var(--ink);}
 
@@ -35,9 +38,9 @@
   .topbar{
     display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
     font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--paper-dim);padding-bottom:18px;border-bottom:1px solid var(--rule);
+    text-transform:uppercase;color:var(--body-text-dim);padding-bottom:18px;border-bottom:1px solid var(--rule);
   }
-  .back{color:var(--paper-dim);text-decoration:none;transition:color .15s;}
+  .back{color:var(--body-text-dim);text-decoration:none;transition:color .15s;}
   .back:hover{color:var(--amber);}
   .topbar .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:8px;vertical-align:middle;animation:pulse 2.4s ease-in-out infinite;}
   @keyframes pulse{50%{opacity:.35}}
@@ -45,13 +48,13 @@
   /* HERO */
   .hero{padding:64px 0 48px;}
   .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-bottom:22px;}
-  .kicker .pipe{color:var(--paper-dim);margin:0 10px;}
+  .kicker .pipe{color:var(--body-text-dim);margin:0 10px;}
   h1.title{
     font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;
     font-weight:380;font-size:clamp(48px,8vw,112px);line-height:.88;letter-spacing:-.035em;margin:0;
   }
   h1.title em{font-style:italic;color:var(--amber);font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
-  .sub{margin-top:28px;max-width:740px;font-family:"Newsreader",serif;font-size:clamp(17px,1.7vw,21px);line-height:1.5;color:var(--paper-2);font-style:italic;}
+  .sub{margin-top:28px;max-width:740px;font-family:"Newsreader",serif;font-size:clamp(17px,1.7vw,21px);line-height:1.5;color:var(--body-text-2);font-style:italic;}
 
   /* WEEK BRIDGE BANNER */
   .bridge{
@@ -59,12 +62,12 @@
     border:1px solid var(--rule-strong);align-items:stretch;
   }
   .bridge-col{padding:20px 24px;}
-  .bridge-col.done{background:rgba(127,175,120,.06);border-right:1px solid var(--rule);}
+  .bridge-col.done{background:rgba(61,122,82,.08);border-right:1px solid var(--rule);}
   .bridge-col.now{background:var(--amber-soft);}
   .bridge-arrow{display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--amber);border-right:1px solid var(--rule);}
-  .bridge-col dt{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:8px;}
+  .bridge-col dt{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--body-text-dim);margin-bottom:8px;}
   .bridge-col dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:17px;line-height:1.2;font-variation-settings:"opsz" 36;}
-  .bridge-col dd small{display:block;font-size:13px;color:var(--paper-dim);margin-top:5px;font-style:italic;font-family:"Newsreader",serif;}
+  .bridge-col dd small{display:block;font-size:13px;color:var(--body-text-dim);margin-top:5px;font-style:italic;font-family:"Newsreader",serif;}
   .bridge-col.done dd{color:var(--green);}
   .bridge-col.now dd{color:var(--amber);}
   @media(max-width:640px){.bridge{grid-template-columns:1fr}.bridge-arrow{display:none}.bridge-col.done{border-right:none;border-bottom:1px solid var(--rule)}}
@@ -73,9 +76,9 @@
   .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);margin-top:44px;}
   .meta>div{padding:16px 16px 16px 0;border-right:1px solid var(--rule);}
   .meta>div:last-child{border-right:none}
-  .meta dt{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:5px;}
+  .meta dt{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--body-text-dim);margin-bottom:5px;}
   .meta dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:18px;line-height:1.2;font-variation-settings:"opsz" 36;}
-  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:12px;color:var(--paper-dim);margin-top:3px;font-style:italic;}
+  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:12px;color:var(--body-text-dim);margin-top:3px;font-style:italic;}
   @media(max-width:820px){.meta{grid-template-columns:repeat(2,1fr)}.meta>div:nth-child(2){border-right:none}}
 
   /* SECTION */
@@ -85,24 +88,24 @@
   .sec-title{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(28px,3.8vw,46px);line-height:1;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 72,"SOFT" 40;}
   .sec-title em{font-style:italic;color:var(--amber);}
 
-  .prose{max-width:800px;color:var(--paper-2);font-size:17px;line-height:1.65;}
+  .prose{max-width:800px;color:var(--body-text-2);font-size:17px;line-height:1.65;}
   .prose p{margin:0 0 1em;}
-  .prose em{color:var(--paper);font-style:italic;}
-  .prose strong{color:var(--paper);}
+  .prose em{color:var(--ink);font-style:italic;}
+  .prose strong{color:var(--ink);}
   .prose ul,.prose ol{padding-left:20px;margin-bottom:1em;}
   .prose ul li,.prose ol li{margin-bottom:8px;}
-  .prose code{font-family:"JetBrains Mono",monospace;font-size:.82em;background:rgba(237,228,211,.08);padding:2px 7px;border-radius:3px;color:var(--paper);}
+  .prose code{font-family:"JetBrains Mono",monospace;font-size:.82em;background:rgba(14,13,11,.07);padding:2px 7px;border-radius:3px;color:var(--ink);}
 
   /* CALLOUT */
   .callout{
     max-width:800px;margin:24px 0;padding:18px 22px;
-    border-left:3px solid var(--amber-line);background:var(--amber-soft);
-    font-size:15.5px;color:var(--paper-2);line-height:1.55;
+    border-left:3px solid var(--amber-line);background:rgba(212,162,76,.08);
+    font-size:15.5px;color:var(--body-text-2);line-height:1.55;
   }
-  .callout strong{color:var(--paper);}
-  .callout.blue{border-left-color:rgba(159,200,212,.5);background:rgba(159,200,212,.07);}
-  .callout.green{border-left-color:rgba(127,175,120,.5);background:rgba(127,175,120,.06);}
-  .callout.red{border-left-color:rgba(200,71,47,.4);background:rgba(200,71,47,.05);}
+  .callout strong{color:var(--ink);}
+  .callout.blue{border-left-color:rgba(74,143,160,.5);background:rgba(74,143,160,.08);}
+  .callout.green{border-left-color:rgba(61,122,82,.45);background:rgba(61,122,82,.07);}
+  .callout.red{border-left-color:rgba(200,71,47,.4);background:rgba(200,71,47,.06);}
 
   /* COMPARISON TABLE: Rhino vs Revit */
   .compare{width:100%;max-width:800px;border-collapse:collapse;margin-top:24px;font-size:15px;}
@@ -113,9 +116,9 @@
   }
   .compare th:first-child{color:var(--green);}
   .compare th:last-child{color:var(--amber);}
-  .compare td{padding:11px 16px;border-bottom:1px solid var(--rule);color:var(--paper-2);vertical-align:top;}
+  .compare td{padding:11px 16px;border-bottom:1px solid var(--rule);color:var(--body-text-2);vertical-align:top;}
   .compare td:first-child{color:var(--green);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.04em;}
-  .compare td:nth-child(2){color:var(--paper-dim);}
+  .compare td:nth-child(2){color:var(--body-text-dim);}
   .compare td:last-child{color:var(--amber);font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.04em;}
   .compare tr:last-child td{border-bottom:none;}
 
@@ -138,59 +141,61 @@
     margin:0 0 8px;font-variation-settings:"opsz" 48,"SOFT" 30;
   }
   .step-body h3 em{font-style:italic;color:var(--amber);}
-  .step-body p{margin:0 0 10px;color:var(--paper-2);font-size:16px;line-height:1.6;}
+  .step-body p{margin:0 0 10px;color:var(--body-text-2);font-size:16px;line-height:1.6;}
   .step-body p:last-child{margin:0;}
-  .step-body strong{color:var(--paper);}
-  .step-body code{font-family:"JetBrains Mono",monospace;font-size:.82em;background:rgba(237,228,211,.08);padding:2px 7px;border-radius:3px;color:var(--paper);}
+  .step-body strong{color:var(--ink);}
+  .step-body code{font-family:"JetBrains Mono",monospace;font-size:.82em;background:rgba(14,13,11,.07);padding:2px 7px;border-radius:3px;color:var(--ink);}
 
-  /* DYNAMO DIAGRAM */
+  /* DYNAMO DIAGRAM — keeps ink nodes for contrast against light page */
   .dynamo-diagram{
     margin:20px 0;border:1px solid var(--rule-strong);padding:24px;
-    background:rgba(237,228,211,.02);max-width:800px;
+    background:rgba(14,13,11,.03);max-width:800px;
   }
   .dynamo-diagram .d-label{
     font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;
-    text-transform:uppercase;color:var(--paper-dim);margin-bottom:16px;
+    text-transform:uppercase;color:var(--body-text-dim);margin-bottom:16px;
   }
   .dynamo-flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;}
   .d-node{
     border:1px solid var(--rule-strong);padding:10px 16px;background:var(--ink-2);
     font-family:"JetBrains Mono",monospace;font-size:12px;min-width:130px;
   }
-  .d-node .d-type{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:4px;}
-  .d-node .d-name{color:var(--paper);font-size:13px;}
+  .d-node .d-type{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(237,228,211,.5);margin-bottom:4px;}
+  .d-node .d-name{color:#EDE4D3;font-size:13px;}
   .d-node .d-port{color:var(--amber);font-size:10px;margin-top:3px;}
-  .d-arrow{padding:0 10px;color:var(--paper-dim);font-size:18px;flex-shrink:0;}
-  .d-node.python{border-color:var(--amber-line);background:var(--amber-soft);}
+  .d-arrow{padding:0 10px;color:var(--body-text-dim);font-size:18px;flex-shrink:0;}
+  .d-node.python{border-color:var(--amber-line);background:rgba(212,162,76,.14);}
   .d-node.python .d-name{color:var(--amber);}
-  .d-node.watch{border-color:rgba(159,200,212,.35);background:rgba(159,200,212,.06);}
+  .d-node.python .d-type{color:var(--body-text-dim);}
+  .d-node.watch{border-color:rgba(74,143,160,.4);background:rgba(74,143,160,.10);}
   .d-node.watch .d-name{color:var(--blue);}
-  @media(max-width:680px){.dynamo-flow{flex-direction:column;align-items:flex-start}.d-arrow{transform:rotate(90deg)}  }
+  .d-node.watch .d-type{color:var(--body-text-dim);}
+  @media(max-width:680px){.dynamo-flow{flex-direction:column;align-items:flex-start}.d-arrow{transform:rotate(90deg)}}
 
-  /* CODE BLOCK */
+  /* CODE BLOCK — intentionally stays dark for contrast + readability */
   .code-block{
     max-width:800px;margin:16px 0;
-    background:rgba(14,13,11,.6);border:1px solid var(--rule-strong);
+    background:var(--ink-2);border:1px solid rgba(14,13,11,.35);
     padding:20px 22px;
     font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.7;
-    color:var(--paper-2);overflow-x:auto;
+    color:#D9CFB9;overflow-x:auto;
     border-left:3px solid var(--amber-line);
   }
-  .code-block .c-comment{color:var(--paper-dim);}
+  .code-block .c-comment{color:#8A8273;}
   .code-block .c-key{color:var(--amber);}
-  .code-block .c-val{color:var(--blue);}
-  .code-block .c-str{color:var(--green);}
+  .code-block .c-val{color:#9FC8D4;}
+  .code-block .c-str{color:#8EC9A2;}
 
   /* MATERIAL MAP TABLE */
   .mat-table{width:100%;max-width:800px;border-collapse:collapse;margin-top:20px;font-size:14.5px;}
   .mat-table th{
     padding:9px 14px;font-family:"JetBrains Mono",monospace;font-size:10px;
-    letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);
+    letter-spacing:.18em;text-transform:uppercase;color:#EDE4D3;
     text-align:left;font-weight:400;
-    background:rgba(14,13,11,.4);border-bottom:1px solid var(--rule-strong);
+    background:var(--ink-2);border-bottom:1px solid var(--rule-strong);
   }
-  .mat-table td{padding:10px 14px;border-bottom:1px solid var(--rule);color:var(--paper-2);vertical-align:top;}
-  .mat-table td:first-child{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--paper);letter-spacing:.03em;}
+  .mat-table td{padding:10px 14px;border-bottom:1px solid var(--rule);color:var(--body-text-2);vertical-align:top;}
+  .mat-table td:first-child{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink);letter-spacing:.03em;}
   .mat-table td:nth-child(2){color:var(--amber);font-family:"JetBrains Mono",monospace;font-size:11.5px;}
   .mat-table tr:last-child td{border-bottom:none;}
 
@@ -207,12 +212,12 @@
   .ra-label{
     padding:16px 18px;border-right:1px solid var(--rule);
     font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--amber);background:rgba(212,162,76,.04);
+    color:var(--amber);background:rgba(212,162,76,.06);
     display:flex;align-items:flex-start;
   }
-  .ra-body{padding:16px 20px;font-size:15px;color:var(--paper-2);line-height:1.55;}
-  .ra-body strong{color:var(--paper);}
-  .ra-body code{font-family:"JetBrains Mono",monospace;font-size:.85em;background:rgba(237,228,211,.08);padding:2px 6px;}
+  .ra-body{padding:16px 20px;font-size:15px;color:var(--body-text-2);line-height:1.55;}
+  .ra-body strong{color:var(--ink);}
+  .ra-body code{font-family:"JetBrains Mono",monospace;font-size:.85em;background:rgba(14,13,11,.07);padding:2px 6px;color:var(--ink);}
   @media(max-width:600px){.ra-row{grid-template-columns:1fr}.ra-label{border-right:none;border-bottom:1px solid var(--rule)}}
 
   /* DELIVERABLE CHECKLIST */
@@ -220,8 +225,8 @@
   .cl-row{display:grid;grid-template-columns:36px 1fr;align-items:start;padding:14px 18px;border-bottom:1px solid var(--rule);gap:0;}
   .cl-row:last-child{border-bottom:none;}
   .cl-box{width:18px;height:18px;border:1.5px solid var(--amber-line);margin-top:2px;flex-shrink:0;}
-  .cl-body strong{color:var(--paper);font-size:15.5px;}
-  .cl-body p{margin:4px 0 0;font-size:14px;color:var(--paper-dim);line-height:1.45;}
+  .cl-body strong{color:var(--ink);font-size:15.5px;}
+  .cl-body p{margin:4px 0 0;font-size:14px;color:var(--body-text-dim);line-height:1.45;}
 
   /* FOOTER NAV */
   .footnav{
@@ -229,7 +234,7 @@
     margin-top:80px;padding-top:24px;border-top:1px solid var(--rule-strong);
     font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
   }
-  .footnav a{color:var(--paper-dim);text-decoration:none;transition:color .15s;}
+  .footnav a{color:var(--body-text-dim);text-decoration:none;transition:color .15s;}
   .footnav a:hover{color:var(--amber);}
 </style>
 </head>
@@ -639,23 +644,23 @@ MATERIAL_MAP = [
       <tbody>
         <tr>
           <td>Within ±0.2 s of Rhino</td>
-          <td style="color:var(--paper-dim);">Normal modeling tolerance — surface area approximations and bounding box vs. solid volume differ slightly.</td>
-          <td style="color:var(--paper-dim);">No action needed. Use the Revit result if Revit is your primary model.</td>
+          <td style="color:var(--body-text-dim);">Normal modeling tolerance — surface area approximations and bounding box vs. solid volume differ slightly.</td>
+          <td style="color:var(--body-text-dim);">No action needed. Use the Revit result if Revit is your primary model.</td>
         </tr>
         <tr>
           <td>Significantly higher (longer) than Rhino</td>
-          <td style="color:var(--paper-dim);">Revit is assigning less-absorptive materials — likely a MATERIAL_MAP match failure falling back to defaults.</td>
-          <td style="color:var(--paper-dim);">Check the Material Schedule. Find surfaces with unexpected material keys. Add matching rules.</td>
+          <td style="color:var(--body-text-dim);">Revit is assigning less-absorptive materials — likely a MATERIAL_MAP match failure falling back to defaults.</td>
+          <td style="color:var(--body-text-dim);">Check the Material Schedule. Find surfaces with unexpected material keys. Add matching rules.</td>
         </tr>
         <tr>
           <td>Significantly lower (shorter) than Rhino</td>
-          <td style="color:var(--paper-dim);">Revit wall area is larger than Rhino (boundary segment count is higher, or room height differs). Or Revit assigned a more-absorptive ceiling type.</td>
-          <td style="color:var(--paper-dim);">Verify room height in Revit matches Rhino model. Check ceiling type assignment.</td>
+          <td style="color:var(--body-text-dim);">Revit wall area is larger than Rhino (boundary segment count is higher, or room height differs). Or Revit assigned a more-absorptive ceiling type.</td>
+          <td style="color:var(--body-text-dim);">Verify room height in Revit matches Rhino model. Check ceiling type assignment.</td>
         </tr>
         <tr>
           <td>Volume is wrong</td>
-          <td style="color:var(--paper-dim);">Room element isn't fully bounded. Open edges, or ceiling/floor elements not framing the room.</td>
-          <td style="color:var(--paper-dim);">Use Room Separation Lines to close open boundaries. Verify Room.Volume in Revit properties.</td>
+          <td style="color:var(--body-text-dim);">Room element isn't fully bounded. Open edges, or ceiling/floor elements not framing the room.</td>
+          <td style="color:var(--body-text-dim);">Use Room Separation Lines to close open boundaries. Verify Room.Volume in Revit properties.</td>
         </tr>
       </tbody>
     </table>

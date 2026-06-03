@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARC 5443 · LightStanza Tutorial · Week 04</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink:    #0E0D0B;
+  --paper:  #EDE4D3;
+  --amber:  #D4A24C;
+  --red:    #C8472F;
+  --blue:   #9FC8D4;
+  --green:  #6BAA7E;
+  --paper2: #E2D8C4;
+  --rule:   rgba(14,13,11,.15);
+}
+html { font-size: 16px; scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: 'Newsreader', Georgia, serif; line-height: 1.7; }
+img { display: block; max-width: 100%; }
+a { color: var(--amber); }
+
+.page { max-width: 880px; margin: 0 auto; padding: 0 28px 100px; }
+
+/* HERO */
+.hero { border-bottom: 3px solid var(--ink); padding: 64px 0 32px; margin-bottom: 56px; }
+.hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); margin-bottom: 12px; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: clamp(2.4rem, 6vw, 3.8rem); font-weight: 700; line-height: 1.05; letter-spacing: -.03em; margin-bottom: 16px; }
+.hero-sub { font-size: 1.1rem; font-style: italic; color: rgba(14,13,11,.65); max-width: 600px; }
+.meta-strip { display: flex; gap: 28px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--rule); flex-wrap: wrap; }
+.meta-item { font-family: 'JetBrains Mono', monospace; font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: rgba(14,13,11,.5); }
+.meta-item strong { color: var(--ink); display: block; font-size: .8rem; margin-top: 2px; }
+
+/* SECTION */
+.section { margin-bottom: 72px; }
+.section-num { font-family: 'JetBrains Mono', monospace; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); margin-bottom: 6px; }
+.section h2 { font-family: 'Fraunces', serif; font-size: 1.9rem; font-weight: 600; letter-spacing: -.02em; margin-bottom: 20px; line-height: 1.15; }
+.section p { margin-bottom: 1rem; font-size: 1.02rem; }
+
+/* VIDEO BREAK BANNER */
+.video-break {
+  display: flex; align-items: center; gap: 16px;
+  background: var(--ink); color: var(--paper);
+  padding: 14px 20px; margin: 40px 0 32px;
+  border-radius: 6px;
+}
+.video-break .vb-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: .65rem; letter-spacing: .14em;
+  text-transform: uppercase; background: var(--red); color: #fff;
+  padding: 3px 10px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;
+}
+.video-break .vb-title { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--amber); letter-spacing: .06em; }
+.video-break .vb-dur { font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: rgba(237,228,211,.5); margin-left: auto; white-space: nowrap; }
+
+/* STEPS */
+.steps { counter-reset: step; list-style: none; margin: 24px 0; }
+.steps li { counter-increment: step; display: flex; gap: 18px; margin-bottom: 22px; align-items: flex-start; }
+.steps li::before {
+  content: counter(step);
+  font-family: 'JetBrains Mono', monospace; font-size: .8rem; font-weight: 600;
+  background: var(--amber); color: var(--ink);
+  min-width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 3px;
+}
+.steps li .step-body { flex: 1; font-size: 1rem; }
+.steps li strong { display: block; margin-bottom: 4px; font-size: 1.05rem; }
+.steps li p { margin: 4px 0 0; color: rgba(14,13,11,.7); font-size: .95rem; }
+.steps li code { font-family: 'JetBrains Mono', monospace; font-size: .83em; background: rgba(14,13,11,.08); padding: 1px 5px; border-radius: 3px; }
+.steps li ul { margin: 8px 0 0 0; padding-left: 20px; color: rgba(14,13,11,.7); font-size: .95rem; }
+.steps li ul li { margin-bottom: 5px; }
+.steps li ul li::before { display: none; }
+
+/* PULLQUOTE */
+.pullquote { border-left: 4px solid var(--amber); padding: 16px 24px; margin: 28px 0; background: rgba(212,162,76,.08); border-radius: 0 6px 6px 0; font-size: 1.1rem; font-style: italic; color: rgba(14,13,11,.8); }
+
+/* METRIC CARDS */
+.metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 28px 0; }
+.metric-card { border: 1.5px solid var(--rule); border-radius: 8px; padding: 18px 20px; }
+.metric-card.primary { border-color: var(--amber); background: rgba(212,162,76,.07); }
+.metric-card.warn { border-color: var(--red); background: rgba(200,71,47,.05); }
+.metric-card .m-label { font-family: 'JetBrains Mono', monospace; font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; color: rgba(14,13,11,.5); margin-bottom: 6px; }
+.metric-card .m-name { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 600; margin-bottom: 6px; line-height: 1.2; }
+.metric-card .m-threshold { font-family: 'JetBrains Mono', monospace; font-size: .88rem; color: var(--amber); margin-bottom: 8px; }
+.metric-card .m-desc { font-size: .87rem; color: rgba(14,13,11,.65); line-height: 1.5; }
+
+/* CALLOUT */
+.callout { background: var(--ink); color: var(--paper); border-radius: 10px; padding: 26px 30px; margin: 28px 0; }
+.callout h3 { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 600; color: var(--amber); margin-bottom: 12px; }
+.callout p { font-size: .95rem; color: rgba(237,228,211,.82); line-height: 1.6; margin-bottom: .7rem; }
+.callout p:last-child { margin-bottom: 0; }
+.callout ul { padding-left: 20px; color: rgba(237,228,211,.75); font-size: .93rem; line-height: 1.65; }
+.callout li { margin-bottom: 6px; }
+.callout strong { color: var(--paper); }
+.callout code { font-family: 'JetBrains Mono', monospace; font-size: .82em; background: rgba(237,228,211,.1); padding: 1px 5px; border-radius: 3px; color: var(--blue); }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0; }
+@media (max-width: 580px) { .two-col { grid-template-columns: 1fr; } }
+.col-box { border: 1px solid var(--rule); border-radius: 8px; padding: 20px 22px; }
+.col-box h4 { font-family: 'JetBrains Mono', monospace; font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--amber); margin-bottom: 10px; }
+.col-box ul { padding-left: 18px; font-size: .93rem; color: rgba(14,13,11,.75); line-height: 1.6; }
+.col-box li { margin-bottom: 5px; }
+
+/* WORKFLOW DIAGRAM */
+.workflow { display: flex; align-items: center; gap: 0; margin: 28px 0; flex-wrap: wrap; }
+.wf-step { text-align: center; padding: 14px 18px; background: rgba(14,13,11,.04); border: 1px solid var(--rule); border-radius: 6px; flex: 1; min-width: 110px; }
+.wf-step .wf-num { font-family: 'JetBrains Mono', monospace; font-size: .65rem; text-transform: uppercase; letter-spacing: .1em; color: var(--amber); margin-bottom: 5px; }
+.wf-step .wf-label { font-size: .88rem; font-weight: 600; color: var(--ink); line-height: 1.3; }
+.wf-arrow { font-size: 1.2rem; color: rgba(14,13,11,.25); padding: 0 6px; flex-shrink: 0; }
+@media (max-width: 600px) { .wf-arrow { display: none; } .wf-step { flex: 0 0 48%; margin-bottom: 8px; } }
+
+/* TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: .9rem; margin: 20px 0; }
+.data-table th { background: var(--ink); color: var(--paper); padding: 9px 12px; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+.data-table td { padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.data-table tr:nth-child(even) td { background: rgba(14,13,11,.03); }
+.data-table td:first-child { font-family: 'JetBrains Mono', monospace; font-size: .82rem; color: var(--amber); }
+
+/* CHECKLIST */
+.checklist { margin: 20px 0; }
+.check-item { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--rule); align-items: flex-start; font-size: .97rem; }
+.check-item:last-child { border-bottom: none; }
+.check-box { flex-shrink: 0; width: 18px; height: 18px; border: 1.5px solid rgba(14,13,11,.3); border-radius: 3px; margin-top: 3px; }
+.check-item strong { color: var(--ink); }
+.check-item span { color: rgba(14,13,11,.65); }
+
+/* SECTION DIVIDER */
+.divider { border: none; border-top: 2px solid var(--rule); margin: 56px 0; }
+
+/* ASIDE / NOTE */
+.note { background: rgba(159,200,212,.12); border-left: 3px solid var(--blue); padding: 14px 20px; margin: 20px 0; border-radius: 0 6px 6px 0; font-size: .93rem; color: rgba(14,13,11,.75); }
+.note strong { color: var(--ink); }
+
+/* DELIVERABLE BOX */
+.deliverable { border: 2px solid var(--amber); border-radius: 8px; padding: 26px 30px; margin-top: 32px; }
+.deliverable .d-label { font-family: 'JetBrains Mono', monospace; font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; color: var(--amber); margin-bottom: 10px; }
+.deliverable h3 { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 600; margin-bottom: 14px; }
+.deliverable ul { padding-left: 20px; font-size: .97rem; line-height: 1.7; }
+.deliverable li { margin-bottom: 6px; }
+
+/* RECORDING NOTE */
+.rec-note { font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: .08em; color: rgba(14,13,11,.4); text-transform: uppercase; text-align: right; margin: -20px 0 32px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-eyebrow">ARC 5443 AEIS &nbsp;&middot;&nbsp; Week 04 &nbsp;&middot;&nbsp; Illumination Systems</div>
+  <h1>LightStanza &mdash;<br>Daylighting &amp; Artificial Lighting</h1>
+  <p class="hero-sub">A step-by-step tutorial covering the full LightStanza workflow: uploading your model, running daylighting simulations, placing electric fixtures, and generating reports.</p>
+  <div class="meta-strip">
+    <div class="meta-item">Software<strong>LightStanza (browser)</strong></div>
+    <div class="meta-item">Model Source<strong>Rhino / SketchUp / Revit</strong></div>
+    <div class="meta-item">Deliverable Due<strong>Tue 06&middot;16 &middot; 11:59 PM</strong></div>
+    <div class="meta-item">Reference<strong>MEEB Ch. 6, 15, 16</strong></div>
+  </div>
+</header>
+
+<!-- TOC -->
+<div class="section">
+  <div class="section-num">Overview</div>
+  <h2>Four Video Segments</h2>
+  <p>This tutorial is organized around four pre-recorded video segments. Each segment covers one phase of the LightStanza workflow. Watch them in order, then follow the written steps below each video to work through your own project.</p>
+
+  <div class="workflow">
+    <div class="wf-step"><div class="wf-num">Part 1 &nbsp;&middot;&nbsp; ~8 min</div><div class="wf-label">Model Setup &amp; Upload</div></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step"><div class="wf-num">Part 2 &nbsp;&middot;&nbsp; ~10 min</div><div class="wf-label">Daylighting Analysis</div></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step"><div class="wf-num">Part 3 &nbsp;&middot;&nbsp; ~10 min</div><div class="wf-label">Electric Lighting</div></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step"><div class="wf-num">Part 4 &nbsp;&middot;&nbsp; ~5 min</div><div class="wf-label">Reports &amp; Deliverables</div></div>
+  </div>
+
+  <div class="note"><strong>Account setup:</strong> Create a free LightStanza account at <strong>app.lightstanza.com/signup</strong> before watching the videos. Use your LTU email address. If you encounter a paywall during the tutorial, notify the instructor immediately &mdash; LightStanza offers a free tier that covers everything in this tutorial.</div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 1 -->
+<div class="section">
+  <div class="video-break">
+    <div class="vb-badge">&#9654; Part 1</div>
+    <div class="vb-title">Model Setup &amp; Upload</div>
+    <div class="vb-dur">~8 min</div>
+  </div>
+  <div class="rec-note">Recording cue: start at lightstanza.com homepage, signed in</div>
+
+  <div class="section-num">§ 01</div>
+  <h2>Getting Your Model In</h2>
+  <p>LightStanza accepts models from Rhino, SketchUp, Revit, and other tools. The quality of your simulation depends almost entirely on how well the model is prepared before upload. A few minutes of cleanup now saves a lot of confusion later.</p>
+
+  <div class="callout">
+    <h3>Before You Upload: Model Checklist</h3>
+    <ul>
+      <li><strong>Units are set correctly.</strong> LightStanza reads the file's embedded unit system. In Rhino: <code>DocumentProperties &rarr; Units</code>. Feet or meters both work; the platform converts automatically.</li>
+      <li><strong>Glazing is modeled as separate surfaces.</strong> Windows and skylights must be distinct surfaces, not just holes in a wall. LightStanza identifies them by their layer name or material.</li>
+      <li><strong>No extraneous geometry.</strong> Site context, furniture, and decorative elements increase simulation time significantly. Delete or hide anything that is not a room-bounding surface or aperture.</li>
+      <li><strong>The model is a closed volume.</strong> Floors, walls, ceiling, and glazing must form an enclosed space with no gaps. Check in Rhino with <code>SelOpenPolysrf</code>.</li>
+      <li><strong>Layers are meaningful.</strong> LightStanza reads layer names to assign materials. Name layers after their material type: <code>Wall-Concrete</code>, <code>Ceiling-Acoustic</code>, <code>Glazing-Clear</code>.</li>
+    </ul>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;margin:28px 0 16px;">Uploading from Rhino</h3>
+  <ol class="steps">
+    <li>
+      <div class="step-body">
+        <strong>Export from Rhino as OBJ or SKP</strong>
+        <p>In Rhino: <code>File &rarr; Export Selected</code>. Choose <strong>OBJ</strong> format. In the OBJ export options, check <em>Export object names as groups</em> and <em>Export object layers as groups</em>. This preserves your layer structure in LightStanza.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Create a new project in LightStanza</strong>
+        <p>At <strong>app.lightstanza.com</strong>, click the <code>+</code> icon (top of the screen) &rarr; <em>New Design</em>. Give your project a name matching your hall: e.g., <code>Smith_Auditorium_W04</code>.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Upload the model file</strong>
+        <p>Drag your OBJ file into the upload area, or use the file browser. LightStanza will process the model &mdash; this takes 30 seconds to 2 minutes depending on polygon count. You will see the model appear in the 3D viewer when it is ready.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Set the project location</strong>
+        <p>In the left panel, open the <strong>Site</strong> panel (globe icon). Type your building's address or city. LightStanza automatically locates the nearest NOAA weather station and sets the climate data for all simulations. Confirm the correct location is shown on the map.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Check and adjust materials</strong>
+        <p>Open the <strong>Materials</strong> panel (paint bucket icon). Each surface group from your layer structure appears here. Assign reflectance values:</p>
+        <ul>
+          <li>Painted concrete walls: <strong>50%</strong> reflectance</li>
+          <li>Acoustic ceiling tile: <strong>85%</strong> reflectance</li>
+          <li>Dark wood floor: <strong>20%</strong> reflectance</li>
+          <li>Glazing: set <strong>Visible Transmittance (VT)</strong> — clear glass ≈ 0.60, tinted glass ≈ 0.35–0.50</li>
+        </ul>
+        <p>LightStanza uses reflectance to calculate how light bounces around the room. Wrong values produce wrong results.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Verify the model in the 3D viewer</strong>
+        <p>Orbit the model. Check that: (a) the building is oriented correctly relative to north, (b) glazing surfaces are visible as distinct elements, (c) no geometry is floating or missing. If the model looks wrong, go back to Rhino, fix the issue, and re-export.</p>
+      </div>
+    </li>
+  </ol>
+
+  <div class="note"><strong>Revit users:</strong> LightStanza has a dedicated Revit plugin that syncs bidirectionally. Install it from the LightStanza website under <em>Plugins</em>. The plugin handles export automatically and preserves material assignments from your Revit model. Skip the OBJ export steps above if using Revit.</div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 2 -->
+<div class="section">
+  <div class="video-break">
+    <div class="vb-badge">&#9654; Part 2</div>
+    <div class="vb-title">Daylighting Analysis</div>
+    <div class="vb-dur">~10 min</div>
+  </div>
+  <div class="rec-note">Recording cue: model already uploaded and located, site panel visible</div>
+
+  <div class="section-num">§ 02</div>
+  <h2>Running a Daylighting Simulation</h2>
+  <p>LightStanza calculates daylighting performance using climate-based simulations driven by real weather data for your location. The two primary metrics &mdash; sDA and ASE &mdash; are the industry standard for evaluating annual daylighting performance and are required for LEED v4 credit.</p>
+
+  <div class="pullquote">
+    The goal of daylighting analysis is not a beautiful false-color map. It is an answer to a specific question: does this space receive enough daylight, often enough, without causing glare or overheating?
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;margin:28px 0 12px;">The Two Primary Metrics</h3>
+
+  <div class="metric-grid">
+    <div class="metric-card primary">
+      <div class="m-label">Primary Metric</div>
+      <div class="m-name">Spatial Daylight Autonomy (sDA)</div>
+      <div class="m-threshold">sDA(300 lux, 50%) &ge; 55%</div>
+      <div class="m-desc">Percentage of floor area receiving at least 300 lux for at least 50% of occupied hours per year (8am&ndash;6pm). Accounts for blind operation when direct sun is present. LEED v4 requires sDA &ge; 55% for credit; &ge; 75% for additional credit.</div>
+    </div>
+    <div class="metric-card warn">
+      <div class="m-label">Constraint Metric</div>
+      <div class="m-name">Annual Sunlight Exposure (ASE)</div>
+      <div class="m-threshold">ASE &le; 10% required</div>
+      <div class="m-desc">Percentage of floor area receiving more than 1,000 lux of direct sunlight for more than 250 hours per year. High ASE means glare and overheating risk. Must be &le; 10% to qualify for LEED credit regardless of sDA score.</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Supporting Metrics</div>
+      <div class="m-name">DA, cDA, UDI</div>
+      <div class="m-threshold">Context-dependent</div>
+      <div class="m-desc">Daylight Autonomy (DA) is binary: meets threshold or not. Continuous DA (cDA) awards partial credit near the threshold. Useful Daylight Illuminance (UDI) measures hours within a comfortable range (typically 100&ndash;2000 lux).</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Glare Metric</div>
+      <div class="m-name">Daylight Glare Probability (DGP)</div>
+      <div class="m-threshold">DGP &lt; 0.35 = comfortable</div>
+      <div class="m-desc">Probability that a person at a specific viewpoint will experience disturbing glare. Requires a rendered image simulation at a specific time and view direction. Run this for any critical viewing position (e.g., stage sightlines, reading areas).</div>
+    </div>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;margin:32px 0 16px;">Step-by-Step: Annual Daylighting Simulation</h3>
+  <ol class="steps">
+    <li>
+      <div class="step-body">
+        <strong>Create an Illuminance Grid</strong>
+        <p>Open the <strong>Calculation Grids</strong> panel (grid icon, left sidebar). Click <em>Add Grid</em>. Place a horizontal grid at workplane height (30 inches = 2.5 ft above the floor for LEED compliance). Set grid spacing to <strong>2 feet</strong> for LEED calculations; 4 feet is acceptable for design exploration.</p>
+        <p>Draw the grid boundary to cover the occupied floor area of the space you are analyzing. For an auditorium, this is the seating area and lobby, not the stage or backstage.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Set occupied hours</strong>
+        <p>In the grid settings, confirm the occupancy schedule. The LEED default is <strong>8am&ndash;6pm, Monday&ndash;Friday</strong>. For a performance hall that primarily operates evenings and weekends, you may want to run a secondary simulation with a custom schedule to understand actual user experience vs. code compliance.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Run the Annual Grid simulation</strong>
+        <p>Open the <strong>Activity Panel</strong> (right side) &rarr; click <em>New</em> &rarr; <em>Annual Grid Illuminance</em>. Select your illuminance grid. Choose simulation quality: <strong>High</strong> is appropriate for design; Very High adds computation time with marginal benefit for early-stage work. Click <strong>Run</strong>.</p>
+        <p>Simulation time: typically 2&ndash;8 minutes depending on model complexity and server load. You will receive a notification when it completes.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Read the sDA / ASE results</strong>
+        <p>When the simulation completes, click the result card in the Activity Panel. The false-color floor plan shows sDA performance across your grid:</p>
+        <ul>
+          <li><strong>Green areas:</strong> sDA &ge; 75% &mdash; excellent daylight autonomy</li>
+          <li><strong>Yellow areas:</strong> sDA 55&ndash;75% &mdash; meets LEED minimum</li>
+          <li><strong>Red/orange areas:</strong> sDA &lt; 55% &mdash; daylight-deficient</li>
+        </ul>
+        <p>The ASE score appears as a single percentage in the results panel. If ASE &gt; 10%, identify which areas are receiving excessive direct sun and consider adding shading devices or adjusting glazing orientation.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Run a Point-in-Time Rendering (optional)</strong>
+        <p>For a visual sense of what the space looks like at a specific moment: Activity Panel &rarr; <em>New</em> &rarr; <em>Rendering</em>. Set the date and time (try the equinox &mdash; March 21 &mdash; at 9am and 3pm for LEED Option 2 compliance). Choose a saved viewpoint or create one using the camera tool. Run at <em>High</em> quality. This produces a photorealistic image you can use in your report.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Use the Comparison Tool to test a design change</strong>
+        <p>Click the comparison button in the Activity Panel (two overlapping squares icon). This opens a split-screen view. In the second panel, create a new design instance &mdash; try adding an overhang, changing VT, or adjusting window area. Run the same Annual Grid simulation on the new instance and compare sDA and ASE side by side.</p>
+      </div>
+    </li>
+  </ol>
+
+  <div class="callout">
+    <h3>Interpreting Results for an Auditorium</h3>
+    <p>Concert and performance halls present an unusual daylighting challenge. The primary acoustic and visual requirement &mdash; <strong>even, controlled illumination during performances</strong> &mdash; conflicts with the typical daylighting goal of maximizing natural light.</p>
+    <p>For your auditorium, focus your daylighting analysis on the <strong>lobby, foyer, restrooms, and support spaces</strong>. These are the spaces where sDA performance matters for occupant comfort and LEED credit. The hall itself may intentionally have little or no glazing &mdash; and that is a valid, defensible design decision if documented in your Decision Log with acoustic reasoning.</p>
+    <ul>
+      <li>A lobby sDA of 65%+ is achievable and desirable</li>
+      <li>The transition from daylit lobby to dark hall is a deliberate acoustic and experiential threshold &mdash; name it in your design narrative</li>
+      <li>If your hall has clerestory glazing or oculi, analyze those as a separate grid from the occupied seating area</li>
+    </ul>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;margin:32px 0 12px;">Blind Operation &amp; Shading</h3>
+  <p>sDA automatically accounts for blind deployment when direct sunlight exceeds 2% of the analysis grid. You can model specific shading strategies using the <strong>Blinds Panel</strong>:</p>
+  <div class="two-col">
+    <div class="col-box">
+      <h4>Static Shading (overhangs, fins)</h4>
+      <ul>
+        <li>Model directly in Rhino before export &mdash; overhangs, brise-soleils, light shelves become geometry in LightStanza</li>
+        <li>Re-run the simulation after adding shading geometry; compare sDA and ASE</li>
+        <li>Use the false-color map to verify that shading eliminates ASE hot spots without penalizing sDA too heavily</li>
+      </ul>
+    </div>
+    <div class="col-box">
+      <h4>Dynamic Shading (blinds)</h4>
+      <ul>
+        <li>Open the Blinds Panel &rarr; select a window surface &rarr; assign a blind type</li>
+        <li>Set to <em>Dynamic</em> for occupant-controlled operation (standard for LEED)</li>
+        <li>Set to <em>Always Closed</em> or <em>Always Open</em> to bracket the performance envelope</li>
+        <li>LightStanza optimizes blind operation to minimize ASE while maximizing sDA</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 3 -->
+<div class="section">
+  <div class="video-break">
+    <div class="vb-badge">&#9654; Part 3</div>
+    <div class="vb-title">Electric Lighting Analysis</div>
+    <div class="vb-dur">~10 min</div>
+  </div>
+  <div class="rec-note">Recording cue: daylighting simulation completed, switch to Luminaires panel</div>
+
+  <div class="section-num">§ 03</div>
+  <h2>Electric Lighting in LightStanza</h2>
+  <p>LightStanza's electric lighting workflow uses real photometric data from luminaire manufacturers in the form of <strong>IES files</strong> &mdash; the same files used by professional lighting designers. The simulation calculates illuminance based on fixture position, aiming angle, and the reflectance of surrounding surfaces.</p>
+
+  <div class="pullquote">
+    IES files are the nutritional label of a luminaire: they contain the photometric data a simulation needs to calculate accurate illuminance. Always download the actual IES file from the manufacturer, not a generic substitute.
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;margin:28px 0 12px;">Understanding IES Files</h3>
+  <p>An IES (Illuminating Engineering Society) file describes how a luminaire distributes light in three-dimensional space &mdash; candela values in every direction. LightStanza uses this data to calculate the resulting illuminance on your calculation grid, accounting for distance, angle, and surface reflectance.</p>
+
+  <div class="two-col">
+    <div class="col-box">
+      <h4>Where to Get IES Files</h4>
+      <ul>
+        <li>Manufacturer websites (most major brands: Lithonia, Cooper, Selux, Zumtobel, Acuity)</li>
+        <li>Search: <em>[brand name] IES download</em></li>
+        <li>The IES file name usually includes the product code; match it to the spec sheet</li>
+        <li>Download the spec sheet alongside the IES file &mdash; you need both for your deliverable</li>
+      </ul>
+    </div>
+    <div class="col-box">
+      <h4>Fixture Selection Criteria</h4>
+      <ul>
+        <li><strong>CCT:</strong> 2700&ndash;3000K for warm/intimate spaces; 3500&ndash;4000K for task/work areas</li>
+        <li><strong>CRI:</strong> &ge; 80 for general use; &ge; 90 for performance or critical visual tasks</li>
+        <li><strong>Distribution:</strong> direct (downlight), indirect (uplight), or direct/indirect</li>
+        <li><strong>Efficacy:</strong> lumens per watt &mdash; higher is more energy-efficient</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;margin:32px 0 16px;">Step-by-Step: Electric Lighting Simulation</h3>
+  <ol class="steps">
+    <li>
+      <div class="step-body">
+        <strong>Open the IES Manager</strong>
+        <p>In LightStanza, open the <strong>Luminaires Panel</strong> (light bulb icon, left sidebar). Click <em>IES Manager</em> at the top. This is your library of photometric files for this project. Click <em>Add IES File</em> and upload the IES file you downloaded from the manufacturer.</p>
+        <p>Once uploaded, the IES viewer shows the luminaire's distribution pattern (candela polar diagram) and total lumens. Verify it matches what you expect &mdash; a downlight should show a downward cone, a linear fixture a longitudinal distribution.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Add fixtures from the Luminaire Manager</strong>
+        <p>In the Luminaires Panel, click <em>Add Fixture</em>. Select your IES file from the library. A new fixture instance appears on the model. You can set:</p>
+        <ul>
+          <li><strong>Height:</strong> mounting height above the floor (ceiling plane)</li>
+          <li><strong>Aiming:</strong> tilt and rotation for adjustable fixtures</li>
+          <li><strong>Color:</strong> CCT for visualization purposes (does not affect calculated illuminance)</li>
+          <li><strong>LLF:</strong> Light Loss Factor (default 0.82 accounts for lamp aging and dirt)</li>
+        </ul>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Place fixtures in the 3D viewer</strong>
+        <p>In the 3D viewer, click to place fixture instances on ceiling surfaces. Use the <strong>Instance Manager</strong> within the Luminaires Panel to copy, move, and organize fixtures. For a uniform layout: place one fixture, then use the copy/array tools to create a regular grid at your target spacing.</p>
+        <p><strong>Target spacing:</strong> For a 10 ft ceiling with downlights, start with fixtures spaced at 8&ndash;10 ft on center and adjust based on simulation results. For a 30 ft concert hall ceiling, spacing will be much wider; consider supplemental local lighting.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Create a calculation grid for electric lighting</strong>
+        <p>You may use the same illuminance grid from your daylighting analysis, or create a new one at the appropriate workplane height for the space. For an auditorium seating area: workplane at 30 inches (seat height). For a lobby: 30 inches (standing/walking plane).</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Run the Electric Lighting simulation</strong>
+        <p>Activity Panel &rarr; <em>New</em> &rarr; <em>Grid Illuminance (Electric Light Only)</em>. Select your luminaire group and your calculation grid. Set units to <strong>Footcandles</strong> (for imperial projects) or Lux. Click <strong>Run</strong>.</p>
+        <p>Results appear as a false-color plan showing illuminance values across the grid. The panel also shows minimum, maximum, and average footcandles, plus uniformity ratio (min/avg).</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Check against target illuminance levels</strong>
+        <p>Compare your average and minimum footcandle values against standard targets:</p>
+        <ul>
+          <li>Concert hall seating (ambient): <strong>5&ndash;15 fc</strong> (low &mdash; performance mode)</li>
+          <li>Concert hall seating (intermission / housekeeping): <strong>20&ndash;30 fc</strong></li>
+          <li>Lobby / foyer (general): <strong>20&ndash;30 fc</strong></li>
+          <li>Box office / registration desk: <strong>50 fc</strong></li>
+          <li>Backstage / service: <strong>30&ndash;50 fc</strong></li>
+          <li>Stage (performance lighting, not modeled here): specialized design, outside this tutorial scope</li>
+        </ul>
+        <p>If results are too low, reduce fixture spacing or increase lumens. If too high or non-uniform, adjust layout or add dimming.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Iterate: adjust layout and re-run</strong>
+        <p>LightStanza simulations run quickly enough to support real iteration. Change fixture spacing, try a different IES file, or adjust mounting height &mdash; re-run and compare results side by side using the Comparison Tool. Record each meaningful iteration as a Decision Log entry: what you changed, why, and what the result was.</p>
+      </div>
+    </li>
+  </ol>
+
+  <div class="callout">
+    <h3>Combined Daylighting + Electric Lighting</h3>
+    <p>LightStanza can show daylighting and electric lighting results separately, but cannot currently run them simultaneously as a combined simulation. To understand how they complement each other:</p>
+    <ul>
+      <li>Overlay your sDA false-color plan and your electric footcandle plan in the Comparison Tool</li>
+      <li>Areas with strong sDA (&ge; 75%) can be served by <strong>daylight-dimming controls</strong> &mdash; your electric fixture load in those zones drops to near zero during occupied daytime hours</li>
+      <li>Areas with weak sDA (&lt; 55%) need <strong>full electric lighting</strong> during all occupied hours &mdash; these zones drive your connected load calculation for the Week 6 electrical analysis</li>
+      <li>Document this zone map in your annotated floor plan: <em>daylight fill zone</em> vs. <em>electric fill zone</em></li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 4 -->
+<div class="section">
+  <div class="video-break">
+    <div class="vb-badge">&#9654; Part 4</div>
+    <div class="vb-title">Reports &amp; Deliverables</div>
+    <div class="vb-dur">~5 min</div>
+  </div>
+  <div class="rec-note">Recording cue: both daylighting and electric simulations completed</div>
+
+  <div class="section-num">§ 04</div>
+  <h2>Generating &amp; Sharing Reports</h2>
+  <p>LightStanza generates both 2D PDF reports and shareable 3D web reports. For your Week 4 deliverable, you will submit both a 2D report (as PDF) and annotate a floor plan screenshot in your submission package.</p>
+
+  <ol class="steps">
+    <li>
+      <div class="step-body">
+        <strong>Generate a 2D Report</strong>
+        <p>Activity Panel &rarr; click the completed simulation card &rarr; click <em>Report</em> (document icon). The 2D report includes: false-color floor plan, metric summary (sDA%, ASE%, average fc), simulation settings, and project information. Download as PDF.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Generate a 3D Report (shareable link)</strong>
+        <p>From the 3D viewer, click the <em>Share</em> button (top toolbar) &rarr; <em>Share 3D Report</em>. This creates a link that anyone can open in a browser to view your model with simulation results overlaid &mdash; useful for presentations and for submitting to Canvas.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Annotate the floor plan</strong>
+        <p>Take a screenshot of the false-color sDA result and the false-color electric footcandle result. Open both in your drawing software. On a single plan, mark: (a) the <strong>daylight fill zone</strong> (sDA &ge; 55%), (b) the <strong>electric fill zone</strong> (sDA &lt; 55%), (c) your fixture layout, and (d) key values (sDA%, ASE%, avg fc at each zone). This annotated plan is the primary visual deliverable.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Download raw data (optional)</strong>
+        <p>Activity Panel &rarr; completed simulation card &rarr; <em>Download</em>. You receive a ZIP containing illuminance values at each grid point in CSV format. This data can be imported into Excel if you need to verify specific point values or produce custom charts.</p>
+      </div>
+    </li>
+  </ol>
+</div>
+
+<hr class="divider">
+
+<!-- METRICS REFERENCE -->
+<div class="section">
+  <div class="section-num">§ 05</div>
+  <h2>Metrics Quick Reference</h2>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Metric</th><th>Full Name</th><th>What It Measures</th><th>Key Threshold</th><th>When to Use</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>sDA</td>
+        <td>Spatial Daylight Autonomy</td>
+        <td>% of floor area with &ge;300 lux for &ge;50% of occupied hours</td>
+        <td>&ge;55% (LEED credit); &ge;75% (enhanced credit)</td>
+        <td>Primary annual daylighting metric; use for all occupied spaces</td>
+      </tr>
+      <tr>
+        <td>ASE</td>
+        <td>Annual Sunlight Exposure</td>
+        <td>% of floor area with &gt;1,000 lux direct sun for &gt;250 hrs/yr</td>
+        <td>&le;10% required for LEED credit</td>
+        <td>Glare/overheating screen; run alongside sDA</td>
+      </tr>
+      <tr>
+        <td>DA</td>
+        <td>Daylight Autonomy</td>
+        <td>% of occupied hours meeting illuminance threshold (binary)</td>
+        <td>DA300 &ge; 50% at target points</td>
+        <td>Point-level check; supports sDA interpretation</td>
+      </tr>
+      <tr>
+        <td>UDI</td>
+        <td>Useful Daylight Illuminance</td>
+        <td>Hours within usable illuminance band (typically 100&ndash;2000 lux)</td>
+        <td>UDI-a &ge; 60%</td>
+        <td>Understand comfort range; identify overlit vs. underlit zones</td>
+      </tr>
+      <tr>
+        <td>DGP</td>
+        <td>Daylight Glare Probability</td>
+        <td>Probability of disturbing glare at a specific viewpoint and time</td>
+        <td>&lt;0.35 = comfortable; 0.35&ndash;0.45 = perceptible; &gt;0.45 = intolerable</td>
+        <td>Evaluate specific sightlines; check audience toward stage windows</td>
+      </tr>
+      <tr>
+        <td>DF</td>
+        <td>Daylight Factor</td>
+        <td>Ratio of interior to exterior illuminance under overcast sky</td>
+        <td>DF &ge; 2% (BREEAM standard)</td>
+        <td>Code compliance in European projects; less relevant in US practice</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider">
+
+<!-- DELIVERABLE -->
+<div class="section">
+  <div class="section-num">§ 06</div>
+  <h2>Week 4 Deliverable</h2>
+
+  <div class="deliverable">
+    <div class="d-label">Due Tuesday 06&middot;16 &middot; 11:59 PM &middot; Canvas submission</div>
+    <h3>LightStanza Analysis Package</h3>
+    <ul>
+      <li><strong>LightStanza 3D Report link</strong> &mdash; shareable URL from your project showing daylighting simulation results</li>
+      <li><strong>2D PDF report</strong> &mdash; downloaded from LightStanza for the Annual Grid (sDA/ASE) simulation</li>
+      <li><strong>Annotated floor plan</strong> &mdash; daylight fill zone vs. electric fill zone marked; fixture layout shown; key values labeled (sDA%, ASE%, avg fc per zone)</li>
+      <li><strong>Luminaire spec sheet</strong> &mdash; PDF from manufacturer for the fixture you selected, with IES file name noted</li>
+      <li><strong>Decision Log entries 5&ndash;6</strong> &mdash; entry 5: daylighting strategy and sDA result; entry 6: luminaire selection and electric lighting result with trade-off acknowledged</li>
+    </ul>
+  </div>
+
+  <div class="checklist" style="margin-top:28px;">
+    <div class="check-item"><div class="check-box"></div><div><strong>LightStanza account created</strong> <span>&mdash; app.lightstanza.com, using LTU email</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Model uploaded and located</strong> <span>&mdash; site panel shows correct city; materials assigned</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Annual Grid simulation completed</strong> <span>&mdash; sDA and ASE values visible in results panel</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Electric lighting simulation completed</strong> <span>&mdash; average footcandles shown; compared against target levels</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Annotated floor plan drafted</strong> <span>&mdash; daylight vs. electric zones, fixture layout, key values labeled</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Spec sheet downloaded</strong> <span>&mdash; luminaire manufacturer PDF with IES file name</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Decision Log entries 5&ndash;6 written</strong> <span>&mdash; reasoning explicit, trade-off acknowledged</span></div></div>
+  </div>
+</div>
+
+<footer style="margin-top:80px;padding-top:24px;border-top:2px solid var(--rule);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(14,13,11,.4);">
+  <span>ARC 5443 AEIS &middot; Summer 2026 &middot; Week 04</span>
+  <span>LightStanza Tutorial &middot; Daylighting + Electric Lighting</span>
+  <span>Neiswender &middot; Lawrence Technological University</span>
+</footer>
+
+</div>
+</body>
+</html>

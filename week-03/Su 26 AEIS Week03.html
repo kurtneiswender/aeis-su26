@@ -1,0 +1,1413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · Week 03 · Building Noise Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B;--ink-2:#161412;
+    --paper:#EDE4D3;--paper-2:#D9CFB9;--paper-dim:#8A8273;
+    --amber:#D4A24C;--amber-soft:rgba(212,162,76,.10);--amber-line:rgba(212,162,76,.45);
+    --red:#C8472F;--blue:#9FC8D4;
+    --rule:rgba(237,228,211,.18);--rule-strong:rgba(237,228,211,.42);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  body{
+    font-family:"Newsreader",Georgia,serif;font-weight:380;font-size:20px;line-height:1.6;
+    font-feature-settings:"ss01","onum";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.55;
+  }
+  ::selection{background:var(--amber);color:var(--ink);}
+  .wrap{max-width:1180px;margin:0 auto;padding:48px 56px 120px;position:relative;}
+  @media (max-width:720px){.wrap{padding:32px 22px 80px}}
+
+  /* ALERT */
+  .alert-banner{
+    background:rgba(200,71,47,.10);border:1px solid rgba(200,71,47,.4);
+    border-left:4px solid var(--red);padding:18px 24px;margin-bottom:32px;
+  }
+  .alert-banner .al-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:8px;font-weight:600;}
+  .alert-banner p{margin:0 0 4px;font-size:16px;color:var(--paper);line-height:1.5;}
+  .alert-banner p:last-child{margin:0;}
+  .alert-banner strong{color:var(--paper);}
+
+  /* TOPBAR */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);padding-bottom:18px;border-bottom:1px solid var(--rule);
+    margin-bottom:20px;
+  }
+  .topbar .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:8px;vertical-align:middle;animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{50%{opacity:.35}}
+
+  /* HERO */
+  .hero{padding:60px 0 40px;display:grid;grid-template-columns:1fr 220px;gap:48px;align-items:end;}
+  @media (max-width:820px){.hero{grid-template-columns:1fr}.hero .ornament{display:none}}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-bottom:18px;}
+  .kicker .pipe{color:var(--paper-dim);margin:0 10px;}
+  h1.title{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;
+    font-weight:380;font-size:clamp(48px,8vw,110px);line-height:.88;letter-spacing:-.03em;margin:0;
+  }
+  h1.title em{font-style:italic;color:var(--amber);font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+  .sub{margin-top:28px;max-width:760px;font-family:"Newsreader",serif;font-size:clamp(18px,1.8vw,22px);line-height:1.45;color:var(--paper-2);font-style:italic;}
+
+  /* META */
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);margin-top:48px;}
+  .meta > div{padding:18px 18px 18px 0;border-right:1px solid var(--rule);}
+  .meta > div:last-child{border-right:none}
+  .meta dt{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:6px;}
+  .meta dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:19px;line-height:1.2;font-variation-settings:"opsz" 36;}
+  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:12.5px;color:var(--paper-dim);margin-top:3px;font-style:italic;}
+  @media (max-width:820px){.meta{grid-template-columns:repeat(2,1fr)}.meta > div:nth-child(2){border-right:none}}
+
+  /* SECTION */
+  section{margin-top:96px;}
+  .sec-label{display:flex;align-items:baseline;gap:22px;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--rule-strong);}
+  .sec-num{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.18em;color:var(--amber);}
+  .sec-title{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(30px,4vw,46px);line-height:1;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 72,"SOFT" 40;}
+  .sec-title em{font-style:italic;color:var(--amber);}
+
+  .prose{max-width:820px;color:var(--paper-2);font-size:18px;line-height:1.65;}
+  .prose p{margin:0 0 1em;}
+  .prose em{color:var(--paper);font-style:italic;}
+  .prose strong{color:var(--paper);}
+  .prose ul{padding-left:20px;}
+  .prose ul li{margin-bottom:10px;}
+  .prose h5{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin:24px 0 10px;font-weight:500;}
+
+  /* TIMETABLE */
+  .timetable{margin-top:8px;border-top:1px solid var(--rule-strong);}
+  .timetable .row{display:grid;grid-template-columns:160px 70px 1fr;gap:20px;padding:14px 0;border-bottom:1px solid var(--rule);align-items:baseline;}
+  .timetable .row .when{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--amber);letter-spacing:.06em;}
+  .timetable .row .dur{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--paper-dim);letter-spacing:.14em;}
+  .timetable .row .what{font-size:15.5px;color:var(--paper);}
+  .timetable .row .what em{font-style:italic;color:var(--amber);}
+  .timetable .row.lab{background:var(--amber-soft);padding-left:14px;padding-right:14px;}
+  .timetable .row.lab .what{font-weight:500;}
+  .timetable .row.break{color:var(--paper-dim);}
+  .timetable .row.debug{background:rgba(159,200,212,.06);padding-left:14px;padding-right:14px;}
+  .timetable .row.debug .what{color:var(--blue);}
+
+  /* LECTURE BLOCK */
+  .lec{border:1px solid var(--rule-strong);padding:28px 30px;margin-top:24px;background:rgba(237,228,211,.02);}
+  .lec .lec-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:1px solid var(--rule);padding-bottom:14px;margin-bottom:18px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);flex-wrap:wrap;gap:8px;
+  }
+  .lec .lec-head .name{color:var(--amber);}
+  .lec h3{font-family:"Fraunces",serif;font-weight:380;font-size:28px;line-height:1.1;margin:0 0 6px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .lec h3 em{font-style:italic;color:var(--amber);}
+  .lec .one-liner{margin:0 0 18px;color:var(--paper-2);font-style:italic;font-size:15.5px;}
+  .lec h4{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin:20px 0 8px;font-weight:500;}
+  .lec ul{margin:0;padding-left:18px;color:var(--paper-2);font-size:17px;line-height:1.6;}
+  .lec li{margin-bottom:8px;}
+  .lec li strong{color:var(--paper);}
+
+  /* CONCEPT CALLOUT */
+  .concept{margin-top:28px;padding:22px 28px;border-left:3px solid var(--amber);background:var(--amber-soft);}
+  .concept .c-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-weight:500;}
+  .concept h4{font-family:"Fraunces",serif;font-weight:380;font-size:24px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .concept h4 em{font-style:italic;color:var(--amber);}
+  .concept p{margin:0 0 8px;color:var(--paper-2);font-size:15.5px;line-height:1.6;}
+  .concept p strong{color:var(--paper);}
+
+  /* RED RULE CALLOUT */
+  .concept.red-rule{border-left-color:var(--red);background:rgba(200,71,47,.08);}
+  .concept.red-rule .c-label{color:var(--red);}
+  .concept.red-rule h4{color:var(--paper);}
+
+  /* DIAGRAM */
+  .diagram{margin:28px 0 20px;padding:26px 22px 18px;background:rgba(237,228,211,.03);border:1px solid var(--rule);text-align:center;break-inside:avoid;}
+  .diagram svg{display:block;margin:0 auto;max-width:100%;height:auto;}
+  .diagram figcaption{margin-top:16px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);text-align:left;line-height:1.6;}
+  .diagram figcaption b{color:var(--amber);font-weight:500;margin-right:10px;letter-spacing:.18em;}
+
+  /* TWO-COL CONCEPT GRID */
+  .concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:24px;border:1px solid var(--rule-strong);}
+  .concept-cell{padding:26px 28px;border-right:1px solid var(--rule);}
+  .concept-cell:last-child{border-right:none;}
+  .concept-cell .cc-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:10px;}
+  .concept-cell h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .concept-cell h4 em{font-style:italic;color:var(--amber);}
+  .concept-cell p{margin:0 0 8px;color:var(--paper-2);font-size:15px;line-height:1.55;}
+  .concept-cell p strong{color:var(--paper);}
+  .concept-cell ul{padding-left:18px;color:var(--paper-2);font-size:14.5px;line-height:1.6;margin:6px 0 0;}
+  .concept-cell li{margin-bottom:6px;}
+  @media (max-width:680px){.concept-grid{grid-template-columns:1fr}.concept-cell{border-right:none;border-bottom:1px solid var(--rule)}.concept-cell:last-child{border-bottom:none}}
+
+  /* FOUR-CELL GRID */
+  .four-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:24px;border:1px solid var(--rule-strong);}
+  .four-cell{padding:20px 22px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+  .four-cell:nth-child(2n){border-right:none;}
+  .four-cell:nth-last-child(-n+2){border-bottom:none;}
+  .four-cell .fc-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:8px;}
+  .four-cell h5{font-family:"Fraunces",serif;font-weight:380;font-size:20px;margin:0 0 8px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .four-cell h5 em{font-style:italic;color:var(--amber);}
+  .four-cell p{margin:0 0 6px;color:var(--paper-2);font-size:14px;line-height:1.55;}
+  .four-cell p strong{color:var(--paper);}
+  @media (max-width:680px){.four-grid{grid-template-columns:1fr}.four-cell{border-right:none;}}
+
+  /* STC TABLE */
+  .stc-table{width:100%;border-collapse:collapse;margin-top:20px;font-size:14.5px;}
+  .stc-table th{padding:9px 14px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);text-align:left;border-bottom:1px solid var(--rule-strong);font-weight:400;background:rgba(14,13,11,.4);}
+  .stc-table td{padding:9px 14px;border-bottom:1px solid var(--rule);color:var(--paper-2);vertical-align:top;}
+  .stc-table tr:last-child td{border-bottom:none;}
+  .stc-table td:first-child{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--amber);letter-spacing:.06em;}
+  .stc-table td:nth-child(2){color:var(--paper);}
+  .stc-table tbody tr:hover{background:rgba(212,162,76,.04);}
+  .stc-group td{padding:6px 14px 2px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);background:rgba(14,13,11,.25);border-bottom:1px solid var(--rule);}
+
+  /* ASSEMBLY CARDS */
+  .assembly-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:28px;border:1px solid var(--rule-strong);}
+  .assembly-card{padding:20px 16px 16px;border-right:1px solid var(--rule);}
+  .assembly-card:last-child{border-right:none;}
+  .assembly-card .ac-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:8px;}
+  .assembly-card .ac-stc{font-family:"Fraunces",serif;font-size:28px;color:var(--amber);margin:0 0 4px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .assembly-card .ac-name{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--paper);margin-bottom:14px;letter-spacing:.04em;}
+  .assembly-card svg{display:block;margin:0 auto;}
+  @media (max-width:820px){.assembly-row{grid-template-columns:repeat(2,1fr)}.assembly-card:nth-child(2){border-right:none}.assembly-card:nth-child(n+3){border-top:1px solid var(--rule)}}
+  @media (max-width:480px){.assembly-row{grid-template-columns:1fr}.assembly-card{border-right:none;border-bottom:1px solid var(--rule)}.assembly-card:last-child{border-bottom:none}}
+
+  /* TOOL CALLOUT */
+  .tool-callout{margin-top:28px;padding:22px 28px;border:1px solid var(--blue);background:rgba(159,200,212,.05);}
+  .tool-callout .t-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;font-weight:500;}
+  .tool-callout h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .tool-callout p{margin:0 0 8px;color:var(--paper-2);font-size:15.5px;line-height:1.6;}
+  .tool-callout a{color:var(--blue);text-underline-offset:3px;}
+  .tool-callout strong{color:var(--paper);}
+
+  /* PRECEDENT CARDS */
+  .precedent-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:24px;border:1px solid var(--rule-strong);}
+  .prec-card{padding:24px 26px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+  .prec-card:nth-child(2n){border-right:none;}
+  .prec-card:nth-last-child(-n+2){border-bottom:none;}
+  .prec-card .p-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:6px;}
+  .prec-card h4{font-family:"Fraunces",serif;font-weight:380;font-size:20px;margin:0 0 4px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .prec-card h4 em{font-style:italic;color:var(--amber);}
+  .prec-card .p-meta{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--paper-dim);margin-bottom:12px;letter-spacing:.06em;}
+  .prec-card p{margin:0 0 8px;color:var(--paper-2);font-size:14px;line-height:1.55;}
+  .prec-card svg{display:block;margin:12px auto 0;}
+  @media (max-width:680px){.precedent-grid{grid-template-columns:1fr}.prec-card{border-right:none;}}
+
+  /* PRE-CLASS CHECKLIST */
+  .pre-list{margin-top:20px;border-top:1px solid var(--rule-strong);}
+  .pre-row{display:grid;grid-template-columns:24px 1fr;gap:18px;padding:18px 0;border-bottom:1px solid var(--rule);align-items:start;}
+  .pre-check{width:18px;height:18px;border:1.5px solid var(--paper-dim);margin-top:4px;flex-shrink:0;}
+  .pre-body{color:var(--paper-2);font-size:16px;line-height:1.55;}
+  .pre-body strong{display:block;color:var(--paper);font-size:17px;margin-bottom:5px;}
+  .pre-body p{margin:0 0 6px;}
+
+  /* LAB SHEET */
+  .lab-sheet{margin-top:24px;}
+  .lab-row{display:grid;grid-template-columns:60px 1fr 1.2fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule);align-items:start;}
+  .lab-row:last-child{border-bottom:1px solid var(--rule);}
+  .lab-row .g{font-family:"Fraunces",serif;font-style:italic;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-size:42px;color:var(--red);line-height:.9;font-weight:300;}
+  .lab-row h5{font-family:"Fraunces",serif;font-weight:380;font-size:22px;line-height:1.1;margin:0 0 6px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .lab-row h5 em{font-style:italic;color:var(--amber);}
+  .lab-row .tag{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:2px 8px;border:1px solid var(--rule-strong);color:var(--paper-dim);margin-bottom:6px;}
+  .lab-row p{margin:0 0 8px;color:var(--paper-2);font-size:16px;line-height:1.55;}
+  .lab-row ul{margin:6px 0 0;padding-left:18px;color:var(--paper-2);font-size:16px;}
+  .lab-row li{margin-bottom:6px;}
+  @media (max-width:680px){.lab-row{grid-template-columns:50px 1fr}.lab-row .tasks{grid-column:1/-1;border-top:1px dashed var(--rule);padding-top:10px;}}
+
+  /* DELIVERABLE */
+  .deliverable{border-left:3px solid var(--amber);background:var(--amber-soft);padding:22px 28px;margin-top:24px;}
+  .deliverable .label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-weight:500;}
+  .deliverable h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 12px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .deliverable ul{margin:8px 0;padding-left:20px;color:var(--paper);font-size:15px;line-height:1.6;}
+  .deliverable li{margin-bottom:6px;}
+
+  .checklist{margin-top:18px;}
+  .check{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--rule);align-items:flex-start;}
+  .check:last-child{border-bottom:none}
+  .check .box{flex:0 0 auto;width:18px;height:18px;border:1.5px solid var(--paper-dim);margin-top:2px;}
+  .check .text{font-size:15px;color:var(--paper-2);line-height:1.5;}
+  .check .text strong{color:var(--paper);}
+
+  /* TRANSITION BRIDGE */
+  .bridge{margin-top:56px;padding:18px 24px;border-left:2px solid var(--amber-line);background:rgba(212,162,76,.04);font-size:16px;color:var(--paper-2);font-style:italic;line-height:1.6;}
+  .bridge strong{color:var(--amber);font-style:normal;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;display:block;margin-bottom:6px;}
+
+  /* MASS LAW */
+  .formula-block{border:1px solid var(--rule-strong);padding:24px 28px;margin-top:24px;background:rgba(14,13,11,.35);}
+  .formula-block .f-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:12px;}
+  .formula-block .f-eq{font-family:"JetBrains Mono",monospace;font-size:20px;color:var(--amber);letter-spacing:.04em;margin-bottom:14px;line-height:1.3;}
+  .formula-block .f-vars{display:grid;grid-template-columns:60px 1fr;gap:4px 14px;font-size:14px;color:var(--paper-2);}
+  .formula-block .f-vars dt{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--amber);}
+  .formula-block .f-vars dd{margin:0;}
+  .formula-block .f-note{margin-top:14px;font-size:13.5px;color:var(--paper-dim);font-style:italic;border-top:1px solid var(--rule);padding-top:12px;}
+
+  /* FOOT */
+  footer{margin-top:120px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .hero, section{animation:rise .9s ease both;}
+
+  @media print{
+    html{background:var(--ink) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    body{background:var(--ink) !important;margin:0;padding:0;font-size:14.5px;}
+    body::before{display:none !important;}
+    .wrap{max-width:none;padding:0;}
+    .hero, section{animation:none !important;}
+  }
+</style>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span><span class="dot"></span>Week 03 &middot; Class Plan &middot; v2 &middot; 2026.06.03</span>
+    <span>ARC 5443 &middot; Summer 2026 &middot; 06&middot;03</span>
+  </div>
+
+  <!-- ALERT BANNER -->
+  <div class="alert-banner">
+    <div class="al-label">Deadline Update &mdash; Announced Tonight</div>
+    <p><strong>Week 2 RT60 Report</strong> &mdash; extended to <strong>Thursday 06&middot;04 at 11:59 PM.</strong></p>
+    <p><strong>Act I &mdash; Full Auditorium Analysis Package</strong> &mdash; extended to <strong>Sunday 06&middot;07 at 11:59 PM.</strong></p>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div>
+      <div class="kicker">Week 03 <span class="pipe">/</span> Act I <span class="pipe">/</span> Acoustics</div>
+      <h1 class="title">Building <em>Noise Control.</em></h1>
+      <p class="sub">We close out RT60 troubleshooting from Week 2, then open the second acoustics chapter &mdash; how sound moves <em>between</em> spaces, what stops it, and why a small crack can undo an expensive wall.</p>
+    </div>
+    <svg class="ornament" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g stroke="#D4A24C" stroke-width="1" fill="none" opacity=".7">
+        <path d="M 20,60 Q 50,90 20,120" stroke-width="1.5"/>
+        <path d="M 35,50 Q 72,90 35,130" stroke-width="1"/>
+        <path d="M 50,40 Q 94,90 50,140" stroke-width=".75" opacity=".5"/>
+        <rect x="96" y="30" width="28" height="160" fill="rgba(212,162,76,.08)" stroke="#D4A24C" stroke-width="1.5"/>
+        <line x1="104" y1="30" x2="104" y2="190" stroke="rgba(212,162,76,.3)" stroke-width=".75"/>
+        <line x1="116" y1="30" x2="116" y2="190" stroke="rgba(212,162,76,.3)" stroke-width=".75"/>
+        <path d="M 140,75 Q 165,100 140,125" stroke-width=".75" opacity=".45"/>
+        <path d="M 152,82 Q 175,100 152,118" stroke-width=".5" opacity=".3"/>
+      </g>
+      <text x="110" y="210" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="2">TL</text>
+      <circle cx="110" cy="110" r="3" fill="#C8472F"/>
+    </svg>
+  </header>
+
+  <!-- META -->
+  <dl class="meta">
+    <div><dt>Date</dt><dd>Wed 06&middot;03<small>19:30 &ndash; 23:35</small></dd></div>
+    <div><dt>Format</dt><dd>Online &middot; Zoom<small>cameras on, 100%</small></dd></div>
+    <div><dt>Read &middot; Before</dt><dd>MEEB Ch. 23<small>Building Noise Control</small></dd></div>
+    <div><dt>Act I Due</dt><dd>Sun 06&middot;07<small>11:59 PM via Canvas</small></dd></div>
+  </dl>
+
+  <!-- WHITEBOARD LINK -->
+  <div style="margin-top:32px;display:flex;align-items:center;gap:20px;padding:16px 22px;border:1px solid var(--rule-strong);background:rgba(237,228,211,.02);">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="flex-shrink:0;">
+      <rect x="1" y="1" width="26" height="26" rx="2" stroke="rgba(212,162,76,.5)" stroke-width="1.5" fill="rgba(212,162,76,.06)"/>
+      <line x1="5" y1="10" x2="23" y2="10" stroke="rgba(212,162,76,.4)" stroke-width="1"/>
+      <line x1="5" y1="14" x2="18" y2="14" stroke="rgba(212,162,76,.4)" stroke-width="1"/>
+      <line x1="5" y1="18" x2="20" y2="18" stroke="rgba(212,162,76,.4)" stroke-width="1"/>
+      <circle cx="22" cy="18" r="3" fill="rgba(200,71,47,.7)"/>
+    </svg>
+    <div style="flex:1;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:5px;">Week 3 &middot; Lab Whiteboard &middot; Lucidspark</div>
+      <a href="https://lucid.app/lucidspark/53cea859-ab48-4e2a-b5c3-b883766730c2/edit?viewport_loc=-759%2C161%2C2512%2C1297%2C0_0&invitationId=inv_f380e33e-1dcf-4f06-ae5c-5cad3a909dd7" target="_blank" style="font-family:'Fraunces',serif;font-size:20px;font-variation-settings:'opsz' 48,'SOFT' 30;color:var(--amber);text-decoration:none;font-weight:380;">Open Week 3 Whiteboard &rarr;</a>
+    </div>
+    <a href="https://lucid.app/folder/invitations/accept?invitationId=inv_8ff84025-517b-49bf-85b8-1ee2e2d07900" target="_blank" style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);text-decoration:none;border:1px solid var(--rule-strong);padding:6px 12px;white-space:nowrap;flex-shrink:0;">All Whiteboards</a>
+  </div>
+
+  <!-- § 01 SESSION OBJECTIVES -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 01</span>
+      <h2 class="sec-title">Session <em>Objectives.</em></h2>
+    </div>
+    <div class="prose">
+      <p>By the end of tonight, each student should leave with:</p>
+      <ul>
+        <li><strong>RT60 resolved or diagnosed</strong> &mdash; every student has a working HTML report or a clear written fix to apply before the Thursday extension deadline.</li>
+        <li><strong>The absorption/isolation distinction internalized</strong> &mdash; <em>absorption</em> (NRC) controls the acoustic quality <em>inside</em> a room by reducing reverberation. <em>Isolation</em> (TL, STC) controls how much sound passes <em>between</em> rooms through a partition. These are not the same tool, and as your slides state: <strong>good barriers are generally bad absorbers &mdash; and vice versa.</strong></li>
+        <li><strong>NRC, TL, NR, and STC correctly mapped</strong> &mdash; four related but distinct metrics; being able to say in one sentence what each measures and when to use it.</li>
+        <li><strong>A working noise map of their auditorium</strong> &mdash; every adjacency labeled, worst-case identified, required NR calculated, and a wall assembly selected from MEEB tables or STRACAT.</li>
+        <li><strong>Act I Decision Log entries 3&ndash;4 drafted</strong> &mdash; NC target decision and wall assembly decision both documented with reasoning and trade-offs acknowledged.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- § 02 BEFORE CLASS -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 02</span>
+      <h2 class="sec-title">Before <em>Class.</em></h2>
+    </div>
+    <div class="pre-list">
+      <div class="pre-row">
+        <div class="pre-check"></div>
+        <div class="pre-body">
+          <strong>Read MEEB Chapter 23 &mdash; Building Noise Control</strong>
+          <p>Focus on &sect;23.1 (role of absorption vs. isolation), &sect;23.6&ndash;23.7 (airborne vs. structure-borne, transmission loss), &sect;23.8 (mass law), &sect;23.10 (cavity walls), and &sect;23.11 (STC). The rest supports discussion but the above are the core.</p>
+        </div>
+      </div>
+      <div class="pre-row">
+        <div class="pre-check"></div>
+        <div class="pre-body">
+          <strong>Bring your Week 2 RT60 results &mdash; working or not</strong>
+          <p>If your script ran successfully, have the HTML report open and ready to share. If it errored, have the error message copied. Either way: have your model open and the script downloaded before class. Everyone shares screen during the first block.</p>
+        </div>
+      </div>
+      <div class="pre-row">
+        <div class="pre-check"></div>
+        <div class="pre-body">
+          <strong>Sketch a rough adjacency diagram of your auditorium</strong>
+          <p>On paper or digitally: draw your hall with every adjacent space labeled (lobby, loading dock, mechanical room, practice rooms, offices, exterior). Note the primary noise source in each adjacent space. This is your starting point for tonight&rsquo;s lab.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 03 RUN OF SHOW -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 03</span>
+      <h2 class="sec-title">Run of <em>Show.</em></h2>
+    </div>
+    <div class="timetable">
+      <div class="row"><div class="when">19:30 &middot; 19:40</div><div class="dur">10 min</div><div class="what"><em>Arrival &amp; framing.</em> Deadline update announced. Week 2 wrap-up: what the RT60 results are telling us about the cohort&rsquo;s halls. Preview the shift from &ldquo;within a room&rdquo; to &ldquo;between rooms.&rdquo;</div></div>
+      <div class="row debug"><div class="when">19:40 &middot; 20:30</div><div class="dur">50 min</div><div class="what"><em>RT60 Troubleshooting &mdash; Full Group.</em> Everyone shares screen in turn. Instructor reviews results live: volume, surface data, Eyring at 500 Hz. Common errors addressed. Students who are stuck get a clear diagnosis before the Thursday deadline.</div></div>
+      <div class="row break"><div class="when">20:30 &middot; 20:40</div><div class="dur">10 min</div><div class="what">Break &mdash; cameras off, move around.</div></div>
+      <div class="row"><div class="when">20:40 &middot; 21:00</div><div class="dur">20 min</div><div class="what"><em>Lecture Part 1 &mdash; The Core Distinction.</em> Absorption vs. isolation. NRC, TL, NR, STC &mdash; what each metric actually measures. Why good barriers are bad absorbers.</div></div>
+      <div class="row"><div class="when">21:00 &middot; 21:30</div><div class="dur">30 min</div><div class="what"><em>Lecture Part 2 &mdash; How Barriers Work.</em> Mass law in plain terms. Decoupling strategies. STC assemblies. Leaks and composite walls. Precedent: how concert halls use buffer zones in plan and section.</div></div>
+      <div class="row"><div class="when">21:30 &middot; 21:40</div><div class="dur">10 min</div><div class="what"><em>Lab framing.</em> Adjacency noise analysis exercise explained. STRACAT tool introduced. Groups assigned.</div></div>
+      <div class="row lab"><div class="when">21:40 &middot; 23:10</div><div class="dur">90 min</div><div class="what"><em>Lab &mdash; Adjacency Noise Analysis.</em> Breakouts of 3&ndash;4. Each student annotates their adjacency plan, calculates required NR for worst-case pair, selects a wall assembly, and drafts DL entries 3&ndash;4. Instructor circulates.</div></div>
+      <div class="row"><div class="when">23:10 &middot; 23:35</div><div class="dur">25 min</div><div class="what"><em>Whole-group debrief.</em> One share per breakout: what adjacency, what required NR, what assembly. Introduce Week 3 deliverable. Act I submission reminder &mdash; Sunday.</div></div>
+    </div>
+  </section>
+
+  <!-- § 04 TROUBLESHOOTING BLOCK -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 04</span>
+      <h2 class="sec-title">RT60 <em>Troubleshooting.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>The first 50 minutes are dedicated to getting everyone&rsquo;s RT60 script to a resolved state. This is a live, whole-group session &mdash; not breakouts. Be ready to share your screen.</p>
+    </div>
+
+    <div class="lec">
+      <div class="lec-head">
+        <span><span class="name">Common Issues &mdash; What to Watch For</span></span>
+        <span>Rhino &amp; Revit / Dynamo</span>
+      </div>
+      <h3>What we&rsquo;re <em>diagnosing.</em></h3>
+      <p class="one-liner">Each student shows their screen for 2&ndash;3 minutes. Instructor identifies the issue and either resolves it live or assigns a specific fix for before Thursday.</p>
+
+      <h4>Rhino Script &mdash; Most Frequent Issues</h4>
+      <ul>
+        <li><strong>Volume is 10&ndash;20&times; too large.</strong> The script is using the bounding box because surfaces don&rsquo;t join into a closed solid. Fix: when the volume confirmation dialog appears, click <em>No</em> and enter your room volume manually in m&sup3; (ft&sup3; &divide; 35.315).</li>
+        <li><strong>&ldquo;No AEIS_ layers found.&rdquo;</strong> Layer names must begin with <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--blue);background:rgba(14,13,11,.4);padding:1px 5px;">AEIS_</code> in uppercase. Check spelling and that objects are on the correct layer, not just the layer created.</li>
+        <li><strong>RT60 is wildly different from hand calc.</strong> If volume is correct, compare the material schedule in the HTML report to your hand-calc worksheet. A single large surface with the wrong material assignment dominates the result.</li>
+      </ul>
+
+      <h4>Revit / Dynamo &mdash; Most Frequent Issues</h4>
+      <ul>
+        <li><strong>Error at line 47.</strong> Python engine mismatch. Right-click the Python node &rarr; Engine &rarr; switch to <em>CPython 3</em>. The script handles both engines; if only IronPython 2 is available, the import block will still run.</li>
+        <li><strong>Room shows no volume.</strong> The room is not fully enclosed in Revit. Verify that walls, floor, and ceiling all bound the room and that the Volume field in Properties is not blank.</li>
+        <li><strong>Materials all showing as defaults.</strong> Your Revit type names don&rsquo;t contain the recognized keywords. Rename the type to include a keyword (e.g., &ldquo;Basic Wall &mdash; GWB&rdquo;) or edit the <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--blue);background:rgba(14,13,11,.4);padding:1px 5px;">MATERIAL_MAP</code> section in the script directly.</li>
+        <li><strong>Report path not saving as .html.</strong> The v2+ script auto-appends the extension. If you are running v1 from the original Canvas file, type the full filename including <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--blue);background:rgba(14,13,11,.4);padding:1px 5px;">.html</code> in the path input, or download v4 from Canvas.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- § 05 THE CORE DISTINCTION -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 05</span>
+      <h2 class="sec-title">The Core <em>Distinction.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>Week 2 was about controlling how sound behaves <em>inside</em> a room. Week 3 is about controlling how sound moves <em>between</em> rooms. The tools, metrics, and materials are almost entirely different &mdash; and using an absorption solution where an isolation solution is needed is one of the most common errors in acoustic design.</p>
+    </div>
+
+    <div class="concept-grid">
+      <div class="concept-cell">
+        <div class="cc-label">Week 2 &mdash; Room Acoustics</div>
+        <h4><em>Absorption.</em></h4>
+        <p>Porous, lightweight materials convert sound energy to heat as it passes through their fibers. They reduce the reverberant field within a room &mdash; controlling how long sound lingers and how loud the room becomes under sustained input.</p>
+        <p><strong>Examples:</strong> Acoustic tile, fiberglass panels, carpet, fabric, foam. Dense/rigid materials are poor absorbers.</p>
+        <p><strong>Metric:</strong> <strong>NRC</strong> (Noise Reduction Coefficient) &mdash; a number from 0 to 1.0 rating how absorptive a surface finish is. 0 = perfect mirror, 1.0 = perfect sponge. NRC is a <em>material property</em>, rated by surface finish.</p>
+        <ul>
+          <li>Works by converting sound energy to heat</li>
+          <li>Controls reverb, RT60, and room buildup</li>
+          <li>Has <em>almost no effect</em> on transmission through walls</li>
+        </ul>
+      </div>
+      <div class="concept-cell">
+        <div class="cc-label">Week 3 &mdash; Noise Control</div>
+        <h4><em>Isolation.</em></h4>
+        <p>Dense, impermeable materials resist the motion induced by a sound wave, converting its energy to tiny vibrations rather than passing it through. Stopping transmission requires mass, airtightness, and decoupling &mdash; not porosity.</p>
+        <p><strong>Examples:</strong> Drywall, glass, concrete, CMU, sheet metal. Porous/lightweight materials are poor barriers.</p>
+        <p><strong>Metrics:</strong> <strong>TL</strong> (Transmission Loss, dB) &mdash; intrinsic property of the construction itself. <strong>STC</strong> (Sound Transmission Class) &mdash; single-number summary of TL. <strong>NR</strong> (Noise Reduction, dB) &mdash; the actual level difference measured in a real building, which depends on TL plus room conditions.</p>
+        <ul>
+          <li>Works by resisting sound-induced vibration</li>
+          <li>Effective against airborne and structure-borne transmission</li>
+          <li>Destroyed by any air path, crack, or rigid connection</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="concept red-rule" style="margin-top:20px;">
+      <div class="c-label">Key Rule &mdash; From Your Slides</div>
+      <h4>Good barriers are generally <em>bad absorbers</em> &mdash; and vice versa.</h4>
+      <p>A material cannot be both dense/impermeable (good barrier) and porous/lightweight (good absorber) at the same time. Concrete blocks sound well but reflects nearly everything back. Acoustic tile absorbs reflections beautifully but lets sound pass right through it.</p>
+      <p><strong>The design implication:</strong> you will often need both &mdash; a massive partition for isolation, lined on the source side with absorptive material to reduce the reverberant build-up that drives energy into the wall. The lining does not replace the partition; it reduces the load the partition must handle.</p>
+    </div>
+
+    <div class="concept">
+      <div class="c-label">What Happens at a Boundary &mdash; MEEB Fig. 23.1</div>
+      <h4>Every surface splits incident sound into <em>three paths.</em></h4>
+      <p>When sound strikes any building surface: some is <strong>reflected</strong> back into the source room; some is <strong>absorbed</strong> (converted to heat within the material &mdash; a very small fraction); and some is <strong>transmitted</strong> through to the adjacent space. The fractions depend on the material. For a glass partition: mostly reflected, tiny amount absorbed, small but significant amount transmitted. For acoustic tile: mostly absorbed and reflected, almost nothing transmitted. For a thick concrete wall: mostly reflected, nearly nothing transmitted.</p>
+      <p>The equation is simply: &alpha; + &rho; + &tau; = 1, where &alpha; is absorption, &rho; is reflection, &tau; is transmission. A good barrier material has &tau; near zero. A good absorber has &alpha; near 1.</p>
+    </div>
+
+    <!-- NRC vs NR clarification -->
+    <div style="margin-top:24px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--rule-strong);">The Four Metrics &mdash; What Each Measures</div>
+      <div class="four-grid">
+        <div class="four-cell">
+          <div class="fc-label">Material Property</div>
+          <h5><em>NRC</em></h5>
+          <p><strong>Noise Reduction Coefficient</strong> &mdash; how absorptive a <em>surface finish</em> is. Scale 0&ndash;1.0. Controls reverb and RT60 within a room. Used in Week 2 calculations. Has nothing to do with how much sound passes through a wall.</p>
+        </div>
+        <div class="four-cell">
+          <div class="fc-label">Construction Property (lab tested)</div>
+          <h5><em>TL</em></h5>
+          <p><strong>Transmission Loss</strong> &mdash; how much a <em>partition assembly</em> reduces sound, measured in dB. Tested in a controlled lab; the room conditions are normalized out. An intrinsic property of the wall itself, independent of the spaces on either side.</p>
+        </div>
+        <div class="four-cell">
+          <div class="fc-label">Building Condition (field measured)</div>
+          <h5><em>NR</em></h5>
+          <p><strong>Noise Reduction</strong> &mdash; the actual dB level difference between two adjacent spaces in a real building. Depends on TL, the area of the shared partition, and the absorption of the receiving room. What occupants actually experience. NR &asymp; TL for most planning purposes.</p>
+          <p style="margin-top:6px;font-size:12.5px;color:var(--paper-dim);font-style:italic;">Note: NR and NRC share similar names but measure completely different things and are unrelated.</p>
+        </div>
+        <div class="four-cell">
+          <div class="fc-label">Single-Number Rating</div>
+          <h5><em>STC</em></h5>
+          <p><strong>Sound Transmission Class</strong> &mdash; a single number derived by fitting a standard contour to the TL values measured across 16 one-third octave bands. Used for code compliance and specification. Higher STC = better isolation. The number you look up in MEEB tables.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 06 HOW BARRIERS WORK -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 06</span>
+      <h2 class="sec-title">How <em>Barriers Work.</em></h2>
+    </div>
+
+    <div class="lec">
+      <div class="lec-head">
+        <span><span class="name">TL &middot; NR &middot; Mass Law &middot; Decoupling &middot; Leaks</span></span>
+        <span>MEEB &sect;23.7&ndash;23.11</span>
+      </div>
+      <h3>Sound insulation &mdash; <em>three ideas and one rule.</em></h3>
+      <p class="one-liner">Mass stops sound. Decoupling stops the bypass. A single opening destroys both. Structure-borne is a separate path entirely.</p>
+
+      <h4>1 &middot; TL vs. NR &mdash; Why the Distinction Matters</h4>
+      <ul>
+        <li><strong>TL</strong> is a property of the wall. It does not change based on what rooms are on either side. It is what you specify.</li>
+        <li><strong>NR</strong> is what you measure in the field &mdash; the actual level difference. A highly absorptive receiving room (NC 20 music hall, heavily treated) produces higher NR than a reverberant one from the same wall, because the transmitted sound decays faster. The relationship is: <em>NR = TL &minus; 10 log(S &divide; A<sub>R</sub>)</em> where S is partition area and A<sub>R</sub> is the absorption of the receiving room.</li>
+        <li>For a live receiving room, NR &asymp; TL &minus; 1 dB. For a dead receiving room, NR can exceed TL by 5&ndash;7 dB. <strong>The wall is still the primary lever; the room condition is a modifier.</strong></li>
+      </ul>
+
+      <h4>2 &middot; The Mass Law &mdash; In Plain Terms</h4>
+      <ul>
+        <li>Think of a wall as a giant drumskin. A lighter drumskin vibrates more easily &mdash; more vibration, more transmission. Doubling the mass of the drumskin requires twice the force to move it, which reduces vibration by about 6 dB.</li>
+        <li><strong>The rule:</strong> every doubling of surface mass adds roughly 6 dB of TL. A standard 1/2&rdquo; GWB wall weighs about 6 lb/ft&sup2; and achieves TL &asymp; 35 dB. To gain 20 more dB by mass alone, you need to multiply wall weight by 10&times; &mdash; roughly 60 lb/ft&sup2;, about 5&rdquo; of solid concrete. For 30 more dB, you need 32&times; the weight &mdash; around 200 lb/ft&sup2;, or 16&rdquo; of concrete.</li>
+        <li><strong>The implication:</strong> mass alone is practical only up to STC ~45. Beyond that, the structural loads become prohibitive. The solution is decoupling.</li>
+      </ul>
+
+      <h4>3 &middot; Decoupling &mdash; Where the Real Gains Come From</h4>
+      <ul>
+        <li>If two wall leaves are rigidly connected &mdash; by studs, by wire ties, by continuous concrete, by a back-to-back outlet &mdash; they behave as one heavy leaf. The cavity provides no benefit.</li>
+        <li><strong>Staggered studs:</strong> alternating studs on a wider plate so neither leaf shares a framing member. Each leaf vibrates somewhat independently. +9 dB over baseline.</li>
+        <li><strong>Resilient channel:</strong> a thin spring-metal hat channel between the stud and the GWB. Allows the drywall to flex without directly coupling to the stud. Effective, but a single rigid screw through the channel destroys most of the benefit.</li>
+        <li><strong>Double stud:</strong> two entirely separate stud frames with an air gap. The best stud-based strategy, achieving STC 55+ with proper execution.</li>
+        <li><strong>Cavity fill:</strong> adding batt insulation inside the cavity absorbs sound that couples through the air gap. Works synergistically with decoupling; adds about 3&ndash;5 dB.</li>
+      </ul>
+
+      <h4>4 &middot; Composite Walls &amp; Leaks &mdash; The Weakest Link</h4>
+      <ul>
+        <li>A wall with only 1% of its area open (a gap under a door, an uninsulated outlet) has a maximum achievable TL of 20 dB &mdash; regardless of how massive the solid portion is. The math is unforgiving.</li>
+        <li>A keyhole loses 3 dB. A hairline crack loses 3 dB. An unlined penetration through both leaves of a double wall can drop STC by 10+ points.</li>
+        <li><strong>Design checklist for every high-STC partition:</strong> seal perimeter at floor/ceiling with acoustical sealant; offset back-to-back outlets; no duct through the wall (route around or use sound-attenuating flexible connection); doors to be acoustically rated and fully gasketed.</li>
+      </ul>
+
+      <h4>5 &middot; Structure-Borne Sound &mdash; A Separate Path</h4>
+      <ul>
+        <li>Airborne isolation strategies (heavy walls, staggered studs) do nothing to stop vibration that travels through the building structure. A pump on a concrete slab radiates noise several floors away even through a perfectly sealed room.</li>
+        <li><strong>The control strategy:</strong> break the rigid path. Mechanical equipment must sit on isolation mounts (springs or neoprene pads) with an inertia slab. Pipes must connect to equipment with flexible couplings. Ductwork must use flexible connectors at the air handler.</li>
+        <li>The design principle from your slides: &ldquo;Isolate, eliminate contact, use flexible connections at all penetrations.&rdquo;</li>
+      </ul>
+    </div>
+
+    <!-- MASS LAW VISUAL -->
+    <div class="formula-block">
+      <div class="f-label">Mass Law &mdash; The 6 dB Rule Visualized</div>
+      <div class="f-eq">TL &asymp; 20 &times; log(M &times; f) &minus; 47 &nbsp;[dB, field incidence]</div>
+      <dl class="f-vars">
+        <dt>TL</dt><dd>= transmission loss (dB)</dd>
+        <dt>M</dt><dd>= surface mass (lb/ft&sup2;)</dd>
+        <dt>f</dt><dd>= frequency (Hz)</dd>
+      </dl>
+      <p class="f-note">Field results run 4&ndash;6 dB below this theoretical curve due to stiffness effects and flanking. Use as a planning tool; always specify from tested assemblies (MEEB Table 23.1&ndash;23.2 or manufacturer data) for final design.</p>
+    </div>
+
+    <!-- BARRIER DIAGRAM -->
+    <figure class="diagram">
+      <svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sound transmission diagram showing NR = TL minus 10 log(S divided by A)">
+        <text x="90" y="24" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">SOURCE ROOM</text>
+        <g stroke="#D4A24C" fill="none">
+          <path d="M 40,110 Q 65,80 40,50" stroke-width="1.5"/>
+          <path d="M 55,110 Q 85,75 55,40" stroke-width="1"/>
+          <path d="M 70,110 Q 105,70 70,30" stroke-width=".75" opacity=".6"/>
+        </g>
+        <circle cx="28" cy="110" r="8" fill="#C8472F"/>
+        <text x="28" y="148" text-anchor="middle" fill="#C8472F" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1">SOURCE</text>
+        <text x="380" y="24" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">PARTITION</text>
+        <rect x="330" y="30" width="40" height="160" fill="rgba(237,228,211,.05)" stroke="rgba(237,228,211,.4)" stroke-width="1.5"/>
+        <g fill="rgba(237,228,211,.15)">
+          <circle cx="345" cy="60" r="2"/><circle cx="355" cy="70" r="2"/>
+          <circle cx="345" cy="80" r="2"/><circle cx="355" cy="90" r="2"/>
+          <circle cx="345" cy="100" r="2"/><circle cx="355" cy="110" r="2"/>
+          <circle cx="345" cy="120" r="2"/><circle cx="355" cy="130" r="2"/>
+          <circle cx="345" cy="140" r="2"/><circle cx="355" cy="150" r="2"/>
+          <circle cx="345" cy="160" r="2"/><circle cx="355" cy="170" r="2"/>
+        </g>
+        <line x1="290" y1="110" x2="430" y2="110" stroke="#D4A24C" stroke-width="1" marker-end="url(#arr1)"/>
+        <text x="360" y="104" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">TL</text>
+        <text x="620" y="24" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="2">RECEIVING ROOM</text>
+        <g stroke="#9FC8D4" fill="none" opacity=".5">
+          <path d="M 440,110 Q 460,95 440,80" stroke-width="1"/>
+          <path d="M 455,110 Q 478,92 455,74" stroke-width=".75"/>
+        </g>
+        <text x="580" y="115" text-anchor="middle" fill="#9FC8D4" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1">A_R</text>
+        <text x="580" y="128" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1">absorption</text>
+        <text x="700" y="100" text-anchor="middle" fill="#EDE4D3" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1">NR =</text>
+        <text x="700" y="116" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1">TL &minus; 10</text>
+        <text x="700" y="132" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1">log(S/A_R)</text>
+        <defs>
+          <marker id="arr1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#D4A24C"/>
+          </marker>
+        </defs>
+      </svg>
+      <figcaption><b>Adapted from MEEB Fig. 23.11</b>NR between two spaces depends on the barrier&rsquo;s TL, the area of the shared partition S, and total absorption A_R of the receiving room. TL is always the primary lever; room condition is a modifier of &plusmn;5 dB.</figcaption>
+    </figure>
+  </section>
+
+  <!-- § 07 STC REFERENCE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 07</span>
+      <h2 class="sec-title">STC &mdash; <em>Reference &amp; Assemblies.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>Sound Transmission Class is determined by fitting a standard contour to TL data across 16 one-third octave bands. The higher the STC, the better the isolation. These are planning targets; always specify from tested assemblies for final design. Use these alongside MEEB Tables 23.1&ndash;23.2 and the STRACAT tool below.</p>
+    </div>
+
+    <!-- Subjective scale -->
+    <table class="stc-table">
+      <thead>
+        <tr><th>STC</th><th>What you hear through the wall</th><th>Typical application</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>25&ndash;30</td><td>Normal speech clearly audible. Loud speech fully understood.</td><td>Interior partitions, no acoustic requirement</td></tr>
+        <tr><td>35&ndash;38</td><td>Loud speech audible but not clearly understood.</td><td>Basic office partitions, residential between rooms</td></tr>
+        <tr><td>42&ndash;45</td><td>Loud speech heard as a murmur. Music faintly audible.</td><td>Classroom-to-classroom, hotel corridor walls</td></tr>
+        <tr><td>48&ndash;52</td><td>Very loud sounds faintly heard. Near-normal privacy.</td><td>Music practice rooms, conference rooms</td></tr>
+        <tr><td>55&ndash;60</td><td>Exceptional isolation. Very loud sounds barely perceptible.</td><td>Recording studios, auditorium party walls, mechanical rooms</td></tr>
+        <tr><td>60+</td><td>Almost no transmission audible at normal levels.</td><td>Broadcast studios, high-performance concert halls</td></tr>
+      </tbody>
+    </table>
+
+    <!-- ASSEMBLY SVGs -->
+    <div style="margin-top:36px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:0;padding-bottom:10px;border-bottom:1px solid var(--rule-strong);">Standard Assembly Cross-Sections &mdash; Wall Types</div>
+      <div class="assembly-row">
+
+        <!-- W1: Baseline -->
+        <div class="assembly-card">
+          <div class="ac-label">Type W1 &mdash; Baseline</div>
+          <div class="ac-stc">35</div>
+          <div class="ac-name">2&times;4 Wood Stud / GWB</div>
+          <svg viewBox="0 0 110 160" width="110" height="160" xmlns="http://www.w3.org/2000/svg">
+            <!-- left GWB -->
+            <rect x="5" y="10" width="12" height="140" fill="rgba(237,228,211,.15)" stroke="rgba(237,228,211,.4)" stroke-width=".75"/>
+            <text x="11" y="165" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="7">GWB</text>
+            <!-- studs -->
+            <rect x="22" y="20" width="8" height="120" fill="rgba(212,162,76,.18)" stroke="rgba(212,162,76,.4)" stroke-width=".75"/>
+            <rect x="52" y="20" width="8" height="120" fill="rgba(212,162,76,.18)" stroke="rgba(212,162,76,.4)" stroke-width=".75"/>
+            <rect x="82" y="20" width="8" height="120" fill="rgba(212,162,76,.18)" stroke="rgba(212,162,76,.4)" stroke-width=".75"/>
+            <!-- right GWB -->
+            <rect x="93" y="10" width="12" height="140" fill="rgba(237,228,211,.15)" stroke="rgba(237,228,211,.4)" stroke-width=".75"/>
+            <!-- cavity label -->
+            <text x="55" y="85" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="6.5" letter-spacing="1">AIR</text>
+            <!-- top/bottom plates -->
+            <rect x="5" y="10" width="100" height="6" fill="rgba(212,162,76,.12)" stroke="rgba(212,162,76,.3)" stroke-width=".5"/>
+            <rect x="5" y="144" width="100" height="6" fill="rgba(212,162,76,.12)" stroke="rgba(212,162,76,.3)" stroke-width=".5"/>
+          </svg>
+          <p style="font-size:11px;color:var(--paper-dim);margin-top:10px;line-height:1.4;">Single GWB each side. 3.5&rdquo; air cavity. No insulation. Baseline assembly.</p>
+        </div>
+
+        <!-- W2: Staggered + batt -->
+        <div class="assembly-card">
+          <div class="ac-label">Type W2 &mdash; Staggered Stud</div>
+          <div class="ac-stc">46</div>
+          <div class="ac-name">Staggered / Batt / GWB</div>
+          <svg viewBox="0 0 110 160" width="110" height="160" xmlns="http://www.w3.org/2000/svg">
+            <!-- left GWB -->
+            <rect x="5" y="10" width="12" height="140" fill="rgba(237,228,211,.15)" stroke="rgba(237,228,211,.4)" stroke-width=".75"/>
+            <!-- 2x6 plate bottom -->
+            <rect x="5" y="144" width="100" height="6" fill="rgba(212,162,76,.12)" stroke="rgba(212,162,76,.3)" stroke-width=".5"/>
+            <rect x="5" y="10" width="100" height="6" fill="rgba(212,162,76,.12)" stroke="rgba(212,162,76,.3)" stroke-width=".5"/>
+            <!-- left-biased studs -->
+            <rect x="20" y="16" width="7" height="128" fill="rgba(212,162,76,.2)" stroke="rgba(212,162,76,.45)" stroke-width=".75"/>
+            <rect x="70" y="16" width="7" height="128" fill="rgba(212,162,76,.2)" stroke="rgba(212,162,76,.45)" stroke-width=".75"/>
+            <!-- right-biased studs (staggered) -->
+            <rect x="44" y="16" width="7" height="128" fill="rgba(159,200,212,.2)" stroke="rgba(159,200,212,.45)" stroke-width=".75"/>
+            <rect x="94" y="16" width="7" height="128" fill="rgba(159,200,212,.2)" stroke="rgba(159,200,212,.45)" stroke-width=".75"/>
+            <!-- batt hatch -->
+            <g stroke="rgba(237,228,211,.10)" stroke-width=".75" fill="none">
+              <line x1="17" y1="30" x2="93" y2="130"/>
+              <line x1="17" y1="60" x2="93" y2="150"/>
+              <line x1="17" y1="20" x2="50" y2="80"/>
+              <line x1="50" y1="20" x2="93" y2="110"/>
+              <line x1="17" y1="100" x2="60" y2="150"/>
+            </g>
+            <!-- right GWB -->
+            <rect x="93" y="10" width="12" height="140" fill="rgba(237,228,211,.15)" stroke="rgba(237,228,211,.4)" stroke-width=".75"/>
+            <text x="55" y="88" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="6" letter-spacing="1">BATT</text>
+          </svg>
+          <p style="font-size:11px;color:var(--paper-dim);margin-top:10px;line-height:1.4;">Staggered 2&times;4 on 2&times;6 plate. Fiberglass batt. No shared stud between leaves.</p>
+        </div>
+
+        <!-- W3: Double stud -->
+        <div class="assembly-card">
+          <div class="ac-label">Type W3 &mdash; Double Stud</div>
+          <div class="ac-stc">55+</div>
+          <div class="ac-name">Sep. Frames / Batt / 2&times; GWB</div>
+          <svg viewBox="0 0 110 160" width="110" height="160" xmlns="http://www.w3.org/2000/svg">
+            <!-- double GWB left -->
+            <rect x="2" y="10" width="10" height="140" fill="rgba(237,228,211,.18)" stroke="rgba(237,228,211,.4)" stroke-width=".75"/>
+            <rect x="13" y="10" width="10" height="140" fill="rgba(237,228,211,.12)" stroke="rgba(237,228,211,.3)" stroke-width=".75"/>
+            <!-- left frame studs -->
+            <rect x="24" y="16" width="6" height="128" fill="rgba(212,162,76,.2)" stroke="rgba(212,162,76,.45)" stroke-width=".75"/>
+            <rect x="42" y="16" width="6" height="128" fill="rgba(212,162,76,.2)" stroke="rgba(212,162,76,.45)" stroke-width=".75"/>
+            <!-- air gap -->
+            <line x1="53" y1="10" x2="53" y2="150" stroke="rgba(237,228,211,.12)" stroke-width=".75" stroke-dasharray="3 3"/>
+            <!-- right frame studs -->
+            <rect x="57" y="16" width="6" height="128" fill="rgba(159,200,212,.2)" stroke="rgba(159,200,212,.45)" stroke-width=".75"/>
+            <rect x="75" y="16" width="6" height="128" fill="rgba(159,200,212,.2)" stroke="rgba(159,200,212,.45)" stroke-width=".75"/>
+            <!-- batt hatch -->
+            <g stroke="rgba(237,228,211,.09)" stroke-width=".75" fill="none">
+              <line x1="24" y1="30" x2="81" y2="140"/>
+              <line x1="24" y1="60" x2="81" y2="150"/>
+              <line x1="24" y1="20" x2="60" y2="90"/>
+              <line x1="60" y1="20" x2="81" y2="60"/>
+            </g>
+            <!-- double GWB right -->
+            <rect x="82" y="10" width="10" height="140" fill="rgba(237,228,211,.12)" stroke="rgba(237,228,211,.3)" stroke-width=".75"/>
+            <rect x="93" y="10" width="10" height="140" fill="rgba(237,228,211,.18)" stroke="rgba(237,228,211,.4)" stroke-width=".75"/>
+            <!-- plates -->
+            <rect x="2" y="10" width="101" height="5" fill="rgba(212,162,76,.08)" stroke="rgba(212,162,76,.25)" stroke-width=".5"/>
+            <rect x="2" y="145" width="101" height="5" fill="rgba(212,162,76,.08)" stroke="rgba(212,162,76,.25)" stroke-width=".5"/>
+          </svg>
+          <p style="font-size:11px;color:var(--paper-dim);margin-top:10px;line-height:1.4;">Two separate frames, 1&rdquo; gap. Double GWB each side. Batt fills both cavities. Auditorium-grade.</p>
+        </div>
+
+        <!-- M1: CMU -->
+        <div class="assembly-card">
+          <div class="ac-label">Type M1 &mdash; Masonry</div>
+          <div class="ac-stc">45&ndash;55</div>
+          <div class="ac-name">8&rdquo; Normal Weight CMU</div>
+          <svg viewBox="0 0 110 160" width="110" height="160" xmlns="http://www.w3.org/2000/svg">
+            <!-- CMU block pattern -->
+            <rect x="10" y="10" width="90" height="140" fill="rgba(237,228,211,.06)" stroke="rgba(237,228,211,.35)" stroke-width="1"/>
+            <!-- horizontal mortar joints -->
+            <line x1="10" y1="37" x2="100" y2="37" stroke="rgba(237,228,211,.25)" stroke-width="1.5"/>
+            <line x1="10" y1="64" x2="100" y2="64" stroke="rgba(237,228,211,.25)" stroke-width="1.5"/>
+            <line x1="10" y1="91" x2="100" y2="91" stroke="rgba(237,228,211,.25)" stroke-width="1.5"/>
+            <line x1="10" y1="118" x2="100" y2="118" stroke="rgba(237,228,211,.25)" stroke-width="1.5"/>
+            <!-- vertical joints row 1 -->
+            <line x1="55" y1="10" x2="55" y2="37" stroke="rgba(237,228,211,.2)" stroke-width="1"/>
+            <!-- vertical joints row 2 (offset) -->
+            <line x1="27" y1="37" x2="27" y2="64" stroke="rgba(237,228,211,.2)" stroke-width="1"/>
+            <line x1="73" y1="37" x2="73" y2="64" stroke="rgba(237,228,211,.2)" stroke-width="1"/>
+            <!-- row 3 -->
+            <line x1="55" y1="64" x2="55" y2="91" stroke="rgba(237,228,211,.2)" stroke-width="1"/>
+            <!-- row 4 (offset) -->
+            <line x1="27" y1="91" x2="27" y2="118" stroke="rgba(237,228,211,.2)" stroke-width="1"/>
+            <line x1="73" y1="91" x2="73" y2="118" stroke="rgba(237,228,211,.2)" stroke-width="1"/>
+            <!-- row 5 -->
+            <line x1="55" y1="118" x2="55" y2="145" stroke="rgba(237,228,211,.2)" stroke-width="1"/>
+            <!-- hollow cores (simplified) -->
+            <rect x="20" y="16" width="15" height="16" rx="1" fill="rgba(14,13,11,.4)" stroke="rgba(237,228,211,.1)" stroke-width=".5"/>
+            <rect x="73" y="16" width="15" height="16" rx="1" fill="rgba(14,13,11,.4)" stroke="rgba(237,228,211,.1)" stroke-width=".5"/>
+            <rect x="13" y="43" width="10" height="16" rx="1" fill="rgba(14,13,11,.4)" stroke="rgba(237,228,211,.1)" stroke-width=".5"/>
+            <rect x="42" y="43" width="12" height="16" rx="1" fill="rgba(14,13,11,.4)" stroke="rgba(237,228,211,.1)" stroke-width=".5"/>
+            <rect x="78" y="43" width="12" height="16" rx="1" fill="rgba(14,13,11,.4)" stroke="rgba(237,228,211,.1)" stroke-width=".5"/>
+            <!-- width annotation -->
+            <line x1="10" y1="154" x2="100" y2="154" stroke="rgba(237,228,211,.3)" stroke-width=".75" marker-start="url(#tick)" marker-end="url(#tick)"/>
+            <text x="55" y="162" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="6.5">8&rdquo; NW CMU</text>
+            <defs>
+              <marker id="tick" markerWidth="4" markerHeight="6" refX="2" refY="3" orient="auto">
+                <line x1="2" y1="0" x2="2" y2="6" stroke="rgba(237,228,211,.3)" stroke-width=".75"/>
+              </marker>
+            </defs>
+          </svg>
+          <p style="font-size:11px;color:var(--paper-dim);margin-top:10px;line-height:1.4;">8&rdquo; normal weight CMU painted both sides. Fill cores with grout for STC 55+.</p>
+        </div>
+      </div>
+
+      <!-- Floor assembly row -->
+      <div style="margin-top:28px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);padding-bottom:10px;border-bottom:1px solid var(--rule-strong);">Floor Assembly &mdash; Impact + Airborne</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule-strong);margin-top:0;">
+        <div style="padding:20px 22px;border-right:1px solid var(--rule);">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:8px;">Type F1 &mdash; Baseline</div>
+          <div style="font-family:'Fraunces',serif;font-size:28px;color:var(--amber);font-variation-settings:'opsz' 48,'SOFT' 30;">50</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--paper);margin-bottom:12px;">6&rdquo; Concrete Slab / Hard Finish</div>
+          <svg viewBox="0 0 260 80" width="260" height="80" xmlns="http://www.w3.org/2000/svg">
+            <!-- hard finish -->
+            <rect x="10" y="8" width="240" height="8" fill="rgba(237,228,211,.2)" stroke="rgba(237,228,211,.4)" stroke-width=".75"/>
+            <text x="130" y="14" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="6">HARD FINISH (CONCRETE / TILE)</text>
+            <!-- slab -->
+            <rect x="10" y="18" width="240" height="44" fill="rgba(237,228,211,.06)" stroke="rgba(237,228,211,.3)" stroke-width="1"/>
+            <!-- rebar -->
+            <line x1="10" y1="34" x2="250" y2="34" stroke="rgba(200,71,47,.35)" stroke-width="1.5" stroke-dasharray="8 4"/>
+            <line x1="10" y1="46" x2="250" y2="46" stroke="rgba(200,71,47,.35)" stroke-width="1.5" stroke-dasharray="8 4"/>
+            <text x="130" y="44" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="6">6&rdquo; CONCRETE SLAB</text>
+            <!-- ceiling below -->
+            <rect x="10" y="64" width="240" height="8" fill="rgba(237,228,211,.12)" stroke="rgba(237,228,211,.25)" stroke-width=".75"/>
+            <text x="130" y="70" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="6">GWB CEILING</text>
+          </svg>
+          <p style="font-size:11px;color:var(--paper-dim);margin-top:10px;line-height:1.4;">Good for airborne. Hard surface transmits impact noise (footfalls). STC ~50, IIC ~25.</p>
+        </div>
+        <div style="padding:20px 22px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:8px;">Type F2 &mdash; Floated Floor</div>
+          <div style="font-family:'Fraunces',serif;font-size:28px;color:var(--amber);font-variation-settings:'opsz' 48,'SOFT' 30;">60+</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--paper);margin-bottom:12px;">Concrete Slab / Resilient Mat / Topping</div>
+          <svg viewBox="0 0 260 100" width="260" height="100" xmlns="http://www.w3.org/2000/svg">
+            <!-- flooring -->
+            <rect x="10" y="5" width="240" height="7" fill="rgba(237,228,211,.2)" stroke="rgba(237,228,211,.4)" stroke-width=".75"/>
+            <text x="130" y="11" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="6">FLOORING / CARPET</text>
+            <!-- floating topping -->
+            <rect x="10" y="14" width="240" height="16" fill="rgba(237,228,211,.10)" stroke="rgba(237,228,211,.35)" stroke-width=".75"/>
+            <text x="130" y="25" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="6">2&rdquo; FLOATING CONCRETE TOPPING</text>
+            <!-- resilient mat (spring symbols) -->
+            <g stroke="rgba(159,200,212,.5)" stroke-width=".75" fill="none">
+              <path d="M 20,32 Q 24,28 28,32 Q 32,36 36,32"/>
+              <path d="M 60,32 Q 64,28 68,32 Q 72,36 76,32"/>
+              <path d="M 100,32 Q 104,28 108,32 Q 112,36 116,32"/>
+              <path d="M 140,32 Q 144,28 148,32 Q 152,36 156,32"/>
+              <path d="M 180,32 Q 184,28 188,32 Q 192,36 196,32"/>
+              <path d="M 220,32 Q 224,28 228,32 Q 232,36 236,32"/>
+            </g>
+            <text x="130" y="42" text-anchor="middle" fill="#9FC8D4" font-family="JetBrains Mono, monospace" font-size="6">RESILIENT ISOLATION MAT</text>
+            <!-- structural slab -->
+            <rect x="10" y="44" width="240" height="38" fill="rgba(237,228,211,.06)" stroke="rgba(237,228,211,.3)" stroke-width="1"/>
+            <line x1="10" y1="57" x2="250" y2="57" stroke="rgba(200,71,47,.3)" stroke-width="1.5" stroke-dasharray="8 4"/>
+            <line x1="10" y1="69" x2="250" y2="69" stroke="rgba(200,71,47,.3)" stroke-width="1.5" stroke-dasharray="8 4"/>
+            <text x="130" y="63" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="6">6&rdquo; STRUCTURAL SLAB</text>
+            <!-- ceiling below -->
+            <rect x="10" y="84" width="240" height="8" fill="rgba(237,228,211,.12)" stroke="rgba(237,228,211,.25)" stroke-width=".75"/>
+            <text x="130" y="90" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="6">ISOLATED GWB CEILING (RESILIENT CHANNEL)</text>
+          </svg>
+          <p style="font-size:11px;color:var(--paper-dim);margin-top:10px;line-height:1.4;">Resilient mat breaks impact path. Isolated ceiling below decouples airborne. Used under rehearsal rooms, dance studios, auditorium stages. STC 60+, IIC 60+.</p>
+        </div>
+      </div>
+
+      <!-- Assembly adders table -->
+      <div style="margin-top:32px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--rule-strong);">STC Improvements &mdash; Stud Partition Adders (MEEB Table 23.1)</div>
+        <table class="stc-table">
+          <thead>
+            <tr><th>Starting Assembly</th><th>Modification</th><th>Approx. STC</th></tr>
+          </thead>
+          <tbody>
+            <tr class="stc-group"><td colspan="3">Baseline: 2&times;4 wood studs 16&ldquo; OC, &frac12;&rdquo; GWB both sides, air cavity &mdash; STC 35</td></tr>
+            <tr><td>+9</td><td>Staggered studs on 2&times;6 plate</td><td>STC 44</td></tr>
+            <tr><td>+2</td><td>Double GWB one side (staggered base)</td><td>STC 46</td></tr>
+            <tr><td>+3</td><td>Add absorptive batt in cavity</td><td>STC 49</td></tr>
+            <tr><td>+6</td><td>Double GWB both sides + batt</td><td>STC 55</td></tr>
+            <tr><td>+5</td><td>Resilient channel one side (baseline)</td><td>STC 40</td></tr>
+            <tr><td>+13</td><td>Double stud wall (separate frames) + batt</td><td>STC 48&ndash;55</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:10px;font-size:13px;color:var(--paper-dim);font-style:italic;">Adders are not purely additive; each modification must be correctly executed. A single missed sealant bead or misdriven screw through resilient channel can cost 5&ndash;10 STC points. Specify from tested assemblies (MEEB Appendix K, manufacturer data) for final design.</p>
+      </div>
+    </div>
+
+    <!-- STRACAT TOOL -->
+    <div class="tool-callout">
+      <div class="t-label">Interactive Tool &mdash; For Tonight&rsquo;s Lab</div>
+      <h4>HUD Exchange &mdash; STRACAT Assembly Tool</h4>
+      <p>The STRACAT tool from HUD Exchange lets you browse and test standardized wall, floor, and door assemblies with their tested STC ratings. You can filter by assembly type and see what each layer contributes to the total rating.</p>
+      <p><strong>URL:</strong> <a href="https://www.hudexchange.info/programs/environmental-review/stracat/" target="_blank">hudexchange.info/programs/environmental-review/stracat/</a></p>
+      <p><strong>Act I connection:</strong> As you browse assemblies tonight, <strong>take note of the specific construction types</strong> &mdash; stud size, GWB layers, insulation type, CMU weight. These are exactly the wall, floor, and ceiling assemblies you need to define as part of your Act I building design. You don&rsquo;t need to model them in 3D, but providing a documented assembly with an STC rating for each critical partition in your auditorium is a strong design deliverable &mdash; and it&rsquo;s the kind of detail that distinguishes a technical design submission from a concept sketch.</p>
+    </div>
+  </section>
+
+  <!-- § 08 STC PLANNING TOOL -->
+  <section id="stc-tool">
+    <div class="sec-label">
+      <span class="sec-num">§ 08</span>
+      <h2 class="sec-title">STC <em>Planning Tool.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:24px;">
+      <p>Select your hall type and the adjacent space to calculate the required noise reduction, then browse the assembly database filtered to show what meets or misses the requirement. Override the source dB if you have a measured value. Results update instantly.</p>
+    </div>
+
+    <style>
+      .stc-inputs{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+      @media(max-width:680px){.stc-inputs{grid-template-columns:1fr;}}
+      .stc-input-group{display:flex;flex-direction:column;gap:8px;}
+      .stc-input-group label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);}
+      .stc-sel,.stc-inp{background:rgba(14,13,11,.65);border:1px solid var(--rule-strong);color:var(--paper);font-family:"Newsreader",serif;font-size:16px;padding:10px 14px;width:100%;outline:none;-webkit-appearance:none;appearance:none;}
+      .stc-sel:focus,.stc-inp:focus{border-color:var(--amber);}
+      .stc-sel option{background:#1a1814;color:var(--paper);}
+      .stc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--rule-strong);margin:20px 0;}
+      .stc-stats .sst{padding:14px 16px;border-right:1px solid var(--rule);}
+      .stc-stats .sst:last-child{border-right:none;}
+      .sst-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:5px;}
+      .sst-val{font-family:"Fraunces",serif;font-size:20px;font-variation-settings:"opsz" 48,"SOFT" 30;color:var(--paper-dim);line-height:1.2;}
+      .sst-note{font-size:11px;color:var(--paper-dim);margin-top:3px;line-height:1.4;font-style:italic;}
+      @media(max-width:680px){.stc-stats{grid-template-columns:1fr 1fr;}.stc-stats .sst:nth-child(2){border-right:none;}.stc-stats .sst:nth-child(n+3){border-top:1px solid var(--rule);}}
+      .stc-nr-box{display:flex;align-items:center;gap:24px;padding:20px 24px;border:2px solid var(--rule-strong);margin:0 0 20px;background:rgba(237,228,211,.02);}
+      .stc-nr-box.nr-easy{border-color:rgba(100,190,100,.55);background:rgba(100,190,100,.05);}
+      .stc-nr-box.nr-mod{border-color:var(--amber-line);background:var(--amber-soft);}
+      .stc-nr-box.nr-hard{border-color:rgba(200,71,47,.5);background:rgba(200,71,47,.07);}
+      .stc-nr-box.nr-extreme{border-color:rgba(200,71,47,.75);background:rgba(200,71,47,.12);}
+      .stc-nr-num{font-family:"Fraunces",serif;font-size:72px;font-variation-settings:"opsz" 144,"SOFT" 60;line-height:1;min-width:100px;text-align:center;color:var(--paper-dim);}
+      .nr-easy .stc-nr-num{color:rgba(110,200,110,.9);}
+      .nr-mod .stc-nr-num{color:var(--amber);}
+      .nr-hard .stc-nr-num,.nr-extreme .stc-nr-num{color:var(--red);}
+      .stc-nr-head{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:8px;}
+      .nr-easy .stc-nr-head{color:rgba(110,200,110,.7);}
+      .nr-mod .stc-nr-head{color:var(--amber);}
+      .nr-hard .stc-nr-head,.nr-extreme .stc-nr-head{color:var(--red);}
+      .stc-nr-desc{font-size:14.5px;color:var(--paper-2);line-height:1.5;}
+      .stc-filt{display:flex;border:1px solid var(--rule-strong);width:fit-content;margin:0 0 12px;}
+      .stc-filt button{background:rgba(237,228,211,.02);border:none;border-right:1px solid var(--rule-strong);color:var(--paper-dim);font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:8px 16px;cursor:pointer;transition:background .15s,color .15s;}
+      .stc-filt button:last-child{border-right:none;}
+      .stc-filt button:hover{background:rgba(237,228,211,.06);color:var(--paper);}
+      .stc-filt button.sf-on{background:var(--amber-soft);color:var(--amber);}
+      .stc-tbl{width:100%;border-collapse:collapse;font-size:13px;}
+      .stc-tbl th{padding:8px 10px;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);text-align:left;border-bottom:1px solid var(--rule-strong);background:rgba(14,13,11,.35);font-weight:400;}
+      .stc-tbl td{padding:8px 10px;border-bottom:1px solid var(--rule);vertical-align:top;}
+      .stc-tbl tr:last-child td{border-bottom:none;}
+      .stc-tbl tr:hover{background:rgba(237,228,211,.02);}
+      .stc-tbl .tc-id{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--paper-dim);}
+      .stc-tbl .tc-type{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.06em;color:var(--paper-dim);}
+      .stc-tbl .tc-stc{font-family:"JetBrains Mono",monospace;font-size:14px;color:var(--amber);}
+      .stc-tbl .tc-mg{font-family:"JetBrains Mono",monospace;font-size:11px;}
+      .stc-tbl .tc-th{font-family:"JetBrains Mono",monospace;font-size:11px;white-space:nowrap;}
+      .stc-tbl .tc-ref{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--paper-dim);}
+      .stc-tbl tr.ar-good td{color:var(--paper-2);}.stc-tbl tr.ar-good .tc-stc{color:var(--paper);}.stc-tbl tr.ar-good .tc-mg{color:rgba(110,200,110,.9);}
+      .stc-tbl tr.ar-close td{color:var(--paper-2);}.stc-tbl tr.ar-close .tc-mg{color:var(--amber);}
+      .stc-tbl tr.ar-low td{color:var(--paper-dim);}.stc-tbl tr.ar-low .tc-stc{color:var(--paper-dim);}.stc-tbl tr.ar-low .tc-mg{color:rgba(200,71,47,.6);}
+      .stc-empty-row{padding:28px;text-align:center;color:var(--paper-dim);font-style:italic;font-size:16px;}
+      .stc-legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:12px;}
+      .stc-legend span{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;color:var(--paper-dim);}
+      .sl-good{color:rgba(110,200,110,.8) !important;}
+      .sl-close{color:var(--amber) !important;}
+      .sl-low{color:rgba(200,71,47,.6) !important;}
+    </style>
+
+    <div class="stc-inputs">
+      <div class="stc-input-group">
+        <label>01 &mdash; Your Hall Type</label>
+        <select class="stc-sel" id="stcHall"><option value="">&#8212; Select hall type &#8212;</option></select>
+      </div>
+      <div class="stc-input-group">
+        <label>02 &mdash; Adjacent Source Space</label>
+        <select class="stc-sel" id="stcSource"><option value="">&#8212; Select source space &#8212;</option></select>
+      </div>
+      <div class="stc-input-group" style="grid-column:1/-1;">
+        <label>03 &mdash; Override Source Level (optional &mdash; leave blank to use estimate)</label>
+        <input type="number" class="stc-inp" id="stcOvr" placeholder="Enter measured dB if known" min="30" max="130"/>
+      </div>
+    </div>
+
+    <div class="stc-stats">
+      <div class="sst"><div class="sst-label">Source Level</div><div class="sst-val" id="stcSrcDb">&mdash;</div><div class="sst-note" id="stcSrcNote">Select source space above</div></div>
+      <div class="sst"><div class="sst-label">NC Target</div><div class="sst-val" id="stcNcVal">&mdash;</div><div class="sst-note" id="stcNcNote">Select hall type above</div></div>
+      <div class="sst"><div class="sst-label">Path Type</div><div class="sst-val" id="stcSrcTag" style="font-size:14px;margin-top:4px;">&mdash;</div><div class="sst-note" id="stcSrcTagNote"></div></div>
+    </div>
+
+    <div class="stc-nr-box" id="stcNrBox">
+      <div class="stc-nr-num" id="stcNrNum">&mdash;</div>
+      <div>
+        <div class="stc-nr-head" id="stcNrHead">Required NR &mdash; select inputs above</div>
+        <div class="stc-nr-desc" id="stcNrDesc">Choose a hall type and source space. The required NR is the minimum dB isolation the partition must provide.</div>
+      </div>
+    </div>
+
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);padding-bottom:10px;border-bottom:1px solid var(--rule-strong);">Assembly Database &mdash; Filtered by Required NR</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin:14px 0 12px;">
+      <div class="stc-filt">
+        <button class="sf-on" onclick="stcFilter('all')">All</button>
+        <button onclick="stcFilter('Wall')">Walls</button>
+        <button onclick="stcFilter('Floor')">Floors</button>
+        <button onclick="stcFilter('Door')">Doors</button>
+      </div>
+      <div class="stc-legend">
+        <span class="sl-good">&#10003; Meets requirement (&ge;+5 dB)</span>
+        <span class="sl-close">~ Marginal (0&#8211;+4 dB)</span>
+        <span class="sl-low">&#10007; Below requirement</span>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="stc-tbl">
+        <thead><tr>
+          <th>ID</th><th>Type</th><th>Assembly</th><th>STC</th><th>Margin</th><th>Thick.</th><th>Ref</th>
+        </tr></thead>
+        <tbody id="stcTbody">
+          <tr><td colspan="7" class="stc-empty-row">Select hall type and source space above to filter assemblies.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- § 09 PRECEDENTS -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 09</span>
+      <h2 class="sec-title">Precedent &mdash; <em>Buffer Zones.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>Before the lab, a brief look at how professional acoustic consultants and architects address the isolation challenge at the building-planning scale. The principle: the best wall is the one you don&rsquo;t have to build. Strategic placement of program spaces creates air gaps and buffer zones that do acoustic work before any partition is specified.</p>
+    </div>
+
+    <div class="precedent-grid">
+
+      <div class="prec-card">
+        <div class="p-label">Plan Strategy &mdash; Concentric Buffer Ring</div>
+        <h4>The <em>Wrapped Hall</em></h4>
+        <div class="p-meta">Boston Symphony Hall &bull; McKim, Mead &amp; White, 1900 &bull; STC equivalent ~65+</div>
+        <p>The shoebox hall is wrapped in a thick ring of secondary program: service corridors, practice rooms, storage, dressing rooms, and lobby on all sides. No exterior wall directly faces the hall. Every noise source is at least two partitions and an occupied buffer space away from the audience.</p>
+        <p>The mass masonry exterior wall provides baseline isolation. The buffer ring provides distance attenuation. The result: 125 years of use with no significant exterior noise intrusion &mdash; and no mechanical room adjacent to the hall.</p>
+        <!-- Schematic plan SVG -->
+        <svg viewBox="0 0 240 200" width="240" height="200" xmlns="http://www.w3.org/2000/svg">
+          <!-- exterior -->
+          <rect x="10" y="10" width="220" height="180" fill="rgba(237,228,211,.04)" stroke="rgba(237,228,211,.3)" stroke-width="1.5"/>
+          <!-- buffer ring (service/secondary program) -->
+          <rect x="30" y="28" width="180" height="144" fill="rgba(212,162,76,.06)" stroke="rgba(212,162,76,.3)" stroke-width="1"/>
+          <!-- hall -->
+          <rect x="68" y="55" width="104" height="90" fill="rgba(159,200,212,.08)" stroke="rgba(159,200,212,.5)" stroke-width="1.5"/>
+          <!-- labels -->
+          <text x="120" y="105" text-anchor="middle" fill="#9FC8D4" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="2">HALL</text>
+          <!-- buffer zones -->
+          <text x="120" y="40" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="6.5" letter-spacing="1">LOBBY / FOH</text>
+          <text x="120" y="170" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="6.5" letter-spacing="1">SERVICE / LOADING</text>
+          <text x="20" y="105" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="6" letter-spacing="1" transform="rotate(-90,20,105)">DRESSING / STORAGE</text>
+          <text x="220" y="105" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="6" letter-spacing="1" transform="rotate(90,220,105)">PRACTICE / OFFICES</text>
+          <!-- noise arrows (kept outside) -->
+          <g stroke="rgba(200,71,47,.4)" stroke-width=".75" fill="none">
+            <line x1="120" y1="2" x2="120" y2="9" marker-end="url(#arrR)"/>
+            <line x1="2" y1="100" x2="9" y2="100" marker-end="url(#arrR)"/>
+            <line x1="238" y1="100" x2="231" y2="100" marker-end="url(#arrR2)"/>
+            <line x1="120" y1="198" x2="120" y2="191" marker-end="url(#arrR2)"/>
+          </g>
+          <defs>
+            <marker id="arrR" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="rgba(200,71,47,.5)"/></marker>
+            <marker id="arrR2" markerWidth="6" markerHeight="6" refX="1" refY="3" orient="auto"><path d="M6,0 L6,6 L0,3 z" fill="rgba(200,71,47,.5)"/></marker>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="prec-card">
+        <div class="p-label">Plan Strategy &mdash; Hall Within Galleria</div>
+        <h4>The <em>Box in a Box</em></h4>
+        <div class="p-meta">Kimmel Center &bull; Rafael Vi&ntilde;oly Architects, 2001 &bull; Verizon Hall STC ~60</div>
+        <p>The Verizon Hall concert volume sits as a discrete object inside a glass-roofed galleria. The galleria serves as a large air buffer on all sides &mdash; separating the acoustic shell from the HVAC equipment, the street noise, and the secondary hall (Perelman). The two hall volumes share no structure and no mechanical system.</p>
+        <p>The galleria also provides a transition zone for pre-concert crowd noise before patrons enter the hall, and its thermal mass helps regulate humidity. The acoustic separation was achieved without unusually thick walls by maximizing the air gap.</p>
+        <!-- Schematic plan SVG -->
+        <svg viewBox="0 0 240 200" width="240" height="200" xmlns="http://www.w3.org/2000/svg">
+          <!-- galleria glass roof -->
+          <rect x="10" y="10" width="220" height="180" fill="rgba(237,228,211,.03)" stroke="rgba(159,200,212,.3)" stroke-width="1.5" rx="4"/>
+          <text x="120" y="22" text-anchor="middle" fill="#9FC8D4" font-family="JetBrains Mono, monospace" font-size="6.5" letter-spacing="2">GALLERIA (AIR BUFFER)</text>
+          <!-- main hall (Verizon) -->
+          <ellipse cx="80" cy="110" rx="50" ry="70" fill="rgba(212,162,76,.07)" stroke="rgba(212,162,76,.4)" stroke-width="1.5"/>
+          <text x="80" y="107" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="7" letter-spacing="1">VERIZON</text>
+          <text x="80" y="118" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="7" letter-spacing="1">HALL</text>
+          <!-- secondary hall (Perelman) -->
+          <rect x="155" y="50" width="55" height="100" fill="rgba(159,200,212,.06)" stroke="rgba(159,200,212,.3)" stroke-width="1"/>
+          <text x="182" y="98" text-anchor="middle" fill="#9FC8D4" font-family="JetBrains Mono, monospace" font-size="6.5" letter-spacing="1">PERELMAN</text>
+          <text x="182" y="108" text-anchor="middle" fill="#9FC8D4" font-family="JetBrains Mono, monospace" font-size="6.5" letter-spacing="1">THEATER</text>
+          <!-- air gap annotation -->
+          <line x1="130" y1="100" x2="155" y2="100" stroke="rgba(237,228,211,.3)" stroke-width=".75" stroke-dasharray="2 2"/>
+          <text x="142" y="95" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="5.5">AIR GAP</text>
+          <!-- street noise arrows -->
+          <g stroke="rgba(200,71,47,.35)" stroke-width=".75" fill="none">
+            <line x1="120" y1="2" x2="120" y2="9"/>
+            <line x1="2" y1="100" x2="9" y2="100"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="prec-card">
+        <div class="p-label">Section Strategy &mdash; Floating Room</div>
+        <h4>The <em>Room Within a Room</em></h4>
+        <div class="p-meta">Walt Disney Concert Hall &bull; Gehry Partners / Nagata Acoustics, 2003</div>
+        <p>The 2,265-seat hall is constructed as a structurally independent box inside the building envelope. The hall walls do not touch the building frame; they are supported on vibration isolation mounts. Mechanical equipment is in a basement separated by a full story of structure, connected only via flexible duct and pipe connections.</p>
+        <p>The floor of the hall is a floating concrete slab on spring isolators. A 6&rdquo; air gap runs around the perimeter of the hall box. This approach achieves NC 10&ndash;15 background noise levels in the hall &mdash; quieter than any conventional construction can achieve through partition mass alone.</p>
+        <!-- Section SVG -->
+        <svg viewBox="0 0 240 160" width="240" height="160" xmlns="http://www.w3.org/2000/svg">
+          <!-- building skin -->
+          <rect x="10" y="10" width="220" height="140" fill="rgba(237,228,211,.03)" stroke="rgba(237,228,211,.25)" stroke-width="1.5"/>
+          <!-- air gap around hall -->
+          <!-- hall box (floating) -->
+          <rect x="35" y="28" width="170" height="90" fill="rgba(159,200,212,.06)" stroke="rgba(159,200,212,.45)" stroke-width="1.5"/>
+          <text x="120" y="78" text-anchor="middle" fill="#9FC8D4" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="2">HALL BOX</text>
+          <!-- air gap annotation arrows -->
+          <line x1="11" y1="73" x2="34" y2="73" stroke="rgba(237,228,211,.3)" stroke-width=".75"/>
+          <text x="22" y="70" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="5.5">6&rdquo;</text>
+          <!-- spring isolators on floor -->
+          <g stroke="rgba(212,162,76,.5)" stroke-width=".75" fill="none">
+            <path d="M 60,122 Q 63,118 66,122 Q 69,126 72,122"/>
+            <path d="M 100,122 Q 103,118 106,122 Q 109,126 112,122"/>
+            <path d="M 140,122 Q 143,118 146,122 Q 149,126 152,122"/>
+            <path d="M 175,122 Q 178,118 181,122 Q 184,126 188,122"/>
+          </g>
+          <text x="120" y="132" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="6" letter-spacing="1">SPRING ISOLATORS</text>
+          <!-- mechanical room below -->
+          <rect x="35" y="138" width="170" height="10" fill="rgba(200,71,47,.06)" stroke="rgba(200,71,47,.25)" stroke-width=".75"/>
+          <text x="120" y="146" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="5.5" letter-spacing="1">MECHANICAL ROOM (FULL FLOOR BELOW)</text>
+          <!-- section label -->
+          <text x="120" y="8" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="6" letter-spacing="1">SCHEMATIC SECTION &mdash; NOT TO SCALE</text>
+        </svg>
+      </div>
+
+      <div class="prec-card">
+        <div class="p-label">Design Principle &mdash; Buffer Zone Toolkit</div>
+        <h4>What <em>architects control.</em></h4>
+        <div class="p-meta">Programming &bull; Plan Organization &bull; Section Strategy</div>
+        <p>The acoustician controls material specifications. The architect controls <strong>adjacency</strong>. As your slides note: the architect&rsquo;s primary lever is the <em>path</em> &mdash; the distance and barriers between source and receiver.</p>
+        <p><strong>In plan:</strong> surround the hall with non-sensitive program: lobbies, restrooms, coat rooms, storage, circulation. Keep loading docks, mechanical rooms, and parking structures at the opposite end of the building from stage.</p>
+        <p><strong>In section:</strong> locate mechanical rooms above or below the hall with a full unoccupied floor as a buffer. Float the hall slab on isolation mounts. Consider a basement mech floor so no equipment shares a slab with the audience.</p>
+        <p><strong>For your Act I:</strong> annotate your section to show where your mechanical room is relative to the hall. If it is directly adjacent to or below the stage, that is a significant acoustic liability to acknowledge in your Decision Log.</p>
+      </div>
+
+    </div>
+
+    <div class="bridge">
+      <strong>Transition to Lab</strong>
+      You&rsquo;ve seen how the professionals solve this at the building scale. Now apply it to your own auditorium. The noise map exercise that follows asks you to think like the acoustic consultant: identify your worst adjacency, quantify what isolation is required, and select the partition assembly that gets you there.
+    </div>
+  </section>
+
+  <!-- § 09 LAB -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 10</span>
+      <h2 class="sec-title">Lab &mdash; <em>Adjacency Noise Analysis.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>Here is what you are doing in tonight&rsquo;s lab, step by step. Work in breakout groups of 3&ndash;4, but each student completes their own worksheet. Use your group to pressure-test your reasoning &mdash; especially the source dB estimates and the assembly selection logic.</p>
+    </div>
+
+    <div class="lab-sheet">
+      <div class="lab-row">
+        <div class="g">A</div>
+        <div>
+          <span class="tag">Adjacency Map</span>
+          <h5>Draw your <em>noise context.</em></h5>
+          <p>Take your auditorium plan (from your Rhino or Revit model, or a sketch). Draw every space that shares a wall, floor, or ceiling with the hall. Label each with: (1) what the space is, (2) what the primary noise source is, and (3) approximately when that noise occurs (day, night, during performances).</p>
+        </div>
+        <div class="tasks">
+          <ul>
+            <li>Loading dock / service corridor &rarr; fork lifts, truck backup alarms, doors slamming: ~85&ndash;90 dB</li>
+            <li>Mechanical room &rarr; HVAC fans, compressors: ~75&ndash;85 dB, structure-borne dominant</li>
+            <li>Lobby / prefunction &rarr; crowd noise at intermission: ~70&ndash;75 dB</li>
+            <li>Practice rooms &rarr; piano, amplified instruments: ~80&ndash;90 dB</li>
+            <li>Exterior &rarr; traffic, HVAC condensers on roof: ~55&ndash;75 dB depending on site</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lab-row">
+        <div class="g">B</div>
+        <div>
+          <span class="tag">Required NR</span>
+          <h5>Calculate what <em>you need.</em></h5>
+          <p>For your worst-case adjacency (the loudest source relative to your hall&rsquo;s NC target), calculate the required NR. The formula is simple: Required NR = Source Level (dB) &minus; NC target for the hall. Your NC target should be from your Week 1 analysis.</p>
+        </div>
+        <div class="tasks">
+          <ul>
+            <li>NC target for a music performance hall: 20&ndash;25 dB</li>
+            <li>Loading dock example: 87 dB source</li>
+            <li>Required NR: 87 &minus; 22 = <strong>65 dB</strong></li>
+            <li>Use NR &asymp; TL for planning &rarr; you need a partition with TL / STC &asymp; 65</li>
+            <li>That is a high-performance double stud + masonry system</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lab-row">
+        <div class="g">C</div>
+        <div>
+          <span class="tag">Assembly Selection</span>
+          <h5>Specify the <em>partition.</em></h5>
+          <p>From MEEB Tables 23.1&ndash;23.2, the STRACAT tool, or manufacturer data, find an assembly with STC &ge; your required NR. Sketch the cross-section (layers, dimensions). Note: you are specifying this assembly for one specific critical partition in your building &mdash; this is real design documentation.</p>
+        </div>
+        <div class="tasks">
+          <ul>
+            <li>Look up STC for your assembly type in MEEB Table 23.1 (stud) or 23.2 (masonry)</li>
+            <li>Try the STRACAT tool to compare alternatives: <a href="https://www.hudexchange.info/programs/environmental-review/stracat/" target="_blank" style="color:var(--blue);font-size:13px;">hudexchange.info/stracat</a></li>
+            <li>Note the total wall thickness &mdash; does it fit your floor plan grid?</li>
+            <li>Check every flanking path: duct through that wall? Door? Back-to-back outlet? Window?</li>
+            <li>Each flanking path identified is a trade-off to document in your Decision Log</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lab-row">
+        <div class="g">D</div>
+        <div>
+          <span class="tag">Decision Log</span>
+          <h5><em>Document your reasoning.</em></h5>
+          <p>Write Decision Log entries 3 and 4 before leaving the breakout room. Entry 3 is your NC target decision. Entry 4 is your wall assembly decision for the worst-case adjacency. Both should follow your established DL format: decision, system, space, reasoning, trade-off acknowledged.</p>
+        </div>
+        <div class="tasks">
+          <ul>
+            <li><strong>Entry 3:</strong> NC target = [value] for [space type]. Rationale: [program use, MEEB recommendation for type, client priorities].</li>
+            <li><strong>Entry 4:</strong> Assembly = [name or description], STC = [value], for the [adjacency] partition. Reasoning: required NR = [X] dB based on [source] at [level]. Trade-off: [wall thickness &rarr; floor plan impact / cost / construction sequence].</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="bridge">
+      <strong>Debrief Discussion Prompt</strong>
+      What is your hall&rsquo;s most difficult adjacency &mdash; not the loudest source, but the one that creates the most <em>architectural</em> constraints? How does the required wall thickness, construction type, or structural load affect your floor plan, your building section, or your design concept?
+    </div>
+  </section>
+
+  <!-- § 10 DELIVERABLE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 11</span>
+      <h2 class="sec-title"><em>Deliverable.</em></h2>
+    </div>
+
+    <div class="deliverable">
+      <div class="label">Week 3 Deliverable &mdash; Folds into Act I &mdash; Due Sun 06&middot;07 &middot; 11:59 PM</div>
+      <h4>Noise Control Analysis</h4>
+      <ul>
+        <li>Annotated adjacency plan: every adjacent space labeled with noise source type and rough dB level</li>
+        <li>One worked NR calculation: source level, NC target, required NR, and wall assembly selected with STC</li>
+        <li>Wall assembly cross-section sketch (hand-drawn is fine) with layer labels, dimensions, and STC noted</li>
+        <li>Identification of at least one flanking path risk and how it will be addressed</li>
+        <li>Decision Log entries 3&ndash;4 (NC target decision + wall assembly decision)</li>
+      </ul>
+    </div>
+
+    <div class="checklist" style="margin-top:24px;">
+      <div class="check"><div class="box"></div><div class="text"><strong>Adjacency plan annotated</strong> &mdash; all adjacent spaces with noise source type and estimated level</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>NR calculation shown</strong> &mdash; source dB, NC target, required NR &mdash; numbers legible and units clear</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>Wall assembly specified</strong> &mdash; assembly name or description, STC rating, reference (MEEB table, STRACAT, or manufacturer)</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>Assembly cross-section sketched</strong> &mdash; layers labeled, total thickness noted, STC annotated</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>Flanking path identified</strong> &mdash; at least one bypass noted (duct, door, outlet, structure-borne path) and mitigation described</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>Decision Log entries 3&ndash;4 complete</strong> &mdash; reasoning explicit, trade-off acknowledged</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>Week 2 RT60 report submitted</strong> &mdash; Thursday 06&middot;04 deadline if not already submitted</div></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>ARC 5443 &middot; Summer 2026 &middot; Week 03</span>
+    <span>MEEB Ch. 23 &middot; Building Noise Control</span>
+    <span>Neiswender &middot; Lawrence Technological University</span>
+  </footer>
+
+</div>
+<script>
+(function(){
+  var HALLS=[
+    {id:'concert',name:'Concert Hall / Music Performance',nc:22,ncr:'NC†20–25'},
+    {id:'multipurpose',name:'Multipurpose Auditorium',nc:28,ncr:'NC†25–30'},
+    {id:'theater',name:'Theater / Drama / Opera',nc:27,ncr:'NC†25–30'},
+    {id:'recording',name:'Recording Studio',nc:15,ncr:'NC†10–20'},
+    {id:'rehearsal',name:'Rehearsal Room (Acoustic)',nc:32,ncr:'NC†30–35'}
+  ];
+  var SOURCES=[
+    {id:'loading',name:'Loading Dock / Service Corridor',db:88,tag:'Airborne + Impact',note:'Forklifts, truck backup alarms, rolling stock'},
+    {id:'mech',name:'Mechanical Room (HVAC)',db:83,tag:'Structure-Borne + Airborne',note:'AHU fans, pumps, compressors — vibration isolation required separately'},
+    {id:'prac_ac',name:'Practice Room (Acoustic)',db:85,tag:'Airborne',note:'Piano, brass, strings, percussion'},
+    {id:'prac_amp',name:'Practice Room (Amplified)',db:95,tag:'Airborne',note:'Electric instruments, PA systems, drums'},
+    {id:'lobby',name:'Lobby / Prefunction Space',db:72,tag:'Airborne',note:'Crowd noise, pre-show music at intermission'},
+    {id:'office',name:'Offices / Admin',db:60,tag:'Airborne',note:'Speech, keyboards, office equipment'},
+    {id:'street_urb',name:'Exterior — Urban Street',db:76,tag:'Airborne',note:'Traffic, buses, construction — measure on site if possible'},
+    {id:'street_sub',name:'Exterior — Suburban / Campus',db:65,tag:'Airborne',note:'Light traffic, distant road noise'},
+    {id:'parking',name:'Parking Structure',db:75,tag:'Airborne + Impact',note:'Car engines, tire squeal, doors slamming'},
+    {id:'dining',name:'Dining / Food Service',db:78,tag:'Airborne + Impact',note:'Kitchen equipment, voices, dishes'},
+    {id:'rooftop',name:'Rooftop Mechanical (directly above)',db:80,tag:'Structure-Borne',note:'Cooling towers, condensers — floor isolation critical'}
+  ];
+  var ASMS=[
+    {id:'W1',type:'Wall',stc:35,name:'2\xd74 stud, \xbd” GWB both sides',thick:'4\xbd”',ref:'MEEB 23.1',note:'Standard baseline. Minimal acoustic performance.'},
+    {id:'W2',type:'Wall',stc:39,name:'2\xd74 stud, \xbd” GWB both sides, batt',thick:'4\xbd”',ref:'MEEB 23.1',note:'Batt adds ~4 STC over empty cavity.'},
+    {id:'W3',type:'Wall',stc:44,name:'2\xd74 stud, resilient channel, \xbd” GWB, batt',thick:'4\xbd”',ref:'MEEB 23.1',note:'Vulnerable to flanking screws through channel — verify installation.'},
+    {id:'W4',type:'Wall',stc:46,name:'Staggered 2\xd74 on 2\xd76 plate, \xbd” GWB, batt',thick:'6”',ref:'MEEB 23.1',note:'No shared stud between leaves. Reliable mid-level isolation.'},
+    {id:'W5',type:'Wall',stc:50,name:'Staggered stud, dbl \xbd” GWB one side, batt',thick:'6\xbd”',ref:'MEEB 23.1',note:'Good cost-to-performance ratio for practice room partitions.'},
+    {id:'W6',type:'Wall',stc:54,name:'Staggered stud, dbl \xbd” GWB both sides, batt',thick:'7”',ref:'MEEB 23.1',note:'Common concert hall corridor partition specification.'},
+    {id:'W7',type:'Wall',stc:55,name:'Double 2\xd74 stud (1” gap), \xbd” GWB both sides, batt',thick:'11”',ref:'MEEB 23.1',note:'Two independent frames. Significant thickness penalty.'},
+    {id:'W8',type:'Wall',stc:60,name:'Double 2\xd74 stud, dbl \xbd” GWB both sides, batt',thick:'12”',ref:'MEEB 23.1',note:'High-performance. Auditorium party wall standard.'},
+    {id:'M1',type:'Wall',stc:44,name:'4” CMU lightweight, painted both sides',thick:'4”',ref:'MEEB 23.2',note:'Light block; mass over empty-cavity stud.'},
+    {id:'M2',type:'Wall',stc:50,name:'8” CMU normal weight, painted both sides',thick:'8”',ref:'MEEB 23.2',note:'Standard masonry. Hollow cores.'},
+    {id:'M3',type:'Wall',stc:56,name:'8” CMU normal weight, grouted, GWB furred',thick:'10”',ref:'MEEB 23.2',note:'Grouting fills air paths through cores.'},
+    {id:'M4',type:'Wall',stc:60,name:'12” CMU normal weight, grouted',thick:'12”',ref:'MEEB 23.2',note:'Stage house perimeter, mechanical room walls.'},
+    {id:'M5',type:'Wall',stc:56,name:'6” cast-in-place concrete',thick:'6”',ref:'MEEB 23.2',note:'High mass. Requires formwork.'},
+    {id:'M6',type:'Wall',stc:58,name:'8” cast-in-place concrete',thick:'8”',ref:'MEEB 23.2',note:'Performance structural partition.'},
+    {id:'F1',type:'Floor',stc:50,name:'6” concrete slab, hard finish (concrete/tile)',thick:'6”',ref:'MEEB 23.3',note:'Good airborne. Poor impact (IIC ~25). Footfall audible below.'},
+    {id:'F2',type:'Floor',stc:52,name:'6” concrete slab, carpet + pad',thick:'6\xbe”',ref:'MEEB 23.3',note:'Carpet improves impact (IIC ~55). Minor airborne gain.'},
+    {id:'F3',type:'Floor',stc:62,name:'6” slab, resilient mat, 2” floating concrete topping',thick:'9”',ref:'MEEB 23.3',note:'Stage and rehearsal room standard. Excellent airborne + impact.'},
+    {id:'D1',type:'Door',stc:28,name:'Solid-core wood door, no seals',thick:'1\xbe”',ref:'MEEB 23.4',note:'Perimeter gaps dominate. Essentially no isolation.'},
+    {id:'D2',type:'Door',stc:38,name:'Solid-core wood, acoustic seals + auto threshold',thick:'1\xbe”',ref:'MEEB 23.4',note:'Seals do most of the work. Upper limit for standard leaf.'},
+    {id:'D3',type:'Door',stc:50,name:'Steel acoustic door, full perimeter seal',thick:'2”',ref:'MEEB 23.4',note:'Purpose-built. Recording studios and high-STC partitions.'},
+    {id:'D4',type:'Door',stc:60,name:'Double door assembly (sound lock vestibule)',thick:'6”',ref:'MEEB 23.4',note:'Only way to achieve STC 55+ at door openings.'}
+  ];
+
+  var curFilter='all', curNR=null;
+
+  function init(){
+    var hSel=document.getElementById('stcHall');
+    var sSel=document.getElementById('stcSource');
+    if(!hSel||!sSel) return;
+    HALLS.forEach(function(h){
+      var o=document.createElement('option');
+      o.value=h.id;
+      o.textContent=h.name+'  ('+h.ncr+')';
+      hSel.appendChild(o);
+    });
+    SOURCES.forEach(function(s){
+      var o=document.createElement('option');
+      o.value=s.id;
+      o.textContent=s.name+'  (~'+s.db+' dB)';
+      sSel.appendChild(o);
+    });
+    hSel.addEventListener('change',calc);
+    sSel.addEventListener('change',calc);
+    document.getElementById('stcOvr').addEventListener('input',calc);
+  }
+
+  window.stcFilter=function(f){
+    curFilter=f;
+    var btns=document.querySelectorAll('.stc-filt button');
+    var keys=['all','Wall','Floor','Door'];
+    btns.forEach(function(b,i){b.classList.toggle('sf-on',keys[i]===f);});
+    render();
+  };
+
+  function calc(){
+    var hId=document.getElementById('stcHall').value;
+    var sId=document.getElementById('stcSource').value;
+    var ovr=document.getElementById('stcOvr').value;
+    var hall=HALLS.filter(function(h){return h.id===hId;})[0];
+    var src=SOURCES.filter(function(s){return s.id===sId;})[0];
+
+    if(src){
+      var sDb=ovr?parseInt(ovr):src.db;
+      document.getElementById('stcSrcDb').textContent=sDb+' dB';
+      document.getElementById('stcSrcNote').textContent=src.note;
+      document.getElementById('stcSrcTag').textContent=src.tag;
+    }
+    if(hall){
+      document.getElementById('stcNcVal').textContent='NC '+hall.nc+' ('+hall.ncr+')';
+      document.getElementById('stcNcNote').textContent='Background noise target for this hall type';
+    }
+    if(!hall||!src) return;
+
+    var db=ovr?parseInt(ovr):src.db;
+    var nr=db-hall.nc;
+    curNR=nr;
+    document.getElementById('stcNrNum').textContent=nr;
+
+    var box=document.getElementById('stcNrBox');
+    box.className='stc-nr-box';
+    var head=document.getElementById('stcNrHead');
+    var desc=document.getElementById('stcNrDesc');
+
+    if(nr<=35){
+      box.classList.add('nr-easy');
+      head.textContent='Required NR — Achievable with standard construction';
+      desc.textContent='A well-executed stud partition with batt insulation will meet this requirement. Standard commercial practice is sufficient.';
+    } else if(nr<=50){
+      box.classList.add('nr-mod');
+      head.textContent='Required NR — Upgraded partition required';
+      desc.textContent='Standard construction will not meet this. Staggered stud or CMU with careful attention to flanking paths required.';
+    } else if(nr<=60){
+      box.classList.add('nr-hard');
+      head.textContent='Required NR — High-performance construction';
+      desc.textContent='Double stud walls, heavy masonry, or combination assemblies needed. Flanking path control is critical — every penetration must be sealed or rerouted.';
+    } else {
+      box.classList.add('nr-extreme');
+      head.textContent='Required NR — Consider adjacency redesign';
+      desc.textContent='This exceeds reliable partition performance. Consider a room-within-a-room strategy or revise the program layout to increase physical separation.';
+    }
+    render();
+  }
+
+  function render(){
+    var tbody=document.getElementById('stcTbody');
+    if(!tbody) return;
+    tbody.innerHTML='';
+    if(curNR===null){
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td colspan="7" class="stc-empty-row">Select hall type and source space above to filter assemblies by required NR.</td>';
+      tbody.appendChild(tr);
+      return;
+    }
+    var list=ASMS.filter(function(a){return curFilter==='all'||a.type===curFilter;});
+    list.sort(function(a,b){
+      var am=a.stc-curNR, bm=b.stc-curNR;
+      if(am>=0&&bm<0) return -1;
+      if(am<0&&bm>=0) return 1;
+      if(am>=0&&bm>=0) return a.stc-b.stc;
+      return b.stc-a.stc;
+    });
+    list.forEach(function(a){
+      var m=a.stc-curNR;
+      var cls=m>=5?'ar-good':(m>=0?'ar-close':'ar-low');
+      var ms=m>=0?'✓ +'+m+' dB':'✗ '+m+' dB';
+      var tr=document.createElement('tr');
+      tr.className=cls;
+      tr.innerHTML='<td class="tc-id">'+a.id+'</td>'
+        +'<td class="tc-type">'+a.type.toUpperCase()+'</td>'
+        +'<td>'+a.name+'<br><span style="font-size:11px;color:var(--paper-dim);font-style:italic;">'+a.note+'</span></td>'
+        +'<td class="tc-stc">'+a.stc+'</td>'
+        +'<td class="tc-mg">'+ms+'</td>'
+        +'<td class="tc-th">'+a.thick+'</td>'
+        +'<td class="tc-ref">'+a.ref+'</td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',init);
+  } else { init(); }
+})();
+</script>
+</body>
+</html>

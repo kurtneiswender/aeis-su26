@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RT60 Acoustic Analysis — Revit / Dynamo Instructions</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600&family=IBM+Plex+Mono:wght@400&display=swap');
+
+  @page { margin: 0.65in; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'IBM Plex Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.55;
+    color: #1a1a1a;
+    background: #fff;
+  }
+
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 0 56px;
+  }
+
+  .doc-header {
+    border-bottom: 3px solid #1a1a1a;
+    padding-bottom: 16px;
+    margin-bottom: 28px;
+  }
+  .doc-header .conference {
+    font-size: 8pt;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 4px;
+  }
+  .doc-header h1 {
+    font-size: 18pt;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .doc-header .meta {
+    font-size: 8.5pt;
+    color: #555;
+  }
+
+  h2 {
+    font-size: 8pt;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+    margin: 28px 0 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #ddd;
+  }
+  h3 {
+    font-size: 10.5pt;
+    font-weight: 600;
+    margin: 18px 0 6px;
+  }
+
+  p { margin-bottom: 10px; }
+
+  ul {
+    margin: 6px 0 12px 0;
+    padding-left: 18px;
+  }
+  ul li { margin-bottom: 5px; font-size: 10pt; }
+
+  ol {
+    margin: 6px 0 12px 0;
+    padding-left: 20px;
+  }
+  ol li { margin-bottom: 5px; font-size: 10pt; }
+
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9pt;
+    background: #f0f0f0;
+    padding: 1px 4px;
+    border-radius: 2px;
+  }
+
+  pre {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9pt;
+    background: #f0f0f0;
+    padding: 10px 14px;
+    border-radius: 3px;
+    margin: 8px 0 14px;
+  }
+
+  blockquote {
+    border-left: 3px solid #1a1a1a;
+    background: #f5f5f5;
+    padding: 8px 12px;
+    margin: 10px 0 14px;
+    font-size: 9.5pt;
+    color: #444;
+  }
+
+  .option-block {
+    border-left: 3px solid #ddd;
+    padding: 6px 12px;
+    margin: 8px 0 10px;
+    background: #fafafa;
+  }
+  .option-block strong { display: block; margin-bottom: 4px; }
+
+  hr {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 20px 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+    margin: 10px 0 16px;
+  }
+  th {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 6px 10px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+
+  strong { font-weight: 600; }
+
+  @media print { .page { padding: 0; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="doc-header">
+    <div class="conference">ARC 5443 AEIS &nbsp;·&nbsp; Lawrence Technological University</div>
+    <h1>RT60 Acoustic Analysis — Revit / Dynamo Instructions</h1>
+    <div class="meta">aeis_rt60_revit_dynamo.dyn &nbsp;·&nbsp; aeis_rt60_revit.py &nbsp;·&nbsp; Week 2 Deliverable</div>
+  </div>
+
+  <h2>Before You Begin</h2>
+  <ul>
+    <li>You need Revit 2021 or later with Dynamo installed</li>
+    <li>Download <code>aeis_rt60_revit_dynamo.dyn</code> and <code>aeis_rt60_revit.py</code> from the course site</li>
+    <li>Your Revit model must have at least one <strong>Room</strong> defined and bounded</li>
+  </ul>
+
+  <hr>
+
+  <h2>Step 1 — Verify Your Room is Properly Defined</h2>
+  <p>In Revit, rooms must be bounded and have a computable volume before the script can run.</p>
+  <ol>
+    <li>Open a floor plan view</li>
+    <li>Place a Room if you have not already (Architecture tab → Room)</li>
+    <li>Check that walls, floors, and a ceiling close the room on all sides</li>
+    <li>In the Properties panel, confirm that <strong>Volume</strong> shows a value (not blank)</li>
+  </ol>
+  <p>If Volume is blank, the room is not fully enclosed. Close any gaps in the boundary before continuing.</p>
+
+  <hr>
+
+  <h2>Step 2 — Open Dynamo</h2>
+  <p>Go to <strong>Manage tab → Dynamo</strong> (or Dynamo Player).</p>
+  <div class="option-block">
+    <strong>Option A — Use the pre-built graph (recommended)</strong>
+    Open <code>aeis_rt60_revit_dynamo.dyn</code> directly in Dynamo. The Python node is already wired — skip to Step 4 to connect your inputs.
+  </div>
+  <div class="option-block">
+    <strong>Option B — Build it manually</strong>
+    Create a new empty graph and continue to Step 3.
+  </div>
+
+  <hr>
+
+  <h2>Step 3 — Create a Python Script Node (Option B only)</h2>
+  <p>Right-click on the canvas and choose <strong>Script → Python Script</strong>.</p>
+  <p>In the node editor that opens, <strong>select all existing code and delete it</strong>, then paste the entire contents of <code>aeis_rt60_revit.py</code> into the editor.</p>
+  <p><strong>Important — set the Python engine:</strong></p>
+  <ul>
+    <li>Right-click the Python node → Engine → select <strong>CPython 3</strong> if available</li>
+    <li>If only IronPython 2 is shown, use that — the script supports both, but CPython 3 is preferred</li>
+  </ul>
+
+  <hr>
+
+  <h2>Step 4 — Wire the Inputs</h2>
+  <p>The Python node has three inputs (IN[0], IN[1], IN[2]).</p>
+  <table>
+    <tr><th>Input</th><th>What to connect</th><th>Example</th></tr>
+    <tr><td><code>IN[0]</code></td><td>A single Room element</td><td>All Elements of Category (Rooms) → List.GetItemAtIndex → index 0</td></tr>
+    <tr><td><code>IN[1]</code></td><td>A String node with the program type</td><td><code>"mixed"</code></td></tr>
+    <tr><td><code>IN[2]</code></td><td>A File Path string for the HTML report (optional)</td><td><code>"C:/Users/you/Desktop/rt60_report.html"</code></td></tr>
+  </table>
+  <p><strong>Valid program type strings:</strong></p>
+  <table>
+    <tr><th>String</th><th>Target RT60</th></tr>
+    <tr><td><code>"speech"</code></td><td>0.6 – 1.0 s</td></tr>
+    <tr><td><code>"mixed"</code></td><td>1.4 – 1.8 s</td></tr>
+    <tr><td><code>"music_opera"</code></td><td>1.6 – 2.0 s</td></tr>
+    <tr><td><code>"music_symph"</code></td><td>1.8 – 2.2 s</td></tr>
+    <tr><td><code>"cinema"</code></td><td>0.3 – 0.5 s</td></tr>
+  </table>
+  <p>Leave IN[2] unconnected if you do not want an HTML file saved.</p>
+
+  <hr>
+
+  <h2>Step 5 — How the Script Reads Materials</h2>
+  <p>The script reads material assignments from your Revit <strong>element type names</strong> — you do not assign layers like in Rhino. It matches type names against a built-in lookup table using keyword rules.</p>
+  <p>Examples of what it recognizes automatically:</p>
+  <table>
+    <tr><th>If your type name contains…</th><th>Script assigns…</th></tr>
+    <tr><td>"gypsum", "drywall", "GWB"</td><td>Gypsum board</td></tr>
+    <tr><td>"carpet"</td><td>Thick carpet</td></tr>
+    <tr><td>"acoustic tile", "lay-in", "layin"</td><td>Acoustic ceiling tile</td></tr>
+    <tr><td>"CMU", "masonry", "block"</td><td>Concrete block</td></tr>
+    <tr><td>"curtain wall", "glazing", "glass"</td><td>Glass</td></tr>
+    <tr><td>"concrete"</td><td>Bare concrete</td></tr>
+  </table>
+  <p>If no keyword matches, the script uses a default: gypsum board for walls, concrete for floors, acoustic tile for ceilings.</p>
+  <p>To override a default, rename your Revit type to include one of the keywords above, or edit the <code>MATERIAL_MAP</code> section in the script directly.</p>
+
+  <hr>
+
+  <h2>Step 6 — Run the Graph</h2>
+  <p>Click <strong>Run</strong> in Dynamo.</p>
+  <p>Connect a <strong>Watch node</strong> to the Python node's output (OUT) to see the results in the Dynamo canvas.</p>
+
+  <hr>
+
+  <h2>Step 7 — Review Results</h2>
+  <p>The Watch node output is a text report containing:</p>
+  <ul>
+    <li>Full octave band table (125 Hz through 4000 Hz)</li>
+    <li>Sabine and Eyring RT60 for each band, with status</li>
+    <li>Surface material summary with areas and absorption</li>
+  </ul>
+  <p><strong>Use the Eyring RT60 at 500 Hz as your primary result.</strong> The Sabine value is for comparison with your hand calculation worksheet.</p>
+
+  <hr>
+
+  <h2>Step 8 — HTML Report (Optional)</h2>
+  <p>If you connected a file path to IN[2], the script saves an HTML report to that location and attempts to open it in your default browser automatically.</p>
+  <p>The report includes:</p>
+  <ul>
+    <li>500 Hz summary with status badge</li>
+    <li>Full octave band table</li>
+    <li>Material schedule with Revit type names, material keys, areas, and absorption</li>
+    <li>Room parameters (volume, surface area, mean absorption coefficient)</li>
+  </ul>
+  <p>Submit the HTML file with your assignment.</p>
+
+  <hr>
+
+  <h2>Troubleshooting</h2>
+
+  <p><strong>Error at line 47 in the Python node</strong><br>
+  The script cannot import a Revit API class in your version of Revit or Python engine. Switch the Python node engine to <strong>CPython 3</strong> (right-click the node → Engine). If that option is not available, your Dynamo version may be too old — check the Week 2 compatibility table on the course page.</p>
+
+  <p><strong>"Room has no computable volume"</strong><br>
+  The room is not fully enclosed in Revit. Go back to Step 1 and verify the room boundary is closed and the Volume parameter has a value.</p>
+
+  <p><strong>"No boundary surfaces found"</strong><br>
+  The room exists but has no wall or floor elements in its boundary. This can happen if the room is bounded by room separation lines rather than actual walls. Replace separation lines with wall elements where possible, or the surface data will be estimated from defaults only.</p>
+
+  <p><strong>Materials all show as defaults</strong><br>
+  Your Revit type names do not contain any of the recognized keywords. Rename your wall/floor/ceiling types to include a keyword (e.g. rename "Basic Wall - 6" to "Basic Wall - GWB 6") or edit <code>MATERIAL_MAP</code> at the top of the script.</p>
+
+  <p><strong>RT60 is far from your hand calc</strong><br>
+  Check that the room volume shown in the report matches your expected volume. If the volume is correct but RT60 differs, compare the material schedule in the report against your hand calc worksheet — the most likely cause is a material mismatch on a large surface.</p>
+
+</div>
+</body>
+</html>

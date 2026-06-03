@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# VERSION: v4 — fix UnicodeEncodeError (ASCII-safe strings in ray SVG)
 """
 AEIS RT60 Acoustic Analyzer — Revit / Dynamo
 ARC 5443 · Acoustics, Electrical & Illumination Systems
@@ -448,11 +449,156 @@ def format_report(room_name, volume_m3, surface_data, rt60_sabine, rt60_eyring,
 
 
 # ──────────────────────────────────────────────────────────────────────────────
+# 2D RAY TRACE  (overhead plan diagram for HTML report)
+# ──────────────────────────────────────────────────────────────────────────────
+
+def _get_boundary_2d(room):
+    """Return list of ((x1,y1),(x2,y2)) segments from room boundary (internal ft)."""
+    opts = SpatialElementBoundaryOptions()
+    try:
+        opts.SpatialElementBoundaryLocation = SpatialElementBoundaryLocation.Finish
+    except Exception:
+        pass
+    segs = []
+    try:
+        loops = room.GetBoundarySegments(opts)
+        if loops:
+            for loop in loops:
+                for seg in loop:
+                    c = seg.GetCurve()
+                    p0 = c.GetEndPoint(0)
+                    p1 = c.GetEndPoint(1)
+                    segs.append(((p0.X, p0.Y), (p1.X, p1.Y)))
+    except Exception:
+        pass
+    return segs
+
+
+def _ray_seg_hit(ox, oy, dx, dy, x1, y1, x2, y2):
+    """2D ray-segment intersection. Returns (t, hit_x, hit_y) or None."""
+    ex, ey = x2 - x1, y2 - y1
+    denom = dx * ey - dy * ex
+    if abs(denom) < 1e-10:
+        return None
+    tx, ty = x1 - ox, y1 - oy
+    t = (tx * ey - ty * ex) / denom
+    u = (tx * dy - ty * dx) / denom
+    if t > 1e-4 and 0.0 <= u <= 1.0:
+        return t, ox + t * dx, oy + t * dy
+    return None
+
+
+def _cast_rays_2d(source, segs, mean_alpha_500, n_rays=72, max_bounces=8, cutoff=0.05):
+    """Cast rays from source point, bounce off boundary segments."""
+    sx, sy = source
+    paths = []
+    for i in range(n_rays):
+        angle = 2.0 * math.pi * i / n_rays
+        dx, dy = math.cos(angle), math.sin(angle)
+        cx, cy = sx, sy
+        energy = 1.0
+        pts = [(cx, cy)]
+        energies = [1.0]
+        for _ in range(max_bounces):
+            best = None
+            for si, ((x1, y1), (x2, y2)) in enumerate(segs):
+                hit = _ray_seg_hit(cx, cy, dx, dy, x1, y1, x2, y2)
+                if hit and (best is None or hit[0] < best[0]):
+                    best = hit + (si,)
+            if best is None:
+                break
+            _, hx, hy, si = best
+            energy *= (1.0 - mean_alpha_500)
+            pts.append((hx, hy))
+            energies.append(energy)
+            if energy < cutoff:
+                break
+            # Wall normal (perpendicular to segment, facing inward)
+            (x1, y1), (x2, y2) = segs[si]
+            ex, ey = x2 - x1, y2 - y1
+            ln = math.sqrt(ex * ex + ey * ey)
+            if ln < 1e-10:
+                break
+            nx, ny = -ey / ln, ex / ln
+            if nx * (-dx) + ny * (-dy) < 0:
+                nx, ny = -nx, -ny
+            dot = dx * nx + dy * ny
+            dx, dy = dx - 2 * dot * nx, dy - 2 * dot * ny
+            cx, cy = hx, hy
+        if len(pts) > 1:
+            paths.append((pts, energies))
+    return paths
+
+
+def _rays_to_svg(paths, segs, source, w=640, h=400):
+    """Render 2D ray paths and room boundary as an SVG string."""
+    all_x = [p[0] for s in segs for p in s]
+    all_y = [p[1] for s in segs for p in s]
+    if not all_x:
+        return ""
+    pad = 28
+    rw = max(all_x) - min(all_x) or 1.0
+    rh = max(all_y) - min(all_y) or 1.0
+    scale = min((w - 2 * pad) / rw, (h - 2 * pad) / rh)
+    ox0, oy0 = min(all_x), min(all_y)
+
+    def sv(x, y):   # world → SVG (flip Y)
+        return pad + (x - ox0) * scale, h - pad - (y - oy0) * scale
+
+    def ecol(e):
+        e = max(0.0, min(1.0, e))
+        if e > 0.66:
+            return "rgb(200,{},40)".format(int(40 + (1 - e) * 3 * 180))
+        elif e > 0.33:
+            return "rgb({},140,80)".format(int(40 + (e - 0.33) * 3 * 160))
+        else:
+            return "rgb(40,80,{})".format(int(100 + (0.33 - e) * 3 * 155))
+
+    out = []
+    out.append('<svg viewBox="0 0 {} {}" xmlns="http://www.w3.org/2000/svg" '
+               'style="width:100%;max-width:{}px;display:block;margin:0 auto;'
+               'background:#0e0d0b;border-radius:4px;">'.format(w, h, w))
+
+    # Room boundary
+    for (x1, y1), (x2, y2) in segs:
+        sx1, sy1 = sv(x1, y1)
+        sx2, sy2 = sv(x2, y2)
+        out.append('<line x1="{:.1f}" y1="{:.1f}" x2="{:.1f}" y2="{:.1f}" '
+                   'stroke="rgba(212,162,76,0.75)" stroke-width="2"/>'.format(
+                   sx1, sy1, sx2, sy2))
+
+    # Ray paths
+    for pts, energies in paths:
+        for i in range(len(pts) - 1):
+            x1, y1 = sv(*pts[i])
+            x2, y2 = sv(*pts[i + 1])
+            e_mid = (energies[i] + energies[i + 1]) * 0.5
+            out.append('<line x1="{:.1f}" y1="{:.1f}" x2="{:.1f}" y2="{:.1f}" '
+                       'stroke="{}" stroke-width="0.75" opacity="{:.2f}"/>'.format(
+                       x1, y1, x2, y2, ecol(e_mid), max(0.12, e_mid * 0.65)))
+
+    # Source dot
+    ssx, ssy = sv(*source)
+    out.append('<circle cx="{:.1f}" cy="{:.1f}" r="5" fill="#c8472f"/>'.format(ssx, ssy))
+    out.append('<circle cx="{:.1f}" cy="{:.1f}" r="9" fill="none" '
+               'stroke="#c8472f" stroke-width="1" opacity="0.5"/>'.format(ssx, ssy))
+
+    # Labels
+    out.append('<text x="10" y="18" font-family="monospace" font-size="9" '
+               'fill="rgba(237,228,211,0.45)" letter-spacing="1.5">'
+               'RAY TRACE &middot; 2D PLAN &middot; {} RAYS</text>'.format(len(paths)))
+    out.append('<text x="10" y="32" font-family="monospace" font-size="8" '
+               'fill="rgba(237,228,211,0.3)">RED = HIGH ENERGY  -&gt;  BLUE = ABSORBED</text>')
+    out.append('</svg>')
+    return "\n".join(out)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
 # HTML REPORT  (same design system as the Rhino version)
 # ──────────────────────────────────────────────────────────────────────────────
 
 def save_html_report(room_name, volume_m3, surface_data, rt60_sabine, rt60_eyring,
-                     total_surface, program_type, report_path):
+                     total_surface, program_type, report_path, ray_svg=""):
     target   = RT60_TARGETS.get(program_type, RT60_TARGETS["mixed"])
     t_min, t_max = target
     mid_idx  = FREQ_BANDS.index(500)
@@ -510,6 +656,18 @@ def save_html_report(room_name, volume_m3, surface_data, rt60_sabine, rt60_eyrin
     sl        = slabel(mid_eyring)
 
     alpha_mean = total_abs_500 / total_surface if total_surface > 0 else 0
+
+    if ray_svg:
+        ray_section = (
+            "<h2>Ray Trace &mdash; 2D Plan</h2>\n"
+            "<p class=\"note\">Overhead plan view. "
+            "Source at room centroid (red dot). "
+            "Color encodes energy: red = full &rarr; blue = absorbed. "
+            "Mean &alpha; at 500 Hz used for all surfaces.</p>\n"
+            + ray_svg
+        )
+    else:
+        ray_section = ""
 
     html = """<!DOCTYPE html>
 <html lang="en">
@@ -588,6 +746,8 @@ def save_html_report(room_name, volume_m3, surface_data, rt60_sabine, rt60_eyrin
 <p class="note">NRC = avg of &alpha; at 250, 500, 1000, 2000 Hz. Absorption sabins = area &times; &alpha; at 500 Hz.
   <br>Wall areas = boundary segment length &times; room height. Ceiling area = floor area (flat ceiling assumed).</p>
 
+__RAY_SECTION__
+
 <h2>Room Parameters</h2>
 <table>
   <tr><th>Parameter</th><th>Value</th></tr>
@@ -619,6 +779,7 @@ def save_html_report(room_name, volume_m3, surface_data, rt60_sabine, rt60_eyrin
         vol=volume_m3, volft=volume_m3 * 35.3147,
         sa=total_surface, abs500=total_abs_500, alpha_mean=alpha_mean,
     )
+    html = html.replace("__RAY_SECTION__", ray_section)
 
     try:
         with open(report_path, "w") as f:
@@ -672,19 +833,43 @@ def run(room_element, program_type="mixed", report_path=None):
     text_report = format_report(room_name, volume_m3, surface_data,
                                 rt60_sabine, rt60_eyring, total_surface, program_type)
 
+    # ── 2D ray trace for HTML report ─────────────────────────────────────────
+    ray_svg = ""
+    try:
+        boundary_2d = _get_boundary_2d(room_element)
+        if boundary_2d:
+            # Room centroid as source
+            all_x = [p[0] for seg in boundary_2d for p in seg]
+            all_y = [p[1] for seg in boundary_2d for p in seg]
+            source_2d = (
+                (max(all_x) + min(all_x)) / 2.0,
+                (max(all_y) + min(all_y)) / 2.0
+            )
+            mid_idx_500 = FREQ_BANDS.index(500)
+            total_abs_500_rt = sum(MATERIAL_TABLE[s[2]][mid_idx_500] * s[3]
+                                   for s in surface_data)
+            mean_alpha_500 = total_abs_500_rt / total_surface if total_surface > 0 else 0.15
+            paths_2d = _cast_rays_2d(source_2d, boundary_2d, mean_alpha_500)
+            ray_svg = _rays_to_svg(paths_2d, boundary_2d, source_2d)
+    except Exception:
+        pass
+
     html_status = ""
     if report_path and str(report_path).strip().lower() not in ("none", ""):
+        rp = str(report_path).strip()
+        if not rp.lower().endswith(".html"):
+            rp = rp + ".html"
         result = save_html_report(room_name, volume_m3, surface_data,
                                   rt60_sabine, rt60_eyring, total_surface,
-                                  program_type, str(report_path))
+                                  program_type, rp, ray_svg=ray_svg)
         if result is True:
-            html_status = "\nHTML report saved: {}".format(report_path)
+            html_status = "\nHTML report saved: {}".format(rp)
             try:
                 import subprocess, sys
                 if sys.platform == "win32":
-                    os.startfile(str(report_path))
+                    os.startfile(rp)
                 else:
-                    subprocess.Popen(["open", str(report_path)])
+                    subprocess.Popen(["open", rp])
             except Exception:
                 pass
         else:

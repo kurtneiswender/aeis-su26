@@ -157,9 +157,9 @@ a { color: var(--amber); }
   <p class="hero-sub">A step-by-step tutorial covering the full LightStanza workflow: uploading your model, running daylighting simulations, placing electric fixtures, and generating reports.</p>
   <div class="meta-strip">
     <div class="meta-item">Software<strong>LightStanza (browser)</strong></div>
-    <div class="meta-item">Model Source<strong>Rhino / SketchUp / Revit</strong></div>
-    <div class="meta-item">Deliverable Due<strong>Tue 06&middot;16 &middot; 11:59 PM</strong></div>
-    <div class="meta-item">Reference<strong>MEEB Ch. 6, 15, 16</strong></div>
+    <div class="meta-item">Model Source<strong>Rhino (.dae) / Revit (plugin)</strong></div>
+    <div class="meta-item">Act II Due<strong>Wed 06&middot;24 &middot; 7:30 PM</strong></div>
+    <div class="meta-item">Reference<strong>MEEB Ch. 6, 10, 15, 16</strong></div>
   </div>
 </header>
 
@@ -168,6 +168,7 @@ a { color: var(--amber); }
   <div class="section-num">Overview</div>
   <h2>Four Video Segments</h2>
   <p>This tutorial is organized around four pre-recorded video segments. Each segment covers one phase of the LightStanza workflow. Watch them in order, then follow the written steps below each video to work through your own project.</p>
+  <p><strong>Start here:</strong> Watch the <a href="https://www.youtube.com/watch?v=_BXJ2Ny8R6Y" target="_blank">LightStanza introductory walkthrough on YouTube</a> before beginning. The instructor&rsquo;s pre-recorded segments in Canvas pick up where that overview leaves off with your specific Rhino/Revit models.</p>
 
   <div class="workflow">
     <div class="wf-step"><div class="wf-num">Part 1 &nbsp;&middot;&nbsp; ~8 min</div><div class="wf-label">Model Setup &amp; Upload</div></div>
@@ -179,7 +180,9 @@ a { color: var(--amber); }
     <div class="wf-step"><div class="wf-num">Part 4 &nbsp;&middot;&nbsp; ~5 min</div><div class="wf-label">Reports &amp; Deliverables</div></div>
   </div>
 
-  <div class="note"><strong>Account setup:</strong> Create a free LightStanza account at <strong>app.lightstanza.com/signup</strong> before watching the videos. Use your LTU email address. If you encounter a paywall during the tutorial, notify the instructor immediately &mdash; LightStanza offers a free tier that covers everything in this tutorial.</div>
+  <div class="note"><strong>Account setup:</strong> You have been sent an email invitation to join the course LightStanza team. Accept it using your LTU email address &mdash; this grants you access through the course license. If you did not receive an invitation, notify the instructor immediately so you can be re-sent one via the Admin panel. Do not create a standalone free account; join through the team invitation.</div>
+
+  <div class="note" style="margin-top:12px;"><strong>Revit plugin:</strong> Download the Revit plugin from <a href="https://lightstanza.com/plugins/" target="_blank"><strong>lightstanza.com/plugins</strong></a>. Supports Revit 2021&ndash;2026 (not Revit LT). Run the installer (.msi), then restart Revit. The plugin appears in your Revit Add-Ins tab.</div>
 </div>
 
 <hr class="divider">
@@ -195,16 +198,17 @@ a { color: var(--amber); }
 
   <div class="section-num">§ 01</div>
   <h2>Getting Your Model In</h2>
-  <p>LightStanza accepts models from Rhino, SketchUp, Revit, and other tools. The quality of your simulation depends almost entirely on how well the model is prepared before upload. A few minutes of cleanup now saves a lot of confusion later.</p>
+  <p>LightStanza accepts models from Rhino (Collada .dae) and Revit (via plugin). The quality of your simulation depends almost entirely on how well the model is prepared before upload. A few minutes of cleanup now saves a lot of confusion later.</p>
 
   <div class="callout">
     <h3>Before You Upload: Model Checklist</h3>
     <ul>
       <li><strong>Units are set correctly.</strong> LightStanza reads the file's embedded unit system. In Rhino: <code>DocumentProperties &rarr; Units</code>. Feet or meters both work; the platform converts automatically.</li>
-      <li><strong>Glazing is modeled as separate surfaces.</strong> Windows and skylights must be distinct surfaces, not just holes in a wall. LightStanza identifies them by their layer name or material.</li>
-      <li><strong>No extraneous geometry.</strong> Site context, furniture, and decorative elements increase simulation time significantly. Delete or hide anything that is not a room-bounding surface or aperture.</li>
-      <li><strong>The model is a closed volume.</strong> Floors, walls, ceiling, and glazing must form an enclosed space with no gaps. Check in Rhino with <code>SelOpenPolysrf</code>.</li>
-      <li><strong>Layers are meaningful.</strong> LightStanza reads layer names to assign materials. Name layers after their material type: <code>Wall-Concrete</code>, <code>Ceiling-Acoustic</code>, <code>Glazing-Clear</code>.</li>
+      <li><strong>Glazing is modeled as separate surfaces.</strong> Windows and skylights must be distinct surfaces &mdash; not just holes in a wall. Keep them as single planes (no thickness needed). LightStanza identifies glazing by material assignment.</li>
+      <li><strong>No extraneous geometry.</strong> Site context, furniture, and decorative elements increase simulation time. Delete or hide anything that is not a room-bounding surface or aperture.</li>
+      <li><strong>A ground plane is included.</strong> Model a flat surface at grade level extending at least as wide as the building footprint. LightStanza needs this for accurate exterior sky calculations.</li>
+      <li><strong>Layers have meaningful names.</strong> LightStanza assigns materials per layer. Name layers after their surface type: <code>Wall-Concrete</code>, <code>Ceiling-Acoustic</code>, <code>Glazing-Clear</code>, <code>Floor-Wood</code>.</li>
+      <li><strong>Illuminate where you need data.</strong> In Rhino, assign the material name <code>LSGrid</code> to any surface you want to use as an illuminance measurement plane. LightStanza will detect it automatically on import and create a calculation grid there.</li>
     </ul>
   </div>
 
@@ -212,50 +216,56 @@ a { color: var(--amber); }
   <ol class="steps">
     <li>
       <div class="step-body">
-        <strong>Export from Rhino as OBJ or SKP</strong>
-        <p>In Rhino: <code>File &rarr; Export Selected</code>. Choose <strong>OBJ</strong> format. In the OBJ export options, check <em>Export object names as groups</em> and <em>Export object layers as groups</em>. This preserves your layer structure in LightStanza.</p>
+        <strong>Export from Rhino as Collada (.dae)</strong>
+        <p>In Rhino: <code>File &rarr; Export Selected</code>. Choose <strong>Collada (.dae)</strong> format. In the export options, check <em>Export layers</em> to preserve your layer structure. <strong>Do not use OBJ</strong> &mdash; OBJ does not reliably carry layer information into LightStanza.</p>
       </div>
     </li>
     <li>
       <div class="step-body">
         <strong>Create a new project in LightStanza</strong>
-        <p>At <strong>app.lightstanza.com</strong>, click the <code>+</code> icon (top of the screen) &rarr; <em>New Design</em>. Give your project a name matching your hall: e.g., <code>Smith_Auditorium_W04</code>.</p>
+        <p>In LightStanza, click the <strong>+ icon</strong> at the top of the screen &rarr; <em>New Design</em>. Give your project a name matching your hall: e.g., <code>Smith_Auditorium_W04</code>.</p>
       </div>
     </li>
     <li>
       <div class="step-body">
         <strong>Upload the model file</strong>
-        <p>Drag your OBJ file into the upload area, or use the file browser. LightStanza will process the model &mdash; this takes 30 seconds to 2 minutes depending on polygon count. You will see the model appear in the 3D viewer when it is ready.</p>
+        <p>Drag your .dae file directly into the LightStanza 3D viewer, or use the import icon in the top toolbar. LightStanza will process the model &mdash; this takes 30 seconds to 2 minutes depending on polygon count. The model appears in the 3D viewer when ready. If layers came through correctly, you will see them listed in the Layers panel (left sidebar).</p>
       </div>
     </li>
     <li>
       <div class="step-body">
-        <strong>Set the project location</strong>
-        <p>In the left panel, open the <strong>Site</strong> panel (globe icon). Type your building's address or city. LightStanza automatically locates the nearest NOAA weather station and sets the climate data for all simulations. Confirm the correct location is shown on the map.</p>
+        <strong>Set the project location and orientation</strong>
+        <p>Open the <strong>Site panel</strong> (globe icon, left sidebar). Type your building&rsquo;s city or address. LightStanza automatically finds the nearest climate station and loads a full year of weather data. Also confirm the <strong>north arrow</strong> matches your site design &mdash; this determines which facade faces which sun angle. You can rotate the building here if needed.</p>
       </div>
     </li>
     <li>
       <div class="step-body">
         <strong>Check and adjust materials</strong>
-        <p>Open the <strong>Materials</strong> panel (paint bucket icon). Each surface group from your layer structure appears here. Assign reflectance values:</p>
+        <p>Open the <strong>Materials panel</strong> (paint bucket icon, left sidebar). Each layer from your Rhino model appears as a material entry. Set reflectance values for each surface type:</p>
         <ul>
           <li>Painted concrete walls: <strong>50%</strong> reflectance</li>
-          <li>Acoustic ceiling tile: <strong>85%</strong> reflectance</li>
+          <li>Acoustic ceiling tile: <strong>70&ndash;85%</strong> reflectance</li>
           <li>Dark wood floor: <strong>20%</strong> reflectance</li>
-          <li>Glazing: set <strong>Visible Transmittance (VT)</strong> — clear glass ≈ 0.60, tinted glass ≈ 0.35–0.50</li>
+          <li>Glazing: set <strong>Visible Transmittance (VT)</strong> &mdash; clear glass &asymp; 0.60, lightly tinted &asymp; 0.40&ndash;0.50</li>
         </ul>
-        <p>LightStanza uses reflectance to calculate how light bounces around the room. Wrong values produce wrong results.</p>
+        <p>LightStanza uses reflectance to calculate inter-reflections. Wrong values produce wrong results. You can return to this panel and re-run any simulation after adjusting materials.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Create an Illuminance Grid (if not auto-detected)</strong>
+        <p>Open the <strong>Illuminance Grids panel</strong> (grid icon, left sidebar). If LightStanza detected your <code>LSGrid</code>-named surface from Rhino, it will appear here automatically. If not, click <em>Add Grid</em> and draw a horizontal grid at workplane height (2&prime;–6&Prime; / 0.75 m above the floor) covering the occupied floor area you want to analyze. Set grid spacing to <strong>2&prime;</strong> for LEED calculations, <strong>4&prime;</strong> for design exploration. The orange side of the grid faces the direction light is measured from &mdash; face it upward for a horizontal workplane.</p>
       </div>
     </li>
     <li>
       <div class="step-body">
         <strong>Verify the model in the 3D viewer</strong>
-        <p>Orbit the model. Check that: (a) the building is oriented correctly relative to north, (b) glazing surfaces are visible as distinct elements, (c) no geometry is floating or missing. If the model looks wrong, go back to Rhino, fix the issue, and re-export.</p>
+        <p>Orbit the model. Confirm: (a) building is oriented correctly relative to north, (b) glazing surfaces appear as distinct elements, (c) no geometry is floating or missing, (d) illuminance grid is positioned at the right height. If anything looks wrong, go back to Rhino, fix the issue, and re-export.</p>
       </div>
     </li>
   </ol>
 
-  <div class="note"><strong>Revit users:</strong> LightStanza has a dedicated Revit plugin that syncs bidirectionally. Install it from the LightStanza website under <em>Plugins</em>. The plugin handles export automatically and preserves material assignments from your Revit model. Skip the OBJ export steps above if using Revit.</div>
+  <div class="note"><strong>Revit users:</strong> Use the LightStanza Revit plugin (<a href="https://lightstanza.com/plugins/" target="_blank">lightstanza.com/plugins</a>) &mdash; supports Revit 2021&ndash;2026, not Revit LT. The plugin syncs your model directly and handles illuminance grid placement. Skip the Collada export steps above. Revit material assignments map automatically to LightStanza materials; review the Materials panel after import to verify.</div>
 </div>
 
 <hr class="divider">
@@ -616,25 +626,28 @@ a { color: var(--amber); }
   <h2>Week 4 Deliverable</h2>
 
   <div class="deliverable">
-    <div class="d-label">Due Tuesday 06&middot;16 &middot; 11:59 PM &middot; Canvas submission</div>
-    <h3>LightStanza Analysis Package</h3>
+    <div class="d-label">Act II &middot; Due Tuesday 07&middot;01 &middot; 11:59 PM &middot; Canvas submission</div>
+    <h3>Daylighting Analysis Package</h3>
     <ul>
-      <li><strong>LightStanza 3D Report link</strong> &mdash; shareable URL from your project showing daylighting simulation results</li>
-      <li><strong>2D PDF report</strong> &mdash; downloaded from LightStanza for the Annual Grid (sDA/ASE) simulation</li>
-      <li><strong>Annotated floor plan</strong> &mdash; daylight fill zone vs. electric fill zone marked; fixture layout shown; key values labeled (sDA%, ASE%, avg fc per zone)</li>
-      <li><strong>Luminaire spec sheet</strong> &mdash; PDF from manufacturer for the fixture you selected, with IES file name noted</li>
-      <li><strong>Decision Log entries 5&ndash;6</strong> &mdash; entry 5: daylighting strategy and sDA result; entry 6: luminaire selection and electric lighting result with trade-off acknowledged</li>
+      <li><strong>Sun study screenshots (4 minimum)</strong> &mdash; labeled with date, time, and building orientation. Export from LightStanza as PNG.</li>
+      <li><strong>LightStanza 3D Report link</strong> &mdash; shareable URL from your project showing the Annual Grid (sDA/ASE) simulation results</li>
+      <li><strong>2D PDF report</strong> &mdash; downloaded from LightStanza for the Annual Grid simulation</li>
+      <li><strong>Annotated daylight plan</strong> &mdash; prefunction daylight zone marked; hall blackout zone marked; aperture face and approximate size noted; sDA% and ASE% labeled</li>
+      <li><strong>Decision Log entries 5&ndash;6</strong> &mdash; entry 5: aperture stance with solar geometry reference; entry 6: sDA/ASE result and shading strategy with trade-off acknowledged</li>
     </ul>
   </div>
 
+  <div class="note" style="margin-top:20px;"><strong>Electric lighting is Act III, not Act II.</strong> The electric lighting workflow in §&nbsp;03 of this tutorial is covered in Weeks 6&ndash;7. You do not need to run electric lighting simulations for the Act II submission. Return to §&nbsp;03 when Act III begins.</div>
+
   <div class="checklist" style="margin-top:28px;">
-    <div class="check-item"><div class="check-box"></div><div><strong>LightStanza account created</strong> <span>&mdash; app.lightstanza.com, using LTU email</span></div></div>
-    <div class="check-item"><div class="check-box"></div><div><strong>Model uploaded and located</strong> <span>&mdash; site panel shows correct city; materials assigned</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Team invitation accepted</strong> <span>&mdash; logged in with LTU email via the course team link</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Model uploaded (Rhino .dae or Revit plugin)</strong> <span>&mdash; layers visible in Layers panel; materials assigned</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Location and orientation set</strong> <span>&mdash; Site panel shows correct city; north arrow matches site design</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Illuminance grid created</strong> <span>&mdash; horizontal plane at workplane height covering occupied floor area</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Sun studies run</strong> <span>&mdash; June 21 and December 21 captured and labeled</span></div></div>
     <div class="check-item"><div class="check-box"></div><div><strong>Annual Grid simulation completed</strong> <span>&mdash; sDA and ASE values visible in results panel</span></div></div>
-    <div class="check-item"><div class="check-box"></div><div><strong>Electric lighting simulation completed</strong> <span>&mdash; average footcandles shown; compared against target levels</span></div></div>
-    <div class="check-item"><div class="check-box"></div><div><strong>Annotated floor plan drafted</strong> <span>&mdash; daylight vs. electric zones, fixture layout, key values labeled</span></div></div>
-    <div class="check-item"><div class="check-box"></div><div><strong>Spec sheet downloaded</strong> <span>&mdash; luminaire manufacturer PDF with IES file name</span></div></div>
-    <div class="check-item"><div class="check-box"></div><div><strong>Decision Log entries 5&ndash;6 written</strong> <span>&mdash; reasoning explicit, trade-off acknowledged</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Annotated daylight plan drafted</strong> <span>&mdash; prefunction vs. hall zones labeled; key metric values shown</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Decision Log entries 5&ndash;6 written</strong> <span>&mdash; reasoning explicit, solar geometry reference included, trade-off acknowledged</span></div></div>
   </div>
 </div>
 

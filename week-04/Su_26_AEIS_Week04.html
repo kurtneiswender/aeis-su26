@@ -1,0 +1,927 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · Week 04 · Solar Geometry &amp; Daylight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B;--ink-2:#161412;
+    --paper:#EDE4D3;--paper-2:#D9CFB9;--paper-dim:#8A8273;
+    --amber:#D4A24C;--amber-soft:rgba(212,162,76,.10);--amber-line:rgba(212,162,76,.45);
+    --red:#C8472F;--blue:#9FC8D4;
+    --rule:rgba(237,228,211,.18);--rule-strong:rgba(237,228,211,.42);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  body{
+    font-family:"Newsreader",Georgia,serif;font-weight:380;font-size:20px;line-height:1.6;
+    font-feature-settings:"ss01","onum";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.55;
+  }
+  ::selection{background:var(--amber);color:var(--ink);}
+  .wrap{max-width:1180px;margin:0 auto;padding:48px 56px 120px;position:relative;}
+  @media (max-width:720px){.wrap{padding:32px 22px 80px}}
+
+  /* ALERT */
+  .alert-banner{
+    background:rgba(212,162,76,.07);border:1px solid rgba(212,162,76,.35);
+    border-left:4px solid var(--amber);padding:18px 24px;margin-bottom:32px;
+  }
+  .alert-banner .al-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;font-weight:600;}
+  .alert-banner p{margin:0 0 4px;font-size:16px;color:var(--paper);line-height:1.5;}
+  .alert-banner p:last-child{margin:0;}
+  .alert-banner strong{color:var(--paper);}
+
+  /* TOPBAR */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);padding-bottom:18px;border-bottom:1px solid var(--rule);
+    margin-bottom:20px;
+  }
+  .topbar .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-right:8px;vertical-align:middle;animation:pulse 2.4s ease-in-out infinite;}
+  @keyframes pulse{50%{opacity:.35}}
+
+  /* HERO */
+  .hero{padding:60px 0 40px;display:grid;grid-template-columns:1fr 220px;gap:48px;align-items:end;}
+  @media (max-width:820px){.hero{grid-template-columns:1fr}.hero .ornament{display:none}}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-bottom:18px;}
+  .kicker .pipe{color:var(--paper-dim);margin:0 10px;}
+  h1.title{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;
+    font-weight:380;font-size:clamp(48px,8vw,110px);line-height:.88;letter-spacing:-.03em;margin:0;
+  }
+  h1.title em{font-style:italic;color:var(--amber);font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+  .sub{margin-top:28px;max-width:760px;font-family:"Newsreader",serif;font-size:clamp(18px,1.8vw,22px);line-height:1.45;color:var(--paper-2);font-style:italic;}
+
+  /* META */
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);margin-top:48px;}
+  .meta > div{padding:18px 18px 18px 0;border-right:1px solid var(--rule);}
+  .meta > div:last-child{border-right:none}
+  .meta dt{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:6px;}
+  .meta dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:19px;line-height:1.2;font-variation-settings:"opsz" 36;}
+  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:12.5px;color:var(--paper-dim);margin-top:3px;font-style:italic;}
+  @media (max-width:820px){.meta{grid-template-columns:repeat(2,1fr)}.meta > div:nth-child(2){border-right:none}}
+
+  /* SECTION */
+  section{margin-top:96px;}
+  .sec-label{display:flex;align-items:baseline;gap:22px;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--rule-strong);}
+  .sec-num{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.18em;color:var(--amber);}
+  .sec-title{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(30px,4vw,46px);line-height:1;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 72,"SOFT" 40;}
+  .sec-title em{font-style:italic;color:var(--amber);}
+
+  .prose{max-width:820px;color:var(--paper-2);font-size:18px;line-height:1.65;}
+  .prose p{margin:0 0 1em;}
+  .prose em{color:var(--paper);font-style:italic;}
+  .prose strong{color:var(--paper);}
+  .prose ul{padding-left:20px;}
+  .prose ul li{margin-bottom:10px;}
+  .prose h5{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin:24px 0 10px;font-weight:500;}
+
+  /* TIMETABLE */
+  .timetable{margin-top:8px;border-top:1px solid var(--rule-strong);}
+  .timetable .row{display:grid;grid-template-columns:160px 70px 1fr;gap:20px;padding:14px 0;border-bottom:1px solid var(--rule);align-items:baseline;}
+  .timetable .row .when{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--amber);letter-spacing:.06em;}
+  .timetable .row .dur{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--paper-dim);letter-spacing:.14em;}
+  .timetable .row .what{font-size:15.5px;color:var(--paper);}
+  .timetable .row .what em{font-style:italic;color:var(--amber);}
+  .timetable .row.lab{background:var(--amber-soft);padding-left:14px;padding-right:14px;}
+  .timetable .row.lab .what{font-weight:500;}
+  .timetable .row.break{color:var(--paper-dim);}
+  .timetable .row.review{background:rgba(200,71,47,.06);padding-left:14px;padding-right:14px;}
+  .timetable .row.review .what{color:var(--paper);}
+
+  /* LECTURE BLOCK */
+  .lec{border:1px solid var(--rule-strong);padding:28px 30px;margin-top:24px;background:rgba(237,228,211,.02);}
+  .lec .lec-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:1px solid var(--rule);padding-bottom:14px;margin-bottom:18px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);flex-wrap:wrap;gap:8px;
+  }
+  .lec .lec-head .name{color:var(--amber);}
+  .lec h3{font-family:"Fraunces",serif;font-weight:380;font-size:28px;line-height:1.1;margin:0 0 6px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .lec h3 em{font-style:italic;color:var(--amber);}
+  .lec .one-liner{margin:0 0 18px;color:var(--paper-2);font-style:italic;font-size:15.5px;}
+  .lec h4{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin:20px 0 8px;font-weight:500;}
+  .lec ul{margin:0;padding-left:18px;color:var(--paper-2);font-size:17px;line-height:1.6;}
+  .lec li{margin-bottom:8px;}
+  .lec li strong{color:var(--paper);}
+
+  /* CONCEPT CALLOUT */
+  .concept{margin-top:28px;padding:22px 28px;border-left:3px solid var(--amber);background:var(--amber-soft);}
+  .concept .c-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-weight:500;}
+  .concept h4{font-family:"Fraunces",serif;font-weight:380;font-size:24px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .concept h4 em{font-style:italic;color:var(--amber);}
+  .concept p{margin:0 0 8px;color:var(--paper-2);font-size:15.5px;line-height:1.6;}
+  .concept p strong{color:var(--paper);}
+
+  /* RED RULE CALLOUT */
+  .concept.red-rule{border-left-color:var(--red);background:rgba(200,71,47,.08);}
+  .concept.red-rule .c-label{color:var(--red);}
+
+  /* BLUE CALLOUT */
+  .concept.blue-rule{border-left-color:var(--blue);background:rgba(159,200,212,.06);}
+  .concept.blue-rule .c-label{color:var(--blue);}
+  .concept.blue-rule h4{color:var(--paper);}
+
+  /* DIAGRAM */
+  .diagram{margin:28px 0 20px;padding:26px 22px 18px;background:rgba(237,228,211,.03);border:1px solid var(--rule);text-align:center;break-inside:avoid;}
+  .diagram svg{display:block;margin:0 auto;max-width:100%;height:auto;}
+  .diagram figcaption{margin-top:16px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);text-align:left;line-height:1.6;}
+  .diagram figcaption b{color:var(--amber);font-weight:500;margin-right:10px;letter-spacing:.18em;}
+
+  /* TWO-COL CONCEPT GRID */
+  .concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:24px;border:1px solid var(--rule-strong);}
+  .concept-cell{padding:26px 28px;border-right:1px solid var(--rule);}
+  .concept-cell:last-child{border-right:none;}
+  .concept-cell .cc-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:10px;}
+  .concept-cell h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .concept-cell h4 em{font-style:italic;color:var(--amber);}
+  .concept-cell p{margin:0 0 8px;color:var(--paper-2);font-size:15px;line-height:1.55;}
+  .concept-cell p strong{color:var(--paper);}
+  .concept-cell ul{padding-left:18px;color:var(--paper-2);font-size:14.5px;line-height:1.6;margin:6px 0 0;}
+  .concept-cell li{margin-bottom:6px;}
+  @media (max-width:680px){.concept-grid{grid-template-columns:1fr}.concept-cell{border-right:none;border-bottom:1px solid var(--rule)}.concept-cell:last-child{border-bottom:none}}
+
+  /* FOUR-CELL GRID */
+  .four-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:24px;border:1px solid var(--rule-strong);}
+  .four-cell{padding:20px 22px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+  .four-cell:nth-child(2n){border-right:none;}
+  .four-cell:nth-last-child(-n+2){border-bottom:none;}
+  .four-cell .fc-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:8px;}
+  .four-cell h5{font-family:"Fraunces",serif;font-weight:380;font-size:20px;margin:0 0 8px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .four-cell h5 em{font-style:italic;color:var(--amber);}
+  .four-cell p{margin:0 0 6px;color:var(--paper-2);font-size:14px;line-height:1.55;}
+  .four-cell p strong{color:var(--paper);}
+  @media (max-width:680px){.four-grid{grid-template-columns:1fr}.four-cell{border-right:none;}}
+
+  /* ACT I REVIEW CARDS */
+  .review-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:20px;border:1px solid var(--rule-strong);}
+  .review-card{padding:22px 22px 20px;border-right:1px solid var(--rule);}
+  .review-card:last-child{border-right:none;}
+  .review-card .rc-num{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-size:44px;color:var(--red);line-height:.9;margin-bottom:8px;}
+  .review-card .rc-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:10px;}
+  .review-card h5{font-family:"Fraunces",serif;font-weight:380;font-size:18px;margin:0 0 8px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .review-card p{margin:0 0 6px;color:var(--paper-2);font-size:14px;line-height:1.5;}
+  @media (max-width:760px){.review-grid{grid-template-columns:1fr}.review-card{border-right:none;border-bottom:1px solid var(--rule)}.review-card:last-child{border-bottom:none}}
+
+  /* TOOL CALLOUT */
+  .tool-callout{margin-top:28px;padding:22px 28px;border:1px solid var(--blue);background:rgba(159,200,212,.05);}
+  .tool-callout .t-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;font-weight:500;}
+  .tool-callout h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .tool-callout p{margin:0 0 8px;color:var(--paper-2);font-size:15.5px;line-height:1.6;}
+  .tool-callout a{color:var(--blue);text-underline-offset:3px;}
+  .tool-callout strong{color:var(--paper);}
+  .tool-callout ul{margin:6px 0 0;padding-left:18px;color:var(--paper-2);font-size:15px;line-height:1.6;}
+  .tool-callout li{margin-bottom:6px;}
+
+  /* PRE-CLASS CHECKLIST */
+  .pre-list{margin-top:20px;border-top:1px solid var(--rule-strong);}
+  .pre-row{display:grid;grid-template-columns:24px 1fr;gap:18px;padding:18px 0;border-bottom:1px solid var(--rule);align-items:start;}
+  .pre-check{width:18px;height:18px;border:1.5px solid var(--paper-dim);margin-top:4px;flex-shrink:0;}
+  .pre-body{color:var(--paper-2);font-size:16px;line-height:1.55;}
+  .pre-body strong{display:block;color:var(--paper);font-size:17px;margin-bottom:5px;}
+  .pre-body p{margin:0 0 6px;}
+
+  /* LAB SHEET */
+  .lab-sheet{margin-top:24px;}
+  .lab-row{display:grid;grid-template-columns:60px 1fr 1.2fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule);align-items:start;}
+  .lab-row:last-child{border-bottom:1px solid var(--rule);}
+  .lab-row .g{font-family:"Fraunces",serif;font-style:italic;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-size:42px;color:var(--red);line-height:.9;font-weight:300;}
+  .lab-row h5{font-family:"Fraunces",serif;font-weight:380;font-size:22px;line-height:1.1;margin:0 0 6px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .lab-row h5 em{font-style:italic;color:var(--amber);}
+  .lab-row .tag{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:2px 8px;border:1px solid var(--rule-strong);color:var(--paper-dim);margin-bottom:6px;}
+  .lab-row p{margin:0 0 8px;color:var(--paper-2);font-size:16px;line-height:1.55;}
+  .lab-row ul{margin:6px 0 0;padding-left:18px;color:var(--paper-2);font-size:16px;}
+  .lab-row li{margin-bottom:6px;}
+  @media (max-width:680px){.lab-row{grid-template-columns:50px 1fr}.lab-row .tasks{grid-column:1/-1;border-top:1px dashed var(--rule);padding-top:10px;}}
+
+  /* DELIVERABLE */
+  .deliverable{border-left:3px solid var(--amber);background:var(--amber-soft);padding:22px 28px;margin-top:24px;}
+  .deliverable .label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-weight:500;}
+  .deliverable h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 12px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .deliverable ul{margin:8px 0;padding-left:20px;color:var(--paper);font-size:15px;line-height:1.6;}
+  .deliverable li{margin-bottom:6px;}
+
+  /* CHECKLIST */
+  .checklist{margin-top:18px;}
+  .check{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--rule);align-items:flex-start;}
+  .check:last-child{border-bottom:none}
+  .check .box{flex:0 0 auto;width:18px;height:18px;border:1.5px solid var(--paper-dim);margin-top:2px;}
+  .check .text{font-size:15px;color:var(--paper-2);line-height:1.5;}
+  .check .text strong{color:var(--paper);}
+
+  /* TRANSITION BRIDGE */
+  .bridge{margin-top:56px;padding:18px 24px;border-left:2px solid var(--amber-line);background:rgba(212,162,76,.04);font-size:16px;color:var(--paper-2);font-style:italic;line-height:1.6;}
+  .bridge strong{color:var(--amber);font-style:normal;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;display:block;margin-bottom:6px;}
+
+  /* FORMULA BLOCK */
+  .formula-block{border:1px solid var(--rule-strong);padding:24px 28px;margin-top:24px;background:rgba(14,13,11,.35);}
+  .formula-block .f-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:12px;}
+  .formula-block .f-eq{font-family:"JetBrains Mono",monospace;font-size:20px;color:var(--amber);letter-spacing:.04em;margin-bottom:14px;line-height:1.3;}
+  .formula-block .f-vars{display:grid;grid-template-columns:100px 1fr;gap:4px 14px;font-size:14px;color:var(--paper-2);}
+  .formula-block .f-vars dt{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--amber);}
+  .formula-block .f-vars dd{margin:0;}
+  .formula-block .f-note{margin-top:14px;font-size:13.5px;color:var(--paper-dim);font-style:italic;border-top:1px solid var(--rule);padding-top:12px;}
+
+  /* FOOT */
+  footer{margin-top:120px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .hero, section{animation:rise .9s ease both;}
+
+  @media print{
+    html{background:var(--ink) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    body{background:var(--ink) !important;margin:0;padding:0;font-size:14.5px;}
+    body::before{display:none !important;}
+    .wrap{max-width:none;padding:0;}
+    .hero, section{animation:none !important;}
+    .sec-title{font-size:38px !important;}
+    .hero{padding:28px 0 24px;}
+    h1.title{font-size:74px !important;line-height:.92;}
+  }
+</style>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span><span class="dot"></span>Week 04 &middot; Class Plan &middot; v1 &middot; 2026.06.10</span>
+    <span>ARC 5443 &middot; Summer 2026 &middot; 06&middot;10</span>
+  </div>
+
+  <!-- ALERT BANNER -->
+  <div class="alert-banner">
+    <div class="al-label">Tonight &mdash; Two Chapters in One Session</div>
+    <p><strong>Act I closes tonight</strong> &mdash; share your work on the Lucid whiteboard at the start of class. Act I package was due <strong>Sunday 06&middot;07 at 11:59 PM</strong> &mdash; final submissions should already be in.</p>
+    <p><strong>Act II begins tonight</strong> &mdash; we pivot to daylighting after the review. LightStanza account setup is due before class; see Before Class below.</p>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div>
+      <div class="kicker">Week 04 <span class="pipe">/</span> Act II Begins <span class="pipe">/</span> Daylight</div>
+      <h1 class="title">Solar Geometry &amp; <em>Daylight.</em></h1>
+      <p class="sub">Act I work gets a final look; then we raise the curtain on Act II. The question tonight: where does the sun go, and what does that mean for the walls, roof, and prefunction of a 500-seat hall that sometimes needs to be <em>completely dark</em>?</p>
+    </div>
+    <svg class="ornament" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- sun circle -->
+      <circle cx="110" cy="110" r="28" fill="none" stroke="#D4A24C" stroke-width="1.5" opacity=".8"/>
+      <circle cx="110" cy="110" r="18" fill="rgba(212,162,76,.12)" stroke="#D4A24C" stroke-width="1"/>
+      <!-- sun rays -->
+      <g stroke="#D4A24C" stroke-width="1" opacity=".6">
+        <line x1="110" y1="70" x2="110" y2="58"/>
+        <line x1="110" y1="150" x2="110" y2="162"/>
+        <line x1="70" y1="110" x2="58" y2="110"/>
+        <line x1="150" y1="110" x2="162" y2="110"/>
+        <line x1="83" y1="83" x2="74" y2="74"/>
+        <line x1="137" y1="137" x2="146" y2="146"/>
+        <line x1="137" y1="83" x2="146" y2="74"/>
+        <line x1="83" y1="137" x2="74" y2="146"/>
+      </g>
+      <!-- sun arc path -->
+      <path d="M 40,160 Q 110,50 180,160" fill="none" stroke="rgba(212,162,76,.35)" stroke-width="1" stroke-dasharray="4 3"/>
+      <!-- horizon -->
+      <line x1="30" y1="165" x2="190" y2="165" stroke="rgba(237,228,211,.25)" stroke-width="1"/>
+      <!-- altitude angle indicator -->
+      <line x1="40" y1="165" x2="110" y2="110" stroke="rgba(200,71,47,.4)" stroke-width=".75" stroke-dasharray="3 2"/>
+      <text x="110" y="210" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="2">ALT / AZ</text>
+      <!-- building profile simplified -->
+      <rect x="92" y="155" width="36" height="10" fill="rgba(237,228,211,.08)" stroke="rgba(237,228,211,.2)" stroke-width=".75"/>
+    </svg>
+  </header>
+
+  <!-- META -->
+  <dl class="meta">
+    <div><dt>Date</dt><dd>Wed 06&middot;10<small>19:30 &ndash; 23:35</small></dd></div>
+    <div><dt>Format</dt><dd>Online &middot; Zoom<small>cameras on, 100%</small></dd></div>
+    <div><dt>Read &middot; Before</dt><dd>MEEB Ch. 10<small>Daylighting, pp. 1&ndash;25</small></dd></div>
+    <div><dt>Act I Due</dt><dd>Sun 06&middot;07<small>11:59 PM via Canvas</small></dd></div>
+  </dl>
+
+  <!-- WHITEBOARD LINK -->
+  <div style="margin-top:32px;display:flex;align-items:center;gap:20px;padding:16px 22px;border:1px solid var(--rule-strong);background:rgba(237,228,211,.02);">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="flex-shrink:0;">
+      <rect x="1" y="1" width="26" height="26" rx="2" stroke="rgba(212,162,76,.5)" stroke-width="1.5" fill="rgba(212,162,76,.06)"/>
+      <line x1="5" y1="10" x2="23" y2="10" stroke="rgba(212,162,76,.4)" stroke-width="1"/>
+      <line x1="5" y1="14" x2="18" y2="14" stroke="rgba(212,162,76,.4)" stroke-width="1"/>
+      <line x1="5" y1="18" x2="20" y2="18" stroke="rgba(212,162,76,.4)" stroke-width="1"/>
+      <circle cx="22" cy="18" r="3" fill="rgba(200,71,47,.7)"/>
+    </svg>
+    <div style="flex:1;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:5px;">Week 4 &middot; Lab Whiteboard &middot; Lucidspark</div>
+      <a href="https://lucid.app/lucidspark/53cea859-ab48-4e2a-b5c3-b883766730c2/edit?viewport_loc=-759%2C162%2C2512%2C1297%2C0_0&invitationId=inv_f380e33e-1dcf-4f06-ae5c-5cad3a909dd7" target="_blank" style="font-family:'Fraunces',serif;font-size:20px;font-variation-settings:'opsz' 48,'SOFT' 30;color:var(--amber);text-decoration:none;font-weight:380;">Open Week 4 Whiteboard &rarr;</a>
+    </div>
+  </div>
+
+  <!-- § 01 SESSION OBJECTIVES -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 01</span>
+      <h2 class="sec-title">Session <em>Objectives.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Tonight runs in two distinct chapters. First, Act I closes — a short critique of what you built so you leave with focused feedback before your final submission Tuesday. Then Act II opens, and we spend the rest of the evening on the solar geometry and daylight metrics that will drive your daylighting strategy.</p>
+      <p>By 23:35, each student should have:</p>
+      <ul>
+        <li><strong>Verbal feedback on Act I work</strong> &mdash; a specific note on what is working acoustically and one thing to resolve before Tuesday&rsquo;s submission.</li>
+        <li><strong>Solar geometry internalized</strong> &mdash; altitude, azimuth, and sun path as a 3D tool for deciding where glass can (and cannot) go on a performance venue.</li>
+        <li><strong>The auditorium daylight problem understood</strong> &mdash; why a performance hall and its prefunction are two fundamentally different daylighting problems.</li>
+        <li><strong>sDA, ASE, and DF mapped to real decisions</strong> &mdash; not just as metrics to fill in, but as criteria that will drive aperture type, size, orientation, and shading in your Act II package.</li>
+        <li><strong>A LightStanza model running</strong> &mdash; your Rhino mass model imported and at least a solstice sun study rendered before you leave tonight.</li>
+        <li><strong>Act II aperture stance drafted</strong> &mdash; a first-pass decision on where glass goes in your hall, documented in the Decision Log.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- § 02 BEFORE CLASS -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 02</span>
+      <h2 class="sec-title">Before <em>Class.</em></h2>
+    </div>
+    <div class="pre-list">
+      <div class="pre-row">
+        <div class="pre-check"></div>
+        <div class="pre-body">
+          <strong>Read MEEB Chapter 10 &mdash; Daylighting, pp. 1&ndash;25</strong>
+          <p>Focus on the sun path fundamentals (altitude and azimuth, how they change by season and latitude), sky conditions and illuminance levels, the distinction between daylight factor and climate-based metrics, and the basic aperture strategies in Figures 10.1&ndash;10.14. Skip the advanced calculation sections for now &mdash; those come in Week 5.</p>
+        </div>
+      </div>
+      <div class="pre-row">
+        <div class="pre-check"></div>
+        <div class="pre-body">
+          <strong>Accept your LightStanza invitation</strong>
+          <p>An invitation has been sent to your LTU email. Click the link to register. <strong>Check your spam folder</strong> if you don&rsquo;t see it in your inbox. If you still cannot find it, email the instructor before class tonight &mdash; do not wait until lab time to discover a login problem.</p>
+        </div>
+      </div>
+      <div class="pre-row">
+        <div class="pre-check"></div>
+        <div class="pre-body">
+          <strong>Export your Rhino model as Collada (.dae) &mdash; or have Revit open with the plugin installed</strong>
+          <p><strong>Rhino users:</strong> File &rarr; Export Selected &rarr; Collada (.dae). Keep layers intact. <strong>Revit users:</strong> Install the LightStanza plugin from <em>lightstanza.com/plugins</em> (supports Revit 2021&ndash;2026, not Revit LT). Have the file or Revit model ready &mdash; you&rsquo;ll import it in the first lab block tonight.</p>
+        </div>
+      </div>
+      <div class="pre-row">
+        <div class="pre-check"></div>
+        <div class="pre-body">
+          <strong>Load your Act I screenshots to the Lucid whiteboard before class starts</strong>
+          <p>Post your RT60 report screenshot and noise map (or adjacency diagram) to the <a href="https://lucid.app/lucidspark/53cea859-ab48-4e2a-b5c3-b883766730c2/edit?viewport_loc=-759%2C162%2C2512%2C1297%2C0_0&invitationId=inv_f380e33e-1dcf-4f06-ae5c-5cad3a909dd7" target="_blank" style="color:var(--amber);">Week 4 whiteboard</a> before 19:30. Label with your name. You do <em>not</em> need slides &mdash; just your screenshots on the board.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 03 RUN OF SHOW -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 03</span>
+      <h2 class="sec-title">Run of <em>Show.</em></h2>
+    </div>
+    <div class="timetable">
+      <div class="row"><div class="when">19:30 &middot; 19:45</div><div class="dur">15 min</div><div class="what"><em>Opening &amp; framing.</em> Context for tonight&rsquo;s split structure &mdash; why Act I review is happening now, what changed with the schedule, and how this feeds directly into Act II decisions. Preview the session arc.</div></div>
+      <div class="row review"><div class="when">19:45 &middot; 20:20</div><div class="dur">35 min</div><div class="what"><em>Act I Work Share &mdash; Lucid Whiteboard.</em> Each student posts key screenshots to the Week 4 whiteboard: RT60 report, noise map, one Decision Log entry. Browse together; ask one question to a classmate whose work surprised you. No prepared critique, no grades &mdash; this is about seeing each other&rsquo;s approaches before final submission Tuesday.</div></div>
+      <div class="row"><div class="when">20:20 &middot; 20:25</div><div class="dur">5 min</div><div class="what"><em>Transition.</em> Acoustics closes. Act II opens. &ldquo;The room is tuned &mdash; now it needs to be lit.&rdquo;</div></div>
+      <div class="row"><div class="when">20:25 &middot; 21:05</div><div class="dur">40 min</div><div class="what"><em>Lecture A &mdash; Solar Geometry &amp; the Sun Path.</em> Altitude, azimuth, declination. How the sun moves differently by latitude, season, and time of day. The sun path diagram as a design tool &mdash; not just an analysis tool.</div></div>
+      <div class="row break"><div class="when">21:05 &middot; 21:15</div><div class="dur">10 min</div><div class="what">Break &mdash; cameras off, move around.</div></div>
+      <div class="row"><div class="when">21:15 &middot; 21:50</div><div class="dur">35 min</div><div class="what"><em>Lecture B &mdash; The Hall &amp; Glass Problem.</em> Why performance halls are a unique daylighting challenge. The prefunction as a separate problem. sDA, ASE, and DF &mdash; what they measure, what they target, what they don&rsquo;t capture.</div></div>
+      <div class="row"><div class="when">21:50 &middot; 22:05</div><div class="dur">15 min</div><div class="what"><em>LightStanza demo.</em> Import workflow live. Setting location, orientation, and material reflectances. The difference between daylighting analysis (Act II) and the electric lighting workflow we&rsquo;ll use in Act III &mdash; same tool, different module.</div></div>
+      <div class="row lab"><div class="when">22:05 &middot; 23:10</div><div class="dur">65 min</div><div class="what"><em>Lab &mdash; First Sun Study.</em> Groups of 3. Import Rhino mass model; set Detroit coordinates; run June 21 and December 21 sun studies. Tag daylight zones on the prefunction. Draft aperture stance for the hall. Instructor circulates.</div></div>
+      <div class="row"><div class="when">23:10 &middot; 23:35</div><div class="dur">25 min</div><div class="what"><em>Whole-group debrief.</em> One share per group: where did you put glass, and why? Act II roadmap explained. Week 4 deliverable reviewed. Act I final submission reminder &mdash; Tuesday.</div></div>
+    </div>
+  </section>
+
+  <!-- § 04 ACT I WORK SHARE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 04</span>
+      <h2 class="sec-title">Act I Work <em>Share.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>The Act I extension was granted for two reasons: EDRA conference travel compressed preparation time, and the RT60 calculation &mdash; especially for unusual geometries &mdash; turned out to be more demanding than estimated. Tonight is not a formal critique and no grades are given. This is a chance to see each other&rsquo;s work before final submission Tuesday &mdash; and to notice how ten students tackled the same hall in ten different ways.</p>
+    </div>
+
+    <div class="review-grid">
+      <div class="review-card">
+        <div class="rc-num">01</div>
+        <div class="rc-label">Post to Whiteboard</div>
+        <h5>RT60 Report Screenshot</h5>
+        <p>Screenshot your HTML report (or hand-calc) and paste it onto the Lucid whiteboard. Label it with your hall name. If the script errored, post a screenshot of the error and your hand-calc side-by-side.</p>
+      </div>
+      <div class="review-card">
+        <div class="rc-num">02</div>
+        <div class="rc-label">Post to Whiteboard</div>
+        <h5>Noise Map or Adjacency Plan</h5>
+        <p>Screenshot or photograph your annotated adjacency diagram. Doesn&rsquo;t need to be finished. Post it next to your RT60 screenshot so both pieces of Act I live together on the board.</p>
+      </div>
+      <div class="review-card">
+        <div class="rc-num">03</div>
+        <div class="rc-label">Browse &amp; Comment</div>
+        <h5>Look at Each Other&rsquo;s Work</h5>
+        <p>Spend a few minutes browsing the whiteboard. Find one person whose RT60 or material strategy is different from yours. Drop a sticky note with one question. That&rsquo;s it &mdash; no critique, just curiosity.</p>
+      </div>
+    </div>
+
+    <div class="concept red-rule" style="margin-top:24px;">
+      <div class="c-label">Three Things Every Act I Submission Needs</div>
+      <h4>Three things every Act I submission needs.</h4>
+      <p><strong>1. A closed-form RT60 number.</strong> Hand-calc worksheet using Sabine or Eyring, or the script HTML output. The number should be in the range you targeted (1.5&ndash;1.9 s for most music-capable halls). If it&rsquo;s not, document why in the Decision Log &mdash; don&rsquo;t just submit a number that&rsquo;s off without comment.</p>
+      <p><strong>2. A noise map that closes the loop.</strong> Every adjacency labeled with a source, an NC target, and an assembly selection. The assembly STC must be &ge; the required NR for the worst-case pair.</p>
+      <p><strong>3. Decision Log entries that show your reasoning.</strong> Four entries minimum. Each entry must reference a specific number or criterion &mdash; not just describe the decision, but justify it. The trade-off field must be filled in.</p>
+    </div>
+
+    <div class="bridge">
+      <strong>Act I &rarr; Act II Bridge</strong>
+      The acoustic decisions you just locked in are load-bearing for Act II. Your hall section &mdash; the slope, the ceiling geometry, the volume &mdash; was acoustically determined. Now daylight must find its way into that shape without compromising the performance environment. The question tonight: where can glass go that doesn&rsquo;t fight everything you just tuned?
+    </div>
+  </section>
+
+  <!-- § 05 LECTURE A: SOLAR GEOMETRY -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 05</span>
+      <h2 class="sec-title">Solar Geometry &amp; the <em>Sun Path.</em></h2>
+    </div>
+
+    <div class="lec">
+      <div class="lec-head">
+        <span><span class="name">Lecture A &mdash; Solar Geometry</span></span>
+        <span>MEEB Ch. 10 &middot; pp. 1&ndash;15</span>
+      </div>
+      <h3>The sun is a <em>moving source</em> &mdash; design for all of it.</h3>
+      <p class="one-liner">Before you put a window anywhere, you need to know exactly where the sun is at 9 AM on December 21 and 3 PM on June 21. Those two moments bracket your entire range of exposure.</p>
+
+      <h4>1 &middot; Altitude &amp; Azimuth &mdash; The Two Angles You Will Use Every Day</h4>
+      <ul>
+        <li><strong>Altitude</strong> is the sun&rsquo;s angle above the horizon, measured in degrees from 0&deg; (horizon) to 90&deg; (directly overhead). In Detroit (42.3&deg;N): summer noon altitude &asymp; 71&deg;, winter noon altitude &asymp; 25&deg;. <em>The low winter sun is the critical case for glare.</em></li>
+        <li><strong>Azimuth</strong> is the compass bearing of the sun measured from north. East = 90&deg;, South = 180&deg;, West = 270&deg;. A south-facing window receives sun all day in winter; an east-facing window is done by noon.</li>
+        <li><strong>Together</strong> they give you a vector in 3D space. If you know altitude and azimuth for any hour and date, you know exactly which surfaces are sunlit and where shadows fall.</li>
+        <li><strong>The sun path diagram</strong> &mdash; the stereographic sun chart for your latitude &mdash; overlays all hours and dates simultaneously. One chart tells you everything: when each compass face receives direct sun, for how many hours per season, and at what altitude (shading depth).</li>
+      </ul>
+
+      <h4>2 &middot; How Latitude Changes Everything</h4>
+      <ul>
+        <li>At 42&deg;N (Detroit, Chicago, Boston), the sun stays well south of zenith all year. The northern sky is <em>always</em> indirect diffuse light &mdash; no direct sun. A north aperture never produces glare from direct sun and is the most consistent light source architecturally.</li>
+        <li>South apertures are the most controllable: fixed horizontal overhangs can block the high summer sun (altitude ~71&deg;) while admitting the low winter sun (altitude ~25&deg;). The shading overhang depth is predictable geometry.</li>
+        <li>East and west apertures are the most difficult: low morning and afternoon sun enters at near-horizontal angles that no fixed horizontal overhang can block. Vertical fins or deep setbacks are required.</li>
+        <li>This is not just theory &mdash; it drives your first aperture decision tonight: which face of your hall has the least daylight conflict with the acoustic geometry?</li>
+      </ul>
+
+      <h4>3 &middot; Equinox vs. Solstice &mdash; The Two Reference Conditions</h4>
+      <ul>
+        <li>LightStanza, Ladybug, and every daylight tool will ask you to run at least two solar positions: typically <strong>June 21</strong> (summer solstice, highest sun, longest day) and <strong>December 21</strong> (winter solstice, lowest sun, shortest day). Some tools also include <strong>March/September 21</strong> (equinox, mid-range conditions).</li>
+        <li>Summer solstice is the glare risk case: sun enters at high altitude through south apertures and at low altitude through east/west apertures in the morning and afternoon. This is when overheating and occupant discomfort peak.</li>
+        <li>Winter solstice is the daylight adequacy case: if your prefunction reads well in December at noon, it reads well all year. If it fails in December, you need more aperture.</li>
+        <li>Run both tonight. They tell a complete story together that neither alone can tell.</li>
+      </ul>
+
+      <h4>4 &middot; IESNA&rsquo;s Six Essential Ingredients for Effective Daylighting</h4>
+      <ul>
+        <li><strong>Plan the interior for daylight access.</strong> Room depth, ceiling height, and partition layout determine whether daylight reaches work surfaces. Deep floor plates without atria or light wells are inherently dark.</li>
+        <li><strong>Minimize direct sunlight near critical visual tasks.</strong> A sunlit patch on a work surface creates a luminance ratio that makes everything around it appear dim. In a prefunction, direct sun on a bar-top or registration desk is a glare problem, not an amenity.</li>
+        <li><strong>Design spaces to minimize glare.</strong> Glare is a luminance contrast problem, not an illuminance problem. A 50,000-cd/m² window next to a 200-cd/m² wall is uncomfortable regardless of how much total light is in the room. Reveals, splayed jambs, and adjacent light walls all reduce contrast.</li>
+        <li><strong>Zone electric lighting for daylight-responsive control.</strong> Daylight zones should have their own circuit, separate from the rest of the space. A prefunction with one lighting zone defeats the purpose of the daylight design &mdash; the whole space stays on at full output even when half of it is flooded with noon sun.</li>
+        <li><strong>Provide daylight-responsive controls.</strong> Photosensors that dim or switch electric lighting as daylight increases are required to realize the energy savings that justify the glass cost. LEED EQ credits assume controls are in place.</li>
+        <li><strong>Commission and maintain the system.</strong> Controls drift. Sensors get dust. Blinds get drawn and never opened. A daylighting strategy is only as good as its ongoing commissioning. This is the ingredient most often skipped in practice.</li>
+      </ul>
+
+      <h4>5 &middot; Human Factors &mdash; Why Daylight Is Not Optional</h4>
+      <ul>
+        <li><strong>Circadian rhythms.</strong> The human body uses light intensity and spectrum (blue-rich morning light, warm afternoon light) to regulate sleep/wake cycles, cortisol levels, and alertness. Occupants in daylit spaces show measurably better alertness and reduced fatigue. This is a physiological need, not an aesthetic preference.</li>
+        <li><strong>Productivity and learning outcomes.</strong> Research in daylit schools shows students performing measurably better on standardized math and reading tests in classrooms with high daylighting than matched classrooms with only electric light. The effect is strongest in the first three hours of the school day &mdash; when blue-rich morning light is highest.</li>
+        <li><strong>Glare as the failure mode.</strong> The same daylight that improves alertness becomes a liability the moment it causes glare. Occupants draw blinds and never open them again. The three glare management strategies in order of preference: <em>exterior fixed shades</em> (most effective, never interfere with views), <em>diffusing systems</em> (fritted glass, light shelves, prismatic film), and <em>occupant-controlled adjustable shades</em> (least effective, but necessary fallback for east/west exposures).</li>
+      </ul>
+
+      <h4>6 &middot; Site Strategy &mdash; Orientation, Zoning, Building Form</h4>
+      <ul>
+        <li><strong>Elongate the building on the east-west axis.</strong> A building with its long axis running east-west maximizes the south facade (controllable with horizontal shading) and minimizes the east and west facades (difficult to shade). For a hall that must be north-south on stage axis, the site placement of the prefunction lobby becomes the critical move.</li>
+        <li><strong>Zone by function, schedule, and orientation.</strong> Group spaces with similar daylight needs together. In a performing arts center: back-of-house support spaces can be on the north or east; the prefunction should face south or southeast; the hall itself is internally determined by acoustics and sight lines.</li>
+        <li><strong>Building form and daylight.</strong> Thick buildings have dark cores; thin buildings achieve complete sidelighting. A 12m-deep floor plate can be fully daylit by sidelighting alone (6m from each side). Beyond 24m depth, supplementary toplighting or atria are required for adequate sDA. The performing arts hall is almost always too thick to daylit from the sides &mdash; this is one reason the prefunction is the primary daylighting canvas.</li>
+        <li><strong>Envelope strategy by orientation.</strong> South facade: horizontal overhangs sized for summer shading (overhang depth = window height &times; tan(90° &minus; summer altitude)). North facade: high glazing admits diffuse sky without glare; no shading needed. East/West facades: vertical fins or deep setbacks; avoid large unshaded glass.</li>
+      </ul>
+
+      <h4>7 &middot; Sidelighting Principles &mdash; The 15/30 Rule</h4>
+      <ul>
+        <li><strong>15-foot fully daylit zone.</strong> The area within approximately 15 feet (4.5 m) of a window wall receives adequate diffuse daylight for most task conditions (DF &ge; 2%). This is the &ldquo;prime real estate&rdquo; of sidelighting &mdash; put primary functions here.</li>
+        <li><strong>15 to 30 feet: partially daylit.</strong> From 15 to 30 feet (4.5&ndash;9 m), daylight levels drop sharply and become supplementary. Daylight-responsive electric lighting dims when daylight is present but cannot fully replace it. Transitional functions (corridors, secondary gathering, support) fit here.</li>
+        <li><strong>Beyond 30 feet: electrically lit.</strong> Beyond 30 feet (9 m) from a window, daylight is no longer a reliable source for visual tasks. The space requires dedicated electric lighting regardless of exterior conditions. This is where the hall house sits.</li>
+        <li><strong>Window height extends penetration.</strong> Raising the window head from 8 ft to 12 ft can push the fully daylit zone from 15 ft to 20+ ft. This is why clerestories and high-set windows outperform equal-area punched windows at mid-height &mdash; the light ray angle is shallower and penetrates farther into the room.</li>
+        <li><strong>Bilateral lighting is the most even.</strong> Two window walls facing each other eliminate the dark zone that forms opposite a single window wall. Where bilateral lighting is impossible (as in most halls), a light shelf or interior light-redirecting surface on the opposing wall acts as a substitute diffuser.</li>
+        <li><strong>Aperture detailing for contrast control.</strong> Splay the window jamb at 45&deg; minimum to transition luminance gradually from window to wall. An unsplayed window is a high-luminance disk surrounded by low-luminance wall &mdash; the definition of discomfort glare. Painting the adjacent wall light (reflectance &ge; 60%) further reduces contrast.</li>
+      </ul>
+
+      <!-- INTERACTIVE: 2.5x Daylighting Rule -->
+      <div style="margin-top:28px;border:1px solid var(--rule-strong);padding:0;overflow:hidden;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);padding:10px 16px 8px;border-bottom:1px solid var(--rule);">Interactive Tool &middot; 2.5&times; Daylighting Rule &mdash; Section Explorer</div>
+        <iframe src="daylighting-rule.html" width="100%" height="520" style="border:none;display:block;background:#F1ECE0;" title="2.5x Daylighting Rule interactive section explorer" loading="lazy"></iframe>
+      </div>
+      <p style="font-size:13.5px;color:var(--paper-dim);font-family:'JetBrains Mono',monospace;letter-spacing:.08em;margin-top:8px;">Drag the slider to see how window head height controls daylit depth. A 9 ft head dayl 22.5 ft; a 12 ft head dayl 25+ ft. This is why clerestories outperform mid-height punched windows of equal area.</p>
+    </div>
+
+    <!-- SUN PATH DIAGRAM SVG — equidistant polar projection, Detroit 42.3°N
+         r = R×(90−alt)/90; x = cx + r×sin(Az); y = cy − r×cos(Az)
+         Az computed via atan2(cos(δ)×sin(HA), −cos(φ)×sin(δ) + sin(φ)×cos(δ)×cos(HA)) + 180°
+         φ=42.3° δ_sum=+23.45° δ_win=−23.45° cx=290 cy=295 R=230 -->
+    <figure class="diagram">
+      <svg viewBox="0 0 580 570" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Equidistant polar sun path diagram for Detroit 42.3 degrees north latitude">
+        <!-- ── GRID ── -->
+        <!-- altitude rings: r = 230*(90−alt)/90 -->
+        <circle cx="290" cy="295" r="204" fill="none" stroke="rgba(237,228,211,.09)" stroke-width=".75"/>
+        <circle cx="290" cy="295" r="179" fill="none" stroke="rgba(237,228,211,.09)" stroke-width=".75"/>
+        <circle cx="290" cy="295" r="153" fill="none" stroke="rgba(237,228,211,.09)" stroke-width=".75"/>
+        <circle cx="290" cy="295" r="128" fill="none" stroke="rgba(237,228,211,.09)" stroke-width=".75"/>
+        <circle cx="290" cy="295" r="102" fill="none" stroke="rgba(237,228,211,.09)" stroke-width=".75"/>
+        <circle cx="290" cy="295" r="77"  fill="none" stroke="rgba(237,228,211,.09)" stroke-width=".75"/>
+        <circle cx="290" cy="295" r="51"  fill="none" stroke="rgba(237,228,211,.09)" stroke-width=".75"/>
+        <circle cx="290" cy="295" r="26"  fill="none" stroke="rgba(237,228,211,.09)" stroke-width=".75"/>
+        <!-- horizon -->
+        <circle cx="290" cy="295" r="230" fill="none" stroke="rgba(237,228,211,.35)" stroke-width="1.5"/>
+        <!-- altitude labels (north side, inside horizon) -->
+        <g fill="#8A8273" font-family="JetBrains Mono,monospace" font-size="8.5" text-anchor="middle">
+          <text x="290" y="93">10°</text>
+          <text x="290" y="118">20°</text>
+          <text x="290" y="144">30°</text>
+          <text x="290" y="169">40°</text>
+          <text x="290" y="195">50°</text>
+          <text x="290" y="220">60°</text>
+          <text x="290" y="246">70°</text>
+        </g>
+
+        <!-- ── HOUR LINES — radial from zenith to horizon, based on equinox solar azimuths ──
+             Az = 180° + atan2(sin(HA), sin(φ)·cos(HA)) for δ=0
+             6AM Az=90°  7AM Az=100.2°  8AM Az=111.3°  9AM Az=123.9°
+             10AM Az=139.4°  11AM Az=158.3°  Noon Az=180°  (PM symmetric) -->
+        <g stroke="rgba(237,228,211,.18)" stroke-width=".75" stroke-dasharray="3 3">
+          <line x1="290" y1="295" x2="520" y2="295"/><!-- 6AM  Az=90°  E -->
+          <line x1="290" y1="295" x2="516" y2="336"/><!-- 7AM  Az=100.2° -->
+          <line x1="290" y1="295" x2="504" y2="379"/><!-- 8AM  Az=111.3° -->
+          <line x1="290" y1="295" x2="481" y2="423"/><!-- 9AM  Az=123.9° -->
+          <line x1="290" y1="295" x2="439" y2="470"/><!-- 10AM Az=139.4° -->
+          <line x1="290" y1="295" x2="375" y2="509"/><!-- 11AM Az=158.3° -->
+          <line x1="290" y1="295" x2="290" y2="525"/><!-- Noon Az=180°  S -->
+          <!-- PM mirrors -->
+          <line x1="290" y1="295" x2="205" y2="509"/>
+          <line x1="290" y1="295" x2="141" y2="470"/>
+          <line x1="290" y1="295" x2="99"  y2="423"/>
+          <line x1="290" y1="295" x2="76"  y2="379"/>
+          <line x1="290" y1="295" x2="64"  y2="336"/>
+          <line x1="290" y1="295" x2="60"  y2="295"/><!-- 6PM Az=270° W -->
+        </g>
+
+        <!-- ── ANNUAL VARIATION BAND — region swept by sun between solstices ── -->
+        <!-- forward along summer arc, direct line west-side, reverse winter arc, direct line east-side -->
+        <path d="M 484,171 L 483,196 L 471,237 L 451,271 L 424,297 L 394,318 L 361,332 L 326,341 L 290,343
+                 L 254,341 L 219,332 L 186,318 L 156,297 L 129,271 L 109,237 L 97,196 L 96,171
+                 L 99,423 L 118,432 L 158,444 L 202,454 L 246,461 L 290,463
+                 L 334,461 L 378,454 L 422,444 L 462,432 L 481,423 Z"
+              fill="rgba(212,162,76,.06)" stroke="none"/>
+
+        <!-- ── SUMMER SOLSTICE ARC — Jun 21 δ=+23.45° φ=42.3°
+             Az from atan2(cos(δ)·sin(HA), −cos(φ)·sin(δ)+sin(φ)·cos(δ)·cos(HA))+180°
+             Points: horizon-rise, HA=−7h..0..+7h, horizon-set ── -->
+        <polyline fill="none" stroke="#D4A24C" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round" opacity=".9"
+          points="484,171 483,196 471,237 451,271 424,297 394,318 361,332 326,341 290,343
+                  254,341 219,332 186,318 156,297 129,271 109,237 97,196 96,171"/>
+
+        <!-- ── EQUINOX ARC — Mar/Sep 21 δ=0°
+             Rises due east, sets due west; noon alt=47.7° Az=180° ── -->
+        <polyline fill="none" stroke="rgba(237,228,211,.50)" stroke-width="1.25" stroke-dasharray="6 3" stroke-linejoin="round" stroke-linecap="round"
+          points="520,295 489,330 453,358 414,379 373,392 332,400 290,403 248,400 207,392 166,379 127,358 91,330 60,295"/>
+
+        <!-- ── WINTER SOLSTICE ARC — Dec 21 δ=−23.45°
+             Sunrise Az≈123.6°; noon alt=24.3° Az=180° — entirely in south half of chart ── -->
+        <polyline fill="none" stroke="#9FC8D4" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity=".9"
+          points="481,423 462,432 422,444 378,454 334,461 290,463 246,461 202,454 158,444 118,432 99,423"/>
+
+        <!-- ── COMPASS LABELS ── -->
+        <text x="290" y="53" text-anchor="middle" fill="#EDE4D3" font-family="JetBrains Mono,monospace" font-size="13" font-weight="600" letter-spacing="2">N</text>
+        <text x="290" y="543" text-anchor="middle" fill="#EDE4D3" font-family="JetBrains Mono,monospace" font-size="13" font-weight="600" letter-spacing="2">S</text>
+        <text x="537" y="299" text-anchor="start"  fill="#EDE4D3" font-family="JetBrains Mono,monospace" font-size="13" font-weight="600" letter-spacing="2">E</text>
+        <text x="43"  y="299" text-anchor="end"    fill="#EDE4D3" font-family="JetBrains Mono,monospace" font-size="13" font-weight="600" letter-spacing="2">W</text>
+        <text x="462" y="140" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1">NE</text>
+        <text x="118" y="140" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1">NW</text>
+        <text x="462" y="460" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1">SE</text>
+        <text x="118" y="460" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1">SW</text>
+
+        <!-- ── HOUR LABELS — just outside horizon ── -->
+        <g fill="#8A8273" font-family="JetBrains Mono,monospace" font-size="8.5">
+          <text x="524" y="299" text-anchor="start">6AM</text>
+          <text x="56"  y="299" text-anchor="end">6PM</text>
+          <text x="519" y="339" text-anchor="start">7AM</text>
+          <text x="61"  y="339" text-anchor="end">5PM</text>
+          <text x="507" y="382" text-anchor="start">8AM</text>
+          <text x="73"  y="382" text-anchor="end">4PM</text>
+          <text x="484" y="427" text-anchor="start">9AM</text>
+          <text x="96"  y="427" text-anchor="end">3PM</text>
+          <text x="442" y="474" text-anchor="start">10</text>
+          <text x="138" y="474" text-anchor="end">2PM</text>
+          <text x="378" y="513" text-anchor="start">11</text>
+          <text x="202" y="513" text-anchor="end">1PM</text>
+          <text x="290" y="530" text-anchor="middle">NOON</text>
+        </g>
+
+        <!-- ── ZENITH + NOON DOTS ── -->
+        <circle cx="290" cy="295" r="3" fill="rgba(237,228,211,.2)" stroke="rgba(237,228,211,.4)" stroke-width="1"/>
+        <!-- Summer noon: alt=71.2° → r=48 Az=180° → (290, 343) -->
+        <circle cx="290" cy="343" r="4.5" fill="#D4A24C" opacity=".9"/>
+        <text x="302" y="339" fill="#D4A24C" font-family="JetBrains Mono,monospace" font-size="8.5" letter-spacing=".5">JUN 21 · 71°</text>
+        <!-- Equinox noon: alt=47.7° → r=108 Az=180° → (290, 403) -->
+        <circle cx="290" cy="403" r="3.5" fill="rgba(237,228,211,.6)"/>
+        <text x="302" y="399" fill="rgba(237,228,211,.5)" font-family="JetBrains Mono,monospace" font-size="8.5" letter-spacing=".5">EQX · 48°</text>
+        <!-- Winter noon: alt=24.3° → r=168 Az=180° → (290, 463) -->
+        <circle cx="290" cy="463" r="4.5" fill="#9FC8D4" opacity=".9"/>
+        <text x="302" y="459" fill="#9FC8D4" font-family="JetBrains Mono,monospace" font-size="8.5" letter-spacing=".5">DEC 21 · 25°</text>
+
+        <!-- ── LEGEND (upper-left) ── -->
+        <g transform="translate(16,16)">
+          <line x1="0" y1="8"  x2="20" y2="8"  stroke="#D4A24C" stroke-width="2.25"/>
+          <text x="24" y="12" fill="#D4A24C" font-family="JetBrains Mono,monospace" font-size="8.5">Jun 21 — summer solstice</text>
+          <line x1="0" y1="24" x2="20" y2="24" stroke="rgba(237,228,211,.5)" stroke-width="1.25" stroke-dasharray="6 3"/>
+          <text x="24" y="28" fill="rgba(237,228,211,.5)" font-family="JetBrains Mono,monospace" font-size="8.5">Mar/Sep 21 — equinox</text>
+          <line x1="0" y1="40" x2="20" y2="40" stroke="#9FC8D4" stroke-width="2"/>
+          <text x="24" y="44" fill="#9FC8D4" font-family="JetBrains Mono,monospace" font-size="8.5">Dec 21 — winter solstice</text>
+        </g>
+      </svg>
+      <figcaption><b>Sun Path — Detroit 42.3°N</b>Equidistant polar projection. N at top, S at bottom, E right, W left. Distance from center = altitude (center = zenith 90°; edge = horizon 0°). Radial lines are solar hours. Summer arc (amber) rises NE and sets NW, peaking at 71° altitude. Winter arc (blue) rises and sets SE/SW, peaking at 25°. Equinox (dashed) rises/sets due east/west.</figcaption>
+    </figure>
+  </section>
+
+  <!-- § 05b PRECEDENTS: DAYLIGHTING IN PERFORMANCE SPACES -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 05b</span>
+      <h2 class="sec-title">Precedents &mdash; <em>Light in Performance.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>The performing arts typology creates a direct conflict: a hall that needs to be dark and a lobby that needs to celebrate daylight. The projects below each handle that tension differently. Study the aperture strategy, not just the imagery.</p>
+    </div>
+
+    <div class="concept-grid">
+      <div class="concept-cell">
+        <div class="cc-label">Prefunction &middot; Glazed Envelope</div>
+        <h4>Walt Disney Concert Hall &mdash; <em>Los Angeles, 2003</em></h4>
+        <p>Frank Gehry&rsquo;s stainless-steel exterior wraps a hall that is completely blacked out acoustically. The prefunction garden and lobby areas are fully open to sky and indirect southern California light. The strategy: treat the hall as an opaque masonry object and wrap circulation around it in glass. <strong>The hall itself has zero windows.</strong></p>
+        <p><a href="https://www.archdaily.com/482149/ad-classics-walt-disney-concert-hall-frank-gehry" target="_blank" style="color:var(--blue);font-size:14px;">ArchDaily · Walt Disney Concert Hall &rarr;</a></p>
+      </div>
+      <div class="concept-cell">
+        <div class="cc-label">Clerestory &middot; Diffuse North Light</div>
+        <h4>Kimbell Art Museum &mdash; <em>Fort Worth, 1972</em></h4>
+        <p>Louis Kahn&rsquo;s cycloid vaults admit a narrow north-facing clerestory slot at the crown. A reflective aluminum louver below the slot converts direct sun into diffuse ambient light washing the entire vault. No direct sun ever reaches the floor. The result: even, consistent luminance across the full room without glare. This is the canonical reference for controlled toplighting. Not a performance hall, but the clerestory + diffuser logic applies directly to prefunction ceiling design.</p>
+        <p><a href="https://www.archdaily.com/422/kimbell-art-museum-louis-kahn" target="_blank" style="color:var(--blue);font-size:14px;">ArchDaily · Kimbell Art Museum &rarr;</a></p>
+      </div>
+      <div class="concept-cell">
+        <div class="cc-label">Glass Façade &middot; Performance Transparency</div>
+        <h4>Lindemann Performing Arts Center &mdash; <em>Brown University, 2023</em></h4>
+        <p>Snøhetta&rsquo;s building for Brown inverts the convention: the primary performance volume is wrapped in a two-story glass envelope that allows passersby to see into rehearsal and performance from the street. The strategy depends on the performance schedule &mdash; evening performances work under stage light; daytime rehearsals operate with exterior overhangs and fritted glass to manage glare. The transparency is the programmatic statement.</p>
+        <p><a href="https://www.archdaily.com/1005559/lindemann-performing-arts-center-snohetta" target="_blank" style="color:var(--blue);font-size:14px;">ArchDaily · Lindemann PAC &rarr;</a></p>
+      </div>
+      <div class="concept-cell">
+        <div class="cc-label">Prefunction &middot; Dramatic Atrium</div>
+        <h4>KILDEN Performing Arts Centre &mdash; <em>Kristiansand, Norway, 2012</em></h4>
+        <p>ALA Architects gave the foyer a dramatic south-facing undulating timber wall that serves as both acoustic surface and daylighting reflector. A long horizontal glazed slot at the base of the wall admits low-angle winter sun from the south, bouncing it off the warm timber into the prefunction. The hall behind is fully enclosed. The foyer is the public face of the building and the only daylit space. Study: how a single aperture can do significant daylighting work when paired with a large reflective surface.</p>
+        <p><a href="https://www.archdaily.com/209692/kilden-performing-arts-centre-ala-architects" target="_blank" style="color:var(--blue);font-size:14px;">ArchDaily · KILDEN &rarr;</a></p>
+      </div>
+    </div>
+
+    <div class="concept blue-rule" style="margin-top:24px;">
+      <div class="c-label">What to Notice</div>
+      <h4>In every case, the hall is dark. The <em>prefunction</em> is the daylight move.</h4>
+      <p>These buildings range from a fully opaque hall (Kimbell, Disney) to a transparent one (Lindemann), but the logic is consistent: blackout integrity in the performance volume; daylight celebrated in arrival and circulation. Your Act II assignment follows this same partition. The hall house is excluded from sDA/ASE analysis by design. The prefunction is where you prove daylight quality.</p>
+    </div>
+  </section>
+
+  <!-- § 06 LECTURE B: THE HALL & GLASS -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 06</span>
+      <h2 class="sec-title">The Hall, the Prefunction, &amp; <em>Glass.</em></h2>
+    </div>
+
+    <div class="lec">
+      <div class="lec-head">
+        <span><span class="name">Lecture B &mdash; Where Glass Can (and Cannot) Go</span></span>
+        <span>MEEB Ch. 10 &middot; pp. 15&ndash;25</span>
+      </div>
+      <h3>A performance hall and its prefunction are <em>two different problems.</em></h3>
+      <p class="one-liner">The house must be controllably dark. The prefunction must be daylit and inviting. Designing glass as if they were the same space is one of the most common errors in auditorium design.</p>
+
+      <h4>1 &middot; The Auditorium: A Room That Must Be Dark</h4>
+      <ul>
+        <li>Unlike an office or classroom, a performance hall is an explicitly <em>blackout-capable</em> environment. The theatrical lighting rig cannot compete with even modest daylight. A single uncontrolled window in the house can render stage lighting ineffective at 2 PM.</li>
+        <li>This does not mean zero glass in the house. It means every aperture must be operable blackout or strategically positioned where direct sun is architecturally impossible &mdash; typically clerestories oriented north, or high-level apertures designed around the season/time of use.</li>
+        <li><strong>The performance schedule is your most important design parameter.</strong> An evening-only venue has far more daylight freedom than a school auditorium used for afternoon assemblies.</li>
+        <li>Decision Log question for tonight: what times of day does your hall operate, and does that constrain which faces can have glass?</li>
+      </ul>
+
+      <h4>2 &middot; The Prefunction: A Room That Should Celebrate Daylight</h4>
+      <ul>
+        <li>The prefunction lobby, concourse, and bar areas are your primary daylight canvas. They operate when people are arriving and during intermission &mdash; typically in the evening for professional venues, but during the day for academic and community halls.</li>
+        <li>The prefunction has no acoustic constraint equivalent to the hall: it is a sociable, reverberant environment by design. Glass is not only acceptable; it is expected. A prefunction that reads dark and cave-like in daylight fails its social function.</li>
+        <li>For this course, treat the prefunction as the primary sDA/ASE analysis zone. This is where your Daylight Factor and climate-based metrics are measured. The hall gets blackout integrity; the prefunction gets daylight quality.</li>
+        <li>Glazing strategies to explore: floor-to-ceiling curtain wall (high sDA, high ASE risk), clerestory band above an opaque base (lower sDA, excellent glare control), punched windows with deep reveals (moderate both metrics, strong contrast with interior).</li>
+      </ul>
+
+      <h4>3 &middot; Daylight Metrics &mdash; What They Actually Mean</h4>
+      <ul>
+        <li><strong>Daylight Factor (DF):</strong> the ratio of interior illuminance to simultaneous exterior illuminance under a uniform overcast sky, expressed as a percentage. Simple, climate-agnostic, good for comparisons. A DF of 2% is considered minimum adequate; 5%+ is well-lit. Limitation: it ignores direct sun and clear sky conditions entirely &mdash; it assumes overcast. Still useful as a quick check.</li>
+        <li><strong>sDA (Spatial Daylight Autonomy):</strong> the percentage of the floor area that receives at least 300 lux for at least 50% of occupied hours, calculated using a full year of climate data. The LEED v4 and IES LM-83 target is <strong>sDA &ge; 55%</strong> for &ldquo;nominally daylit.&rdquo; This is your primary metric for the prefunction.</li>
+        <li><strong>ASE (Annual Sunlight Exposure):</strong> the percentage of the floor area that receives more than 1,000 lux for more than 250 hours per year. ASE measures <em>too much</em> sun &mdash; direct beam glare and overheating risk. LEED v4 target: <strong>ASE &le; 10%</strong>. If your sDA is high but your ASE is also high, you have a glare problem that your sDA score is masking.</li>
+        <li><strong>Read them together.</strong> High sDA + low ASE = well-daylit without glare. High sDA + high ASE = daylit but uncomfortable. Low sDA + low ASE = dark but glare-free. Low sDA + high ASE = worst case: only direct beam spots, not useful diffuse light.</li>
+      </ul>
+    </div>
+
+    <!-- sDA / ASE 2x2 -->
+    <div style="margin-top:28px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:0;padding-bottom:10px;border-bottom:1px solid var(--rule-strong);">Reading sDA &amp; ASE Together</div>
+      <div class="four-grid">
+        <div class="four-cell">
+          <div class="fc-label">sDA high &middot; ASE low</div>
+          <h5><em>Target zone.</em></h5>
+          <p>Well-daylit without direct glare. Diffuse light dominates. Typical result of north clerestory or south aperture with effective overhang. <strong>Aim for this in the prefunction.</strong></p>
+        </div>
+        <div class="four-cell">
+          <div class="fc-label">sDA high &middot; ASE high</div>
+          <h5><em>Glare risk.</em></h5>
+          <p>The space is daylit but direct beam is excessive. Occupants will draw blinds; effective sDA drops. Typical of unshaded south or west glass. Add shading devices or reduce WWR.</p>
+        </div>
+        <div class="four-cell">
+          <div class="fc-label">sDA low &middot; ASE low</div>
+          <h5><em>Dark but controlled.</em></h5>
+          <p>Insufficient daylight but no glare. Typical of north-facing or deeply recessed apertures that are undersized. Increase aperture area or use light-redirecting devices.</p>
+        </div>
+        <div class="four-cell">
+          <div class="fc-label">sDA low &middot; ASE high</div>
+          <h5><em>Worst case.</em></h5>
+          <p>Only direct-beam spots, no useful diffuse light. Deeply unsatisfying visually. Typical of small punched windows with no shading on east or west face. Complete redesign of aperture approach.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="concept blue-rule" style="margin-top:24px;">
+      <div class="c-label">Key Question for Tonight&rsquo;s Lab</div>
+      <h4>Where does glass <em>belong</em> on your specific hall?</h4>
+      <p>Every hall has a different site, orientation, and program. Tonight you find your answer for your hall. Start with the compass: which face of your hall faces north? That face gets the easiest daylight question &mdash; it&rsquo;s always indirect. Then work outward. What faces do your prefunction spaces occupy? What is the performance schedule that constrains house apertures?</p>
+      <p><strong>The sun path doesn&rsquo;t change.</strong> Your answer to these questions does, based on how you positioned your hall on site.</p>
+    </div>
+  </section>
+
+  <!-- § 07 LIGHTSTANZA SETUP -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 07</span>
+      <h2 class="sec-title">LightStanza &mdash; <em>First Look.</em></h2>
+    </div>
+
+    <div class="tool-callout">
+      <div class="t-label">Tool &middot; LightStanza &middot; Daylighting Workflow</div>
+      <h4>Act II uses LightStanza for daylighting analysis.</h4>
+      <p><strong>Act II (Weeks 4&ndash;5):</strong> You will use LightStanza&rsquo;s <em>daylighting module</em> &mdash; sun studies, sDA/ASE maps, climate-based analysis. This is tonight&rsquo;s setup and next week&rsquo;s deeper work.</p>
+      <p><strong>Act III (Weeks 6&ndash;8):</strong> LightStanza also has an <em>electric lighting module</em> (luminaire placement, illuminance maps, IES photometry). That part of the tutorial is for Act III &mdash; ignore it for now. Stay in the daylighting module tonight.</p>
+      <p><strong>You have already been sent an invitation to join the course LightStanza team.</strong> Accept it using your LTU email before lab time. If you did not receive the invitation, notify the instructor now.</p>
+      <p><strong>Pre-recorded video:</strong> The instructor has recorded a walkthrough of the LightStanza interface, the Rhino export workflow, and the Revit plugin install. Watch it in the Canvas Week 4 module before tonight&rsquo;s lab block if you haven&rsquo;t already.</p>
+      <ul>
+        <li><strong>Revit users:</strong> Install the plugin from <a href="https://lightstanza.com/plugins/" target="_blank" style="color:var(--blue);">lightstanza.com/plugins</a> &mdash; supports Revit 2021&ndash;2026 (not Revit LT). Restart Revit after install.</li>
+        <li><strong>Rhino users:</strong> Export as <strong>Collada (.dae)</strong> &mdash; File &rarr; Export Selected &rarr; Collada. Keep layers. Drag-and-drop the .dae file into LightStanza.</li>
+        <li><strong>New project:</strong> Click the <strong>+&nbsp;icon</strong> at the top of your LightStanza screen &rarr; New Design. Name it with your last name and hall (e.g., <code>Smith_Auditorium_W04</code>).</li>
+        <li><strong>Location:</strong> Site panel (globe icon, left sidebar) &rarr; Detroit, MI. LightStanza finds the nearest climate station automatically.</li>
+        <li><strong>Materials:</strong> Paint bucket icon, left sidebar. Assign reflectances: floor 20&ndash;30%, walls 50&ndash;60%, ceiling 70&ndash;80%.</li>
+        <li><strong>Tonight&rsquo;s goal:</strong> Run a June 21 and December 21 sun study. Capture screenshots before lab ends.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- § 08 LAB -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 08</span>
+      <h2 class="sec-title">Lab &mdash; <em>First Sun Study.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>Groups of 3. 65 minutes. Each person has their own model in LightStanza; you share a breakout room and talk through what you are seeing together. The group deliverable is a short verbal summary for the debrief: where did each person put glass, and what did the first sun study reveal?</p>
+    </div>
+
+    <div class="lab-sheet">
+      <div class="lab-row">
+        <div class="g">A</div>
+        <div>
+          <div class="tag">22:05 &mdash; 22:25</div>
+          <h5>Model <em>Import &amp; Setup</em></h5>
+          <p>Get your model into LightStanza. Set location, orientation, and reflectances. Verify north arrow. If your model fails to import, use the fallback (see below).</p>
+        </div>
+        <div class="tasks">
+          <ul>
+            <li>Import Collada (.dae) or use Revit plugin to new LightStanza project</li>
+            <li>Location: Detroit, MI · 42.33°N · 83.05°W</li>
+            <li>Orientation: confirm north arrow</li>
+            <li>Assign reflectances: floor 25%, walls 55%, ceiling 75%</li>
+            <li>Fallback: if import fails, use a simple box in LightStanza&rsquo;s built-in geometry editor (40m × 20m × 12m) with your compass orientation</li>
+          </ul>
+        </div>
+      </div>
+      <div class="lab-row">
+        <div class="g">B</div>
+        <div>
+          <div class="tag">22:25 &mdash; 22:55</div>
+          <h5><em>Solstice</em> Sun Studies</h5>
+          <p>Run four solar positions. Screenshot each. Look for: which surfaces are sunlit, where shadows fall on the prefunction, and what time windows of direct exposure exist for each face.</p>
+        </div>
+        <div class="tasks">
+          <ul>
+            <li>June 21 · 10:00 AM local &mdash; screenshot and save</li>
+            <li>June 21 · 2:00 PM local &mdash; screenshot and save</li>
+            <li>December 21 · Noon &mdash; screenshot and save</li>
+            <li>One more of your choice (worst case for your orientation)</li>
+            <li>Label each screenshot with date, time, and compass orientation</li>
+          </ul>
+        </div>
+      </div>
+      <div class="lab-row">
+        <div class="g">C</div>
+        <div>
+          <div class="tag">22:55 &mdash; 23:10</div>
+          <h5><em>Aperture Stance</em> &amp; Decision Log</h5>
+          <p>Based on what you just saw, commit to a first-pass aperture strategy. This will evolve in Week 5 &mdash; tonight is a stake in the ground, not a final answer.</p>
+        </div>
+        <div class="tasks">
+          <ul>
+            <li>Identify which face(s) of your prefunction can receive glass</li>
+            <li>Identify what the hall house face constraint is (what face cannot have uncontrolled glass and why)</li>
+            <li>Write Decision Log Entry 5: aperture stance. Format: Constraint / Decision / Trade-off</li>
+            <li>Post one screenshot to the Lucid whiteboard with a 1-sentence annotation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 09 WEEK 4 DELIVERABLE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">§ 09</span>
+      <h2 class="sec-title">Week 4 <em>Deliverable.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>Due <strong>Tuesday, June 17 at 11:59 PM</strong> via Canvas. This is the first Act II weekly. Keep it tight &mdash; this is a strategy document, not a finished analysis. You will refine everything in Week 5.</p>
+    </div>
+
+    <div class="deliverable">
+      <div class="label">Week 4 Deliverable &middot; Daylighting Strategy</div>
+      <h4>Aperture Strategy &amp; First Sun Study</h4>
+      <ul>
+        <li><strong>Sun study screenshots (4 minimum)</strong> &mdash; labeled with date, time, and orientation. Export from LightStanza as PNG or PDF.</li>
+        <li><strong>Daylight zone diagram</strong> &mdash; annotated plan showing: prefunction daylighting zone, hall blackout zone, aperture face and approximate size. Can be Rhino, Revit, Illustrator, or hand-drawn and scanned. Clarity over finish.</li>
+        <li><strong>Aperture stance written summary</strong> &mdash; 2&ndash;3 sentences in the Canvas text field: which face(s) receive glass, what constraint limits the house, and what your first-pass shading approach is.</li>
+        <li><strong>Decision Log entry 5</strong> &mdash; aperture stance, written in the Google Doc. Must reference a specific solar geometry fact from tonight (e.g., &ldquo;south face at 42°N receives low-angle December sun at 25° altitude, requiring a horizontal overhang depth of X to block June 21 noon sun&rdquo;).</li>
+      </ul>
+    </div>
+
+    <div class="concept" style="margin-top:24px;">
+      <div class="c-label">Act II Roadmap &mdash; Weeks 4 &amp; 5</div>
+      <h4>Week 4 is the aperture strategy. Week 5 is the <em>performance proof.</em></h4>
+      <p>Tonight you commit to a stance: where glass goes and where it doesn&rsquo;t. Week 5 you run the full climate-based sDA/ASE analysis, introduce glare control and visual comfort, and present your findings in the Act II pin-up.</p>
+      <p><strong>Act II package due:</strong> Wednesday, June 24 at 7:30 PM (extended from the original date). The full brief will be posted in Canvas this week &mdash; read it before next Wednesday so you know what the pin-up requires.</p>
+    </div>
+
+    <div class="checklist" style="margin-top:28px;">
+      <div class="check">
+        <div class="box"></div>
+        <div class="text"><strong>Before submitting Week 4:</strong> four sun study screenshots labeled and exported from LightStanza.</div>
+      </div>
+      <div class="check">
+        <div class="box"></div>
+        <div class="text"><strong>Before submitting Week 4:</strong> daylight zone plan annotated with prefunction zone, hall zone, and aperture face.</div>
+      </div>
+      <div class="check">
+        <div class="box"></div>
+        <div class="text"><strong>Before submitting Week 4:</strong> aperture stance paragraph posted in Canvas text field.</div>
+      </div>
+      <div class="check">
+        <div class="box"></div>
+        <div class="text"><strong>Before submitting Week 4:</strong> Decision Log entry 5 written with a specific solar geometry reference.</div>
+      </div>
+      <div class="check">
+        <div class="box"></div>
+        <div class="text"><strong>Act I reminder:</strong> final submission due Sunday, June 7 at 11:59 PM.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>ARC 5443 &middot; Su 2026 &middot; Week 04</span>
+    <span>Prof. Neiswender &middot; Lawrence Technological University</span>
+    <span>Act II &middot; Daylighting</span>
+  </footer>
+
+</div>
+</body>
+</html>

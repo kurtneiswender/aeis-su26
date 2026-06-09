@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>2.5× Daylighting Rule — Section Explorer</title>
+<style>
+:root {
+  --paper:   #F1ECE0;
+  --ink:     #15130F;
+  --ink-s:   #3A3530;
+  --pencil:  #8C857A;
+  --rule:    #C9C0AE;
+  --accent:  #C8472B;
+  --green:   #2A7039;
+  --amber:   #9A6C10;
+  --sky0:    #A8D8EF;
+  --sky1:    #E0F2FB;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  background-image:
+    radial-gradient(rgba(21,19,15,.038) 1px, transparent 1px),
+    radial-gradient(rgba(21,19,15,.018) 1px, transparent 1px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 1px 2px;
+  color: var(--ink);
+  font-family: Georgia, 'Times New Roman', serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 3.5rem;
+  gap: 0;
+}
+
+/* ── HEADER ── */
+header { width: 100%; max-width: 860px; margin-bottom: 1.4rem; }
+.eyebrow {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 10px; letter-spacing: .32em; text-transform: uppercase;
+  color: var(--pencil); margin-bottom: .5rem;
+}
+h1 {
+  font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 400;
+  letter-spacing: -.02em; line-height: 1.1; color: var(--ink);
+  margin-bottom: .3rem;
+}
+h1 em { font-style: italic; color: var(--accent); }
+.subtitle { font-size: .9rem; color: var(--pencil); font-style: italic; }
+
+/* ── CANVAS ── */
+.canvas-wrap {
+  width: 100%; max-width: 860px;
+  border: 1.5px solid var(--rule);
+  background: #fff;
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 1px 0 rgba(21,19,15,.05), 0 20px 50px -20px rgba(21,19,15,.18);
+}
+canvas { display: block; width: 100%; height: auto; }
+
+/* ── CONTROLS ── */
+.controls {
+  width: 100%; max-width: 860px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+  align-items: start;
+}
+@media (max-width: 560px) { .controls { grid-template-columns: 1fr; } }
+
+.slider-block { display: flex; flex-direction: column; gap: .55rem; }
+.slider-lbl {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 9.5px; letter-spacing: .28em; text-transform: uppercase; color: var(--pencil);
+}
+.slider-num {
+  font-size: 2.1rem; font-weight: 400; letter-spacing: -.03em; line-height: 1; color: var(--ink);
+}
+.slider-num sup { font-size: 1rem; color: var(--pencil); font-weight: 400; vertical-align: middle; margin-left: .15rem; }
+
+input[type=range] {
+  width: 100%; height: 3px;
+  -webkit-appearance: none; appearance: none;
+  background: var(--rule); border-radius: 2px; outline: none; cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--ink); border: 3.5px solid var(--paper);
+  box-shadow: 0 0 0 1.5px var(--ink);
+}
+input[type=range]::-moz-range-thumb {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--ink); border: 3.5px solid var(--paper);
+  box-shadow: 0 0 0 1.5px var(--ink);
+}
+.slider-ticks {
+  display: flex; justify-content: space-between;
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 9px; color: var(--pencil); letter-spacing: .08em;
+}
+
+/* ── STAT PANEL ── */
+.stats {
+  display: flex; flex-direction: column; gap: .65rem; min-width: 190px;
+}
+@media (max-width: 560px) { .stats { flex-direction: row; flex-wrap: wrap; } }
+
+.stat {
+  background: rgba(255,255,255,.55); border: 1.5px solid var(--rule);
+  border-radius: 2px; padding: .8rem 1rem; text-align: right;
+}
+@media (max-width: 560px) { .stat { flex: 1; min-width: 110px; text-align: center; } }
+.stat-lbl {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 9px; letter-spacing: .26em; text-transform: uppercase; color: var(--pencil);
+  margin-bottom: .3rem;
+}
+.stat-val {
+  font-size: 1.5rem; font-weight: 400; letter-spacing: -.02em; line-height: 1;
+  transition: color .3s;
+}
+.stat-val.green { color: var(--green); }
+.stat-val.amber { color: var(--amber); }
+
+.badge {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase;
+  padding: .32rem .75rem; border-radius: 2px; font-weight: 600;
+  border: 1px solid transparent; transition: all .35s;
+}
+.badge.good  { background: rgba(42,112,57,.1);  color: var(--green); border-color: rgba(42,112,57,.22); }
+.badge.caution { background: rgba(154,108,16,.1); color: var(--amber); border-color: rgba(154,108,16,.22); }
+
+/* ── NOTE ── */
+.rule-note {
+  width: 100%; max-width: 860px; margin-top: 1.1rem;
+  border-left: 3px solid var(--rule);
+  padding: .75rem 1rem;
+  font-size: .875rem; font-style: italic; color: var(--pencil); line-height: 1.65;
+}
+.rule-note strong { font-style: normal; color: var(--ink-s); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">EDRA57 · S201 · Daylighting</div>
+  <h1>2.5<em>×</em> Daylighting Rule — Section Explorer</h1>
+  <p class="subtitle">Adjust window head height to see how far daylight penetrates the floor plan</p>
+</header>
+
+<div class="canvas-wrap">
+  <canvas id="cv" width="860" height="440"></canvas>
+</div>
+
+<div class="controls">
+  <div class="slider-block">
+    <div class="slider-lbl">Window Head Height</div>
+    <div class="slider-num"><span id="ht">9.0</span><sup>ft</sup></div>
+    <input type="range" id="slider" min="7" max="12" step="0.5" value="9"/>
+    <div class="slider-ticks"><span>7 ft — low head</span><span>12 ft — high head</span></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-lbl">Daylit Depth</div>
+      <div class="stat-val" id="depth">22.5 ft</div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">% Floor Daylit</div>
+      <div class="stat-val green" id="pct">90%</div>
+    </div>
+    <div class="stat" style="border-color:transparent;background:transparent;padding:.3rem 0 0;text-align:right;">
+      <span class="badge good" id="badge">✓ Well-Daylit</span>
+    </div>
+  </div>
+</div>
+
+<div class="rule-note">
+  <strong>The 2.5× Rule:</strong> The primary daylit zone extends from the window wall to a depth equal to 2.5 times the window head height. Room: 25 ft deep × 14 ft ceiling × 3.5 ft sill. Well-daylit threshold: ≥ 75 % of floor area.
+</div>
+
+<script>
+/* ═══ CONSTANTS ═══ */
+const SC     = 22;          // px per foot
+const R_D    = 25;          // room depth  (ft)
+const R_H    = 14;          // room height (ft)
+const SILL   = 3.5;         // sill height (ft)
+const EXT    = 4;           // exterior zone shown (ft)
+const WALL   = 1.5;         // wall thickness (ft)
+
+/* Canvas layout (px) */
+const ML = 52, MT = 46, MR = 44, MB = 72;
+const X_EL  = ML;                           // exterior left
+const X_WE  = ML + EXT * SC;               // wall exterior face  = 140
+const X_WI  = X_WE + WALL * SC;            // wall interior face  = 173  (room start)
+const X_BAK = X_WI + R_D * SC;             // back wall           = 723
+const CW    = X_BAK + MR;                  // canvas width        = 767  → padded to 860 by white bg
+const Y_CEI = MT;                           // ceiling y           = 46
+const Y_FLR = MT + R_H * SC;               // floor y             = 354
+const CH    = Y_FLR + MB;                  // canvas height       = 426
+
+/* Overwrite canvas size to fit */
+const cv  = document.getElementById('cv');
+cv.width  = CW + 80;   // breathing room right
+cv.height = CH + 14;
+const ctx = cv.getContext('2d');
+
+const MONO  = "'SF Mono',Menlo,Consolas,monospace";
+const SERIF = "Georgia,serif";
+
+/* ═══ DRAW ═══ */
+let raf;
+function draw(t) {
+  ctx.clearRect(0, 0, cv.width, cv.height);
+
+  const head = parseFloat(document.getElementById('slider').value);
+  const dlit  = Math.min(2.5 * head, R_D);
+  const pct   = Math.round(dlit / R_D * 100);
+  const good  = pct >= 75;
+
+  const Y_HD  = Y_FLR - head * SC;          // window head y
+  const Y_SL  = Y_FLR - SILL * SC;          // window sill y
+  const X_DB  = X_WI + dlit * SC;           // daylit boundary x
+
+  /* shimmer pulse */
+  const shim = 0.88 + 0.12 * Math.sin(t * 0.0008);
+
+  /* ── EXTERIOR SKY ── */
+  const skyG = ctx.createLinearGradient(0, Y_CEI - 40, 0, Y_FLR);
+  skyG.addColorStop(0,   '#8EC9E8');
+  skyG.addColorStop(0.6, '#CAE9F7');
+  skyG.addColorStop(1,   '#E4F5FC');
+  ctx.fillStyle = skyG;
+  ctx.fillRect(X_EL, Y_CEI - 46, X_WI - X_EL, Y_FLR - Y_CEI + 46);
+
+  /* exterior ground */
+  ctx.fillStyle = '#C8BC9A';
+  ctx.fillRect(X_EL, Y_FLR, X_WE - X_EL, 18);
+
+  /* ── SUN ── */
+  const sx = X_EL + 30, sy = Y_CEI - 22, sr = 13;
+  const sunG = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr * 2.8);
+  sunG.addColorStop(0,   `rgba(255,220,70,${0.45 * shim})`);
+  sunG.addColorStop(1,   'rgba(255,210,50,0)');
+  ctx.fillStyle = sunG;
+  ctx.beginPath(); ctx.arc(sx, sy, sr * 2.8, 0, Math.PI * 2); ctx.fill();
+
+  ctx.fillStyle = `rgba(255,200,40,${shim})`;
+  ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI * 2); ctx.fill();
+
+  /* ── ROOM BACKGROUND ── */
+  ctx.fillStyle = '#FAFAF7';
+  ctx.fillRect(X_WI, Y_CEI, R_D * SC, R_H * SC);
+
+  /* ── LIGHT CONE (triangle: head → floor boundary → floor-at-wall) ── */
+  const coneG = ctx.createLinearGradient(X_WI, 0, X_DB, 0);
+  coneG.addColorStop(0,   `rgba(255,225,80,${0.52 * shim})`);
+  coneG.addColorStop(0.55, `rgba(255,215,60,${0.28 * shim})`);
+  coneG.addColorStop(1,   'rgba(255,210,40,0.04)');
+  ctx.beginPath();
+  ctx.moveTo(X_WI, Y_HD);
+  ctx.lineTo(Math.min(X_DB, X_BAK), Y_FLR);
+  ctx.lineTo(X_WI, Y_FLR);
+  ctx.closePath();
+  ctx.fillStyle = coneG;
+  ctx.fill();
+
+  /* ── UNDAYLIT ZONE ── */
+  if (dlit < R_D) {
+    const darkG = ctx.createLinearGradient(X_DB, 0, X_BAK, 0);
+    darkG.addColorStop(0, 'rgba(35,28,20,0.08)');
+    darkG.addColorStop(1, 'rgba(35,28,20,0.24)');
+    ctx.fillStyle = darkG;
+    ctx.fillRect(X_DB, Y_CEI, X_BAK - X_DB, R_H * SC);
+  }
+
+  /* ── SUN RAYS into room ── */
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(X_WI, Y_CEI, R_D * SC, R_H * SC);
+  ctx.clip();
+  const raySlope = 0.28;
+  for (let i = 0; i <= 5; i++) {
+    const ry0 = Y_HD + (i / 5) * (Y_SL - Y_HD);
+    const rxEnd = X_BAK;
+    const ryEnd = ry0 + (rxEnd - X_WI) * raySlope;
+    const rG = ctx.createLinearGradient(X_WI, ry0, rxEnd, ryEnd);
+    rG.addColorStop(0,    `rgba(255,240,120,${0.28 * shim})`);
+    rG.addColorStop(0.45, `rgba(255,230,90,${0.12 * shim})`);
+    rG.addColorStop(1,    'rgba(255,220,60,0.01)');
+    ctx.strokeStyle = rG;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath(); ctx.moveTo(X_WI, ry0); ctx.lineTo(rxEnd, ryEnd); ctx.stroke();
+  }
+  ctx.restore();
+
+  /* ── FLOOR ZONE COLOUR STRIP ── */
+  const FH = 7;
+  const clr = good ? 'rgba(42,112,57,0.78)' : 'rgba(154,108,16,0.78)';
+  ctx.fillStyle = clr;
+  ctx.fillRect(X_WI, Y_FLR, Math.min(dlit * SC, R_D * SC), FH);
+
+  if (dlit < R_D) {
+    ctx.fillStyle = 'rgba(40,32,22,0.32)';
+    ctx.fillRect(X_DB, Y_FLR, X_BAK - X_DB, FH);
+  }
+
+  /* ── GEOMETRY REFERENCE LINE (head → floor boundary) ── */
+  ctx.save();
+  ctx.strokeStyle = `rgba(200,71,43,0.55)`;
+  ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
+  ctx.beginPath();
+  ctx.moveTo(X_WI, Y_HD);
+  ctx.lineTo(Math.min(X_DB, X_BAK), Y_FLR);
+  ctx.stroke();
+  ctx.restore();
+
+  /* ── DAYLIT BOUNDARY vertical line ── */
+  if (dlit < R_D) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(200,71,43,0.7)';
+    ctx.lineWidth = 1.5; ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(X_DB, Y_CEI + 4); ctx.lineTo(X_DB, Y_FLR + FH + 2);
+    ctx.stroke();
+    /* triangle marker at ceiling */
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(200,71,43,0.7)';
+    ctx.beginPath();
+    ctx.moveTo(X_DB - 5, Y_CEI); ctx.lineTo(X_DB + 5, Y_CEI); ctx.lineTo(X_DB, Y_CEI + 10);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  /* ── EXTERIOR WALL (hatch fill) ── */
+  ctx.fillStyle = '#C8BFB0';
+  ctx.fillRect(X_WE, Y_CEI, WALL * SC, R_H * SC);
+  ctx.save();
+  ctx.strokeStyle = 'rgba(80,68,55,0.28)'; ctx.lineWidth = 0.9;
+  for (let hx = X_WE - 8; hx < X_WI + 8; hx += 7) {
+    ctx.beginPath(); ctx.moveTo(hx, Y_CEI); ctx.lineTo(hx + 16, Y_FLR); ctx.stroke();
+  }
+  ctx.restore();
+
+  /* Window opening — sky colour */
+  ctx.fillStyle = '#C8E8F5';
+  ctx.fillRect(X_WE, Y_HD, WALL * SC, Y_SL - Y_HD);
+
+  /* glazing bar */
+  ctx.save();
+  ctx.strokeStyle = 'rgba(90,150,190,0.55)'; ctx.lineWidth = 0.9;
+  const wxm = X_WE + (WALL * SC) / 2;
+  const wym = Y_HD + (Y_SL - Y_HD) / 2;
+  ctx.beginPath(); ctx.moveTo(wxm, Y_HD); ctx.lineTo(wxm, Y_SL); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(X_WE, wym); ctx.lineTo(X_WI, wym); ctx.stroke();
+  ctx.restore();
+
+  /* ── ROOM OUTLINE ── */
+  ctx.strokeStyle = '#15130F'; ctx.lineWidth = 2;
+  /* ceiling */
+  ln(X_WI, Y_CEI, X_BAK, Y_CEI);
+  /* floor */
+  ln(X_WI, Y_FLR, X_BAK, Y_FLR);
+  /* back wall */
+  ln(X_BAK, Y_CEI, X_BAK, Y_FLR + FH);
+  /* interior wall face above/below window */
+  ctx.lineWidth = 1.8;
+  ln(X_WI, Y_CEI, X_WI, Y_HD);
+  ln(X_WI, Y_SL,  X_WI, Y_FLR);
+
+  /* ── WALL OUTLINE ── */
+  ctx.strokeStyle = '#15130F'; ctx.lineWidth = 2;
+  /* top + bottom of wall */
+  ln(X_WE, Y_CEI, X_WI, Y_CEI);
+  ln(X_WE, Y_FLR, X_WI, Y_FLR);
+  /* exterior face above/below window */
+  ln(X_WE, Y_CEI, X_WE, Y_HD);
+  ln(X_WE, Y_SL,  X_WE, Y_FLR);
+  /* head + sill lines */
+  ctx.lineWidth = 1.5;
+  ln(X_WE, Y_HD, X_WI, Y_HD);
+  ln(X_WE, Y_SL, X_WI, Y_SL);
+
+  /* ── ZONE LABELS ── */
+  ctx.save();
+  ctx.font = `500 10px ${MONO}`; ctx.textAlign = 'center';
+  ctx.letterSpacing = '0.16em';
+
+  /* daylit */
+  const lcx = X_WI + Math.min(dlit, R_D) * SC / 2;
+  const lcy = Y_FLR - R_H * SC * 0.46;
+  ctx.fillStyle = good ? 'rgba(42,112,57,0.75)' : 'rgba(154,108,16,0.80)';
+  ctx.fillText('DAYLIT', lcx, lcy);
+  ctx.fillText('ZONE',   lcx, lcy + 15);
+
+  /* undaylit */
+  if (dlit < R_D) {
+    const ucx = X_DB + (X_BAK - X_DB) / 2;
+    ctx.fillStyle = 'rgba(80,65,48,0.50)';
+    ctx.fillText('UNDAYLIT', ucx, lcy);
+  }
+  ctx.restore();
+
+  /* ── HEAD HEIGHT DIMENSION ── */
+  /* vertical annotation on exterior face of wall */
+  dimV(X_WE - 18, Y_FLR, Y_HD, `${head.toFixed(1)} ft`);
+
+  /* ── DAYLIT DEPTH DIMENSION ── */
+  /* horizontal below floor */
+  dimH(X_WI, Math.min(X_DB, X_BAK), Y_FLR + FH + 18,
+       dlit < R_D ? `${dlit.toFixed(1)} ft daylit` : `${dlit.toFixed(0)} ft — full depth daylit`);
+
+  /* ── ROOM DEPTH LABEL (ceiling level) ── */
+  ctx.save();
+  ctx.font = `10px ${MONO}`;
+  ctx.fillStyle = '#9A937A';
+  ctx.textAlign = 'center';
+  ctx.fillText('25 FT ROOM DEPTH', X_WI + R_D * SC / 2, Y_CEI - 16);
+  ctx.restore();
+
+  /* ── WINDOW LABEL ── */
+  ctx.save();
+  ctx.font = `9px ${MONO}`; ctx.fillStyle = '#5A92B0'; ctx.textAlign = 'center';
+  ctx.fillText('WINDOW', X_WE + WALL * SC / 2, Y_HD - 9);
+  ctx.restore();
+
+  /* ── UPDATE UI ── */
+  document.getElementById('ht').textContent    = head.toFixed(1);
+  document.getElementById('depth').textContent = `${dlit.toFixed(1)} ft`;
+  const pe = document.getElementById('pct');
+  pe.textContent = pct + '%';
+  pe.className   = 'stat-val ' + (good ? 'green' : 'amber');
+  const be = document.getElementById('badge');
+  be.textContent = good ? '✓ Well-Daylit' : '⚠ Under-Lit';
+  be.className   = 'badge ' + (good ? 'good' : 'caution');
+
+  raf = requestAnimationFrame(draw);
+}
+
+/* ── HELPERS ── */
+function ln(x1, y1, x2, y2) {
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+}
+
+function dimV(x, yBot, yTop, label) {
+  /* vertical dimension annotation */
+  ctx.save();
+  ctx.strokeStyle = '#9A937A'; ctx.fillStyle = '#9A937A'; ctx.lineWidth = 1;
+  const T = 5;
+  ln(x, yBot, x, yTop);
+  ln(x - T, yBot, x + T, yBot);
+  ln(x - T, yTop, x + T, yTop);
+  /* rotated label */
+  ctx.translate(x - 9, (yBot + yTop) / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.font = `9px ${MONO}`; ctx.textAlign = 'center';
+  ctx.fillText(label, 0, 0);
+  ctx.restore();
+}
+
+function dimH(x1, x2, y, label) {
+  /* horizontal dimension annotation */
+  ctx.save();
+  ctx.strokeStyle = '#9A937A'; ctx.fillStyle = '#9A937A'; ctx.lineWidth = 1;
+  const T = 4;
+  ln(x1, y, x2, y);
+  ln(x1, y - T, x1, y + T);
+  ln(x2, y - T, x2, y + T);
+  ctx.font = `9px ${MONO}`; ctx.textAlign = 'center';
+  ctx.fillText(label, (x1 + x2) / 2, y + 13);
+  ctx.restore();
+}
+
+/* Start loop */
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>

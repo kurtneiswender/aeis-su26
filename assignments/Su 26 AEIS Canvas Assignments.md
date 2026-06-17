@@ -282,7 +282,7 @@ Act III closes with a lighting and electrical package, presented at the Week 9 p
 
 ## Encore — The Full Hall
 
-**Canvas settings:** Points: 60 · Submission: File Upload + Text Entry · Due: Tue 07·28 · 11:59 PM
+**Canvas settings:** Points: 60 · Submission: File Upload + Text Entry · Due: Sun 07·26 · 11:59 PM
 
 ---
 
@@ -306,12 +306,12 @@ The Encore brings all three acts together into a single submission package. Full
 | Week 2 Deliverable | ✅ Ready to post | 10 | Tue 06·02 |
 | Act I Review | ✅ Ready to post — assignment + rubric attached | 20 | Wed 06·10 |
 | Week 4 Deliverable | 🔲 TBD | 10 | Sat 06·20 |
-| Act II Review | 🔲 TBD | 20 | Wed 06·24 |
+| Act II Review (Week 6) | 🔲 TBD | 20 | Wed 06·24 |
 | Week 6 Deliverable | 🔲 TBD | 10 | Tue 06·30 |
 | Week 7 Deliverable | 🔲 TBD | 10 | Tue 07·07 |
 | Week 8 Deliverable | 🔲 TBD | 10 | Tue 07·14 |
 | Act III Review (Week 9) | 🔲 TBD | 20 | Tue 07·21 |
-| Encore | 🔲 TBD | 60 | Tue 07·28 |
+| Encore | 🔲 TBD | 60 | Sun 07·26 |
 | **Total (graded)** | | **180 pts** | |
 
 **Note on course total:** Memory has 6 weekly × 10 + 3 Act Reviews × 20 + Encore 60 = 180 pts graded, plus 20 pts participation = 200 pts. Verify against the posted syllabus before publishing. The Act I Rubric (20 pts = 10%) implies a 200-pt course scale — adjust point values in Canvas if your gradebook uses a different scale.

@@ -244,38 +244,38 @@ This week you build the load summary and begin panel schedule layout. Deliverabl
 ---
 ---
 
+## Week 8 Deliverable — Electrical, Panels & PV
+
+**Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Tue 07·14 · 11:59 PM
+
+---
+
+[CONTENT TBD — Act III / Electrical. Update when Week 8 materials are finalized.]
+
+A work week building toward the Act III pin-up in Week 9. You complete the power plan: panel schedule, circuit groupings, load summary, and PV sizing. Deliverable details will be posted in the Week 8 module before class.
+
+**Placeholder checklist (update before posting):**
+- [ ] Panel schedule + circuit groupings
+- [ ] Load summary + PV sizing calc
+- [ ] Decision Log entries for Week 8
+
+---
+---
+
 ## Act III Review — The Hall, Powered & Illuminated
 
-**Canvas settings:** Points: 20 · Submission: File Upload + Text Entry · Due: Wed 07·15 · 11:59 PM
+**Canvas settings:** Points: 20 · Submission: File Upload + Text Entry · Due: Tue 07·21 · 11:59 PM
 
 ---
 
 [CONTENT TBD — Act III / Lighting + Electrical. Update when the Act III assignment and rubric are finalized.]
 
-Act III closes with a lighting and electrical package. Full brief, rubric, and submission instructions will be posted in the Act III Assignment document in this module.
+Act III closes with a lighting and electrical package, presented at the Week 9 pin-up review. Full brief, rubric, and submission instructions will be posted in the Act III Assignment document in this module. The cross-system integration/tightening work carries into the Encore (Week 10).
 
 **Placeholder checklist (update before posting):**
 - [ ] Act III Assignment HTML built and posted
 - [ ] Act III Rubric posted
 - [ ] Submission instructions added here
-
----
----
-
-## Week 9 Deliverable — Integration Study
-
-**Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Tue 07·21 · 11:59 PM
-
----
-
-[CONTENT TBD — Integration week. Update when Week 9 materials are finalized.]
-
-This week you examine where your three systems interact — where acoustic decisions constrained daylighting, where lighting layout affected electrical distribution, where geometry served (or conflicted with) multiple systems simultaneously.
-
-**Placeholder checklist (update before posting):**
-- [ ] Integration diagram or annotated plan
-- [ ] Cross-system conflict/resolution table
-- [ ] Decision Log entries 18–20
 
 ---
 ---
@@ -309,8 +309,8 @@ The Encore brings all three acts together into a single submission package. Full
 | Act II Review | 🔲 TBD | 20 | Wed 06·24 |
 | Week 6 Deliverable | 🔲 TBD | 10 | Tue 06·30 |
 | Week 7 Deliverable | 🔲 TBD | 10 | Tue 07·07 |
-| Act III Review | 🔲 TBD | 20 | Wed 07·15 |
-| Week 9 Deliverable | 🔲 TBD | 10 | Tue 07·21 |
+| Week 8 Deliverable | 🔲 TBD | 10 | Tue 07·14 |
+| Act III Review (Week 9) | 🔲 TBD | 20 | Tue 07·21 |
 | Encore | 🔲 TBD | 60 | Tue 07·28 |
 | **Total (graded)** | | **180 pts** | |
 

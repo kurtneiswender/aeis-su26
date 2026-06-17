@@ -145,6 +145,37 @@ a { color: var(--amber); }
 
 /* RECORDING NOTE */
 .rec-note { font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: .08em; color: rgba(14,13,11,.4); text-transform: uppercase; text-align: right; margin: -20px 0 32px; }
+
+/* CONVERGE DIAGRAM — two front-ends, one engine */
+.converge { margin: 26px 0 8px; border: 1px solid var(--rule); border-radius: 10px; padding: 22px; background: rgba(14,13,11,.025); }
+.converge-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.cv-sources { display: flex; flex-direction: column; gap: 10px; }
+.cv-box { text-align: center; padding: 12px 16px; border-radius: 6px; min-width: 132px; font-size: .9rem; font-weight: 600; line-height: 1.25; border: 1.5px solid var(--rule); }
+.cv-box .cv-tag { display: block; font-family: 'JetBrains Mono', monospace; font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 400; margin-bottom: 4px; }
+.cv-box.rhino { border-color: var(--amber); background: rgba(212,162,76,.10); }
+.cv-box.rhino .cv-tag { color: #9a7426; }
+.cv-box.revit { border-color: var(--blue); background: rgba(159,200,212,.16); }
+.cv-box.revit .cv-tag { color: #3f7d92; }
+.cv-arrow { font-size: 1.3rem; color: rgba(14,13,11,.3); flex-shrink: 0; }
+.cv-engine { text-align: center; padding: 16px 20px; border-radius: 8px; background: var(--ink); color: var(--paper); flex: 1; min-width: 150px; }
+.cv-engine .cv-tag { display: block; font-family: 'JetBrains Mono', monospace; font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: var(--amber); margin-bottom: 5px; }
+.cv-engine strong { font-family: 'Fraunces', serif; font-size: 1.15rem; }
+.cv-chain { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--rule); justify-content: center; }
+.cv-chip { font-family: 'JetBrains Mono', monospace; font-size: .7rem; letter-spacing: .04em; padding: 6px 11px; border: 1px solid var(--rule); border-radius: 20px; background: var(--paper); white-space: nowrap; }
+.cv-chip.end { border-color: var(--amber); background: rgba(212,162,76,.12); color: #8a6a22; font-weight: 600; }
+.cv-chain .cv-arrow { font-size: 1rem; }
+@media (max-width: 600px){ .converge-row { flex-direction: column; } .cv-sources { flex-direction: row; } }
+
+/* RUN OF SHOW */
+.ros { margin: 22px 0; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.ros-row { display: grid; grid-template-columns: 70px 1fr; border-bottom: 1px solid var(--rule); }
+.ros-row:last-child { border-bottom: none; }
+.ros-row .ros-t { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--amber); padding: 12px 14px; background: rgba(14,13,11,.03); border-right: 1px solid var(--rule); font-weight: 600; }
+.ros-row .ros-b { padding: 12px 16px; font-size: .94rem; }
+.ros-b .src { font-family: 'JetBrains Mono', monospace; font-size: .58rem; letter-spacing: .08em; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; margin-right: 8px; vertical-align: middle; }
+.ros-b .src.rhino { background: rgba(212,162,76,.18); color: #8a6a22; }
+.ros-b .src.revit { background: rgba(159,200,212,.25); color: #3f7d92; }
+.ros-b .src.both { background: rgba(14,13,11,.08); color: rgba(14,13,11,.6); }
 </style>
 </head>
 <body>
@@ -158,7 +189,7 @@ a { color: var(--amber); }
   <div class="meta-strip">
     <div class="meta-item">Software<strong>LightStanza (browser)</strong></div>
     <div class="meta-item">Model Source<strong>Rhino (.dae) / Revit (plugin)</strong></div>
-    <div class="meta-item">Act II Due<strong>Wed 06&middot;24 &middot; 7:30 PM</strong></div>
+    <div class="meta-item">Act II Due<strong>Wed 06&middot;24 &middot; 11:59 PM</strong></div>
     <div class="meta-item">Reference<strong>MEEB Ch. 6, 10, 15, 16</strong></div>
   </div>
 </header>
@@ -180,6 +211,15 @@ a { color: var(--amber); }
     <div class="wf-step"><div class="wf-num">Part 4 &nbsp;&middot;&nbsp; ~5 min</div><div class="wf-label">Reports &amp; Deliverables</div></div>
   </div>
 
+  <h3 style="font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;margin:30px 0 6px;">The Live Demo &mdash; ~12 min in class</h3>
+  <p>To close Week 5 I&rsquo;ll take the same auditorium into LightStanza from <em>both</em> tools, so you see where the Rhino and Revit paths differ and where they merge. Follow along, then run it with your own hall in the lab.</p>
+  <div class="ros">
+    <div class="ros-row"><div class="ros-t">0:00</div><div class="ros-b"><span class="src rhino">Rhino</span><strong>Tag &amp; export.</strong> Drop an <code>LSGrid</code> plane over the prefunction, then Export Selected &rarr; Collada with layers on.</div></div>
+    <div class="ros-row"><div class="ros-t">0:03</div><div class="ros-b"><span class="src rhino">Rhino</span><strong>Drop in.</strong> Drag the <code>.dae</code> into LightStanza; watch the layers populate; glance at the Materials panel.</div></div>
+    <div class="ros-row"><div class="ros-t">0:06</div><div class="ros-b"><span class="src revit">Revit</span><strong>Sync the same hall.</strong> Add-Ins &rarr; LightStanza &rarr; select rooms &rarr; sync &mdash; materials arrive mapped, no export file.</div></div>
+    <div class="ros-row"><div class="ros-t">0:09</div><div class="ros-b"><span class="src both">Both</span><strong>Grid, run, read.</strong> Confirm north, grid the prefunction, run the annual study, read sDA &amp; ASE off the maps.</div></div>
+  </div>
+
   <div class="note"><strong>Account setup:</strong> You have been sent an email invitation to join the course LightStanza team. Accept it using your LTU email address &mdash; this grants you access through the course license. If you did not receive an invitation, notify the instructor immediately so you can be re-sent one via the Admin panel. Do not create a standalone free account; join through the team invitation.</div>
 
   <div class="note" style="margin-top:12px;"><strong>Revit plugin:</strong> Download the Revit plugin from <a href="https://lightstanza.com/plugins/" target="_blank"><strong>lightstanza.com/plugins</strong></a>. Supports Revit 2021&ndash;2026 (not Revit LT). Run the installer (.msi), then restart Revit. The plugin appears in your Revit Add-Ins tab.</div>
@@ -199,6 +239,25 @@ a { color: var(--amber); }
   <div class="section-num">§ 01</div>
   <h2>Getting Your Model In</h2>
   <p>LightStanza accepts models from Rhino (Collada .dae) and Revit (via plugin). The quality of your simulation depends almost entirely on how well the model is prepared before upload. A few minutes of cleanup now saves a lot of confusion later.</p>
+
+  <div class="converge">
+    <div class="converge-row">
+      <div class="cv-sources">
+        <div class="cv-box rhino"><span class="cv-tag">Modeled in</span>Rhino</div>
+        <div class="cv-box revit"><span class="cv-tag">Modeled in</span>Revit</div>
+      </div>
+      <span class="cv-arrow">&rarr;</span>
+      <div class="cv-engine"><span class="cv-tag">Cloud engine</span><strong>LightStanza</strong></div>
+    </div>
+    <div class="cv-chain">
+      <span class="cv-chip">Orient to north</span><span class="cv-arrow">&rarr;</span>
+      <span class="cv-chip">Set materials</span><span class="cv-arrow">&rarr;</span>
+      <span class="cv-chip">Place grid</span><span class="cv-arrow">&rarr;</span>
+      <span class="cv-chip">Run annual</span><span class="cv-arrow">&rarr;</span>
+      <span class="cv-chip end">sDA &amp; ASE</span>
+    </div>
+  </div>
+  <p style="font-size:.92rem;color:rgba(14,13,11,.6);">Two front-ends, one engine. Rhino exports a Collada <code>.dae</code>; Revit syncs through the plugin. Past the import step the two paths are identical &mdash; so take whichever holds your current model (most of you, Revit). The Rhino steps are below; Revit users skip to the plugin note that follows.</p>
 
   <div class="callout">
     <h3>Before You Upload: Model Checklist</h3>

@@ -172,7 +172,9 @@ NAAB alignment: SC.4B (primary) · SC.4E (secondary)
 
 ## Week 4 Deliverable — Daylighting Strategy
 
-**Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Tue 06·17 · 11:59 PM
+**Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Sat 06·20 · 11:59 PM (extended)
+
+**Extension note (announced Week 5):** The original Tuesday deadline was extended to **Sat 06·20 · 11:59 PM** for the entire class, no late penalty. The Week 4 live session was canceled (instructor conference travel) and the LightStanza intro is being re-covered live in the Week 5 class (Wed 06·17). Students who already submitted may resubmit by the new deadline; otherwise their existing submission stands. Act II package deadline is unchanged (Wed 06·24 · 11:59 PM).
 
 ---
 

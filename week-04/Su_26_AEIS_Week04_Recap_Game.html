@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · Daylight Jeopardy · Week 4 Recap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B;--ink-2:#161412;--ink-3:#1E1B17;
+    --paper:#EDE4D3;--paper-2:#D9CFB9;--paper-dim:#8A8273;
+    --amber:#D4A24C;--amber-soft:rgba(212,162,76,.10);--amber-line:rgba(212,162,76,.45);
+    --red:#C8472F;--blue:#9FC8D4;--green:#7FAF78;
+    --rule:rgba(237,228,211,.18);--rule-strong:rgba(237,228,211,.42);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  body{
+    font-family:"Newsreader",Georgia,serif;font-weight:380;font-size:18px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.5;
+  }
+  ::selection{background:var(--amber);color:var(--ink);}
+  .wrap{max-width:1280px;margin:0 auto;padding:32px 40px 80px;position:relative;z-index:2;}
+  @media (max-width:720px){.wrap{padding:24px 16px 60px}}
+
+  /* TOPBAR */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);padding-bottom:16px;border-bottom:1px solid var(--rule);
+  }
+  .topbar .act-tag{background:rgba(159,200,212,.10);border:1px solid rgba(159,200,212,.35);color:var(--blue);padding:3px 10px;font-size:10px;letter-spacing:.22em;}
+
+  /* HERO */
+  .hero{padding:28px 0 18px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:18px;}
+  .hero .kicker{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--amber);margin-bottom:12px;}
+  h1.title{font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;font-weight:380;font-size:clamp(40px,6.5vw,82px);line-height:.9;letter-spacing:-.03em;margin:0;}
+  h1.title em{font-style:italic;color:var(--blue);font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+  .hero .sub{max-width:430px;font-style:italic;color:var(--paper-2);font-size:15.5px;line-height:1.5;}
+
+  /* HOW TO PLAY */
+  .howto{margin-top:14px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:12px 18px;border:1px solid var(--rule);background:rgba(237,228,211,.02);font-size:14px;color:var(--paper-2);}
+  .howto b{color:var(--amber);font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;}
+  .howto .reset{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--paper-dim);background:transparent;border:1px solid var(--rule-strong);padding:7px 14px;cursor:pointer;}
+  .howto .reset:hover{color:var(--amber);border-color:var(--amber-line);}
+
+  /* SCOREBOARD */
+  .scoreboard{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px;}
+  .team{border:1px solid var(--rule-strong);background:var(--ink-2);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .team.lead{border-color:var(--amber);background:rgba(212,162,76,.06);}
+  .team input.tname{background:transparent;border:none;border-bottom:1px solid var(--rule);color:var(--paper);font-family:"Fraunces",serif;font-size:18px;font-variation-settings:"opsz" 36;width:60%;padding:2px 0;}
+  .team input.tname:focus{outline:none;border-bottom-color:var(--amber);}
+  .team .score{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:26px;color:var(--amber);letter-spacing:.02em;min-width:64px;text-align:right;}
+  .team .score.neg{color:var(--red);}
+  @media (max-width:680px){.scoreboard{grid-template-columns:1fr}}
+
+  /* BOARD */
+  .board{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:26px;}
+  .cat{
+    background:var(--ink-2);border:1px solid var(--amber-line);
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    padding:16px 10px;min-height:88px;
+    font-family:"Fraunces",serif;font-weight:380;font-size:clamp(14px,1.35vw,19px);line-height:1.08;
+    font-variation-settings:"opsz" 40,"SOFT" 40;color:var(--amber);letter-spacing:.01em;
+    text-transform:uppercase;
+  }
+  .tile{
+    position:relative;background:rgba(159,200,212,.05);border:1px solid var(--rule-strong);
+    min-height:92px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+    font-family:"JetBrains Mono",monospace;font-weight:700;font-size:clamp(22px,2.6vw,34px);
+    color:var(--amber);letter-spacing:.02em;transition:background .15s,transform .08s,box-shadow .15s;
+  }
+  .tile:hover{background:rgba(212,162,76,.12);box-shadow:inset 0 0 0 1px var(--amber-line);}
+  .tile:active{transform:scale(.985);}
+  .tile.used{background:rgba(237,228,211,.015);color:transparent;cursor:default;border-color:var(--rule);box-shadow:none;}
+  .tile.used::after{content:"✓";color:rgba(237,228,211,.10);font-size:30px;}
+  @media (max-width:680px){
+    .board{gap:6px;}
+    .cat{min-height:64px;padding:8px 5px;}
+    .tile{min-height:62px;}
+  }
+
+  /* CLUE OVERLAY */
+  .overlay{
+    position:fixed;inset:0;z-index:50;display:none;
+    background:rgba(8,7,6,.97);padding:5vh 6vw;
+    flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  }
+  .overlay.open{display:flex;animation:fade .2s ease both;}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .ov-meta{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--amber);margin-bottom:32px;}
+  .ov-meta .v{color:var(--paper);}
+  .ov-clue{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(28px,4.4vw,58px);line-height:1.18;letter-spacing:-.01em;font-variation-settings:"opsz" 72,"SOFT" 20;max-width:1000px;color:var(--paper);}
+  .ov-resp{margin-top:34px;font-family:"Newsreader",serif;font-style:italic;font-size:clamp(20px,2.6vw,34px);line-height:1.25;color:var(--blue);max-width:900px;display:none;}
+  .ov-resp.show{display:block;animation:fade .25s ease both;}
+  .ov-resp .lab{display:block;font-family:"JetBrains Mono",monospace;font-style:normal;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:10px;}
+  .ov-actions{margin-top:42px;display:flex;flex-direction:column;align-items:center;gap:18px;}
+  .btn{
+    font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.16em;text-transform:uppercase;
+    padding:14px 30px;cursor:pointer;background:var(--amber);color:var(--ink);border:none;font-weight:600;
+  }
+  .btn:hover{background:#e0b261;}
+  .btn.ghost{background:transparent;color:var(--paper-2);border:1px solid var(--rule-strong);}
+  .btn.ghost:hover{color:var(--amber);border-color:var(--amber-line);background:transparent;}
+  .award-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;}
+  .award-row .lab{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);width:100%;margin-bottom:4px;}
+  .award-btn{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.06em;padding:12px 20px;cursor:pointer;background:rgba(159,200,212,.08);color:var(--paper);border:1px solid var(--blue);}
+  .award-btn:hover{background:rgba(159,200,212,.18);}
+  .award-btn.none{border-color:var(--rule-strong);color:var(--paper-dim);background:transparent;}
+  .award-btn.none:hover{color:var(--red);border-color:rgba(200,71,47,.5);}
+  .ov-close{position:absolute;top:24px;right:30px;font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);background:transparent;border:1px solid var(--rule);padding:8px 14px;cursor:pointer;}
+  .ov-close:hover{color:var(--amber);border-color:var(--amber-line);}
+
+  footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+</style>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span>ARC 5443 &middot; Acoustics, Electrical &amp; Illumination Systems &middot; Summer 2026</span>
+    <span class="act-tag">Act II &middot; Week 4 Recap</span>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div>
+      <div class="kicker">Week 05 &middot; Top-of-Class Warm-Up &middot; Wed 06&middot;17</div>
+      <h1 class="title">Daylight <em>Jeopardy.</em></h1>
+    </div>
+    <p class="sub">Last week&rsquo;s daylighting intro &mdash; the session we didn&rsquo;t get to record &mdash; played back as a five-minute game. Win these and you&rsquo;re ready to close Act&nbsp;II tonight.</p>
+  </header>
+
+  <div class="howto">
+    <span><b>How to play&nbsp;&nbsp;</b> Pick a category and value &middot; read the clue &middot; answer in the form of a question &middot; reveal the response &middot; award the points to a team.</span>
+    <button class="reset" id="resetBtn">New Game</button>
+  </div>
+
+  <!-- SCOREBOARD -->
+  <div class="scoreboard" id="scoreboard"></div>
+
+  <!-- BOARD -->
+  <div class="board" id="board"></div>
+
+  <footer>
+    <span>ARC 5443 &middot; Daylight Jeopardy &middot; recap of Week 4 (Solar Geometry &amp; Daylight)</span>
+    <span>LTU CoAD &middot; Summer 2026</span>
+  </footer>
+
+</div>
+
+<!-- CLUE OVERLAY -->
+<div class="overlay" id="overlay">
+  <button class="ov-close" id="ovClose">Close &times;</button>
+  <div class="ov-meta"><span id="ovCat">CATEGORY</span> &nbsp;&middot;&nbsp; <span class="v" id="ovVal">$100</span></div>
+  <div class="ov-clue" id="ovClue">Clue text.</div>
+  <div class="ov-resp" id="ovResp"><span class="lab">Correct Response</span><span id="ovRespText"></span></div>
+  <div class="ov-actions" id="ovActions"></div>
+</div>
+
+<script>
+(function(){
+  // ── DATA — Week 4 recap, Jeopardy style (clue = prompt, response = "What is…?") ──
+  var CATEGORIES = [
+    { title:"Solar Geometry", clues:[
+      {v:100, clue:"The sun's height above the horizon — 0° at the horizon, 90° straight overhead.", resp:"What is altitude?"},
+      {v:200, clue:"At Detroit (42.3°N) the noon sun climbs to about this altitude on June 21 — the steep summer case.", resp:"What is ~71°?"},
+      {v:300, clue:"The sun's compass bearing measured from north: East 90°, South 180°, West 270°.", resp:"What is azimuth?"},
+      {v:400, clue:"At 42°N this part of the sky is always indirect, diffuse light — a window facing it never gets direct-beam glare.", resp:"What is the north (the northern sky)?"},
+      {v:500, clue:"The two calendar dates — highest sun and lowest sun — that every daylight tool asks you to run.", resp:"What are June 21 and December 21 (the solstices)?"}
+    ]},
+    { title:"Daylight Metrics", clues:[
+      {v:100, clue:"The % of floor area receiving at least 300 lux for at least 50% of occupied hours — your main prefunction number.", resp:"What is sDA (Spatial Daylight Autonomy)?"},
+      {v:200, clue:"Under LEED v4, sDA must reach at least this value to count as 'nominally daylit.'", resp:"What is 55%?"},
+      {v:300, clue:"The metric that flags TOO much sun: % of floor area over 1,000 lux for more than 250 hours a year.", resp:"What is ASE (Annual Sunlight Exposure)?"},
+      {v:400, clue:"Keep ASE at or below this percentage to stay out of glare-and-overheating trouble under LEED v4.", resp:"What is 10%?"},
+      {v:500, clue:"The older, climate-agnostic ratio under a uniform overcast sky — 2% is minimum-adequate, but it ignores direct sun.", resp:"What is Daylight Factor (DF)?"}
+    ]},
+    { title:"Orientation &amp; Aperture", clues:[
+      {v:100, clue:"On a south facade, this fixed horizontal device blocks high summer sun while admitting low winter sun.", resp:"What is an overhang?"},
+      {v:200, clue:"The two hardest facades to shade — low, near-horizontal morning and afternoon sun defeats any overhang.", resp:"What are east and west?"},
+      {v:300, clue:"In the sidelighting rule of thumb, beyond about this distance from a window a space needs dedicated electric light.", resp:"What is 30 feet?"},
+      {v:400, clue:"Raise this — say 8 ft to 12 ft — and daylight pushes deeper into the room; it's why clerestories beat mid-height windows.", resp:"What is the window head height?"},
+      {v:500, clue:"East/west glass needs these vertical devices (or deep setbacks) since overhangs can't stop low raking sun.", resp:"What are vertical fins?"}
+    ]},
+    { title:"Hall vs. Prefunction", clues:[
+      {v:100, clue:"Of the two — hall or prefunction — this one must be controllably dark and blackout-capable.", resp:"What is the hall (the house)?"},
+      {v:200, clue:"The lobby, concourse, and bar — your primary daylight canvas and the sDA/ASE analysis zone.", resp:"What is the prefunction?"},
+      {v:300, clue:"This parameter — when the venue actually operates — most constrains whether the house can carry glass.", resp:"What is the performance schedule?"},
+      {v:400, clue:"Because it must stay dark and is too deep to sidelight, the hall house is excluded from this by design.", resp:"What is the sDA/ASE (daylight) analysis?"},
+      {v:500, clue:"A floor-to-ceiling curtain wall gives high sDA but risks a high value of this; a clerestory band controls it.", resp:"What is ASE (direct-beam glare)?"}
+    ]},
+    { title:"Precedents", clues:[
+      {v:100, clue:"Gehry's stainless-steel LA hall has zero windows in the house; daylight lives only in the wrap-around lobby and garden.", resp:"What is the Walt Disney Concert Hall?"},
+      {v:200, clue:"Kahn's Fort Worth museum: cycloid vaults with a north clerestory slot + reflector for even, glare-free toplight.", resp:"What is the Kimbell Art Museum?"},
+      {v:300, clue:"Snøhetta's 2023 Brown University hall wraps the performance volume in glass so the street can see in.", resp:"What is the Lindemann Performing Arts Center?"},
+      {v:400, clue:"This Norwegian center by ALA Architects (Kristiansand) bounces low winter sun off an undulating timber foyer wall.", resp:"What is KILDEN?"},
+      {v:500, clue:"Across every precedent the rule is the same: the hall stays dark and ___ is where daylight happens.", resp:"What is the prefunction?"}
+    ]}
+  ];
+
+  var teams = [
+    {name:"Team 1", score:0},
+    {name:"Team 2", score:0},
+    {name:"Team 3", score:0}
+  ];
+  var current = null; // {c, r}
+
+  var boardEl = document.getElementById("board");
+  var scoreEl = document.getElementById("scoreboard");
+  var overlay = document.getElementById("overlay");
+  var ovCat = document.getElementById("ovCat");
+  var ovVal = document.getElementById("ovVal");
+  var ovClue = document.getElementById("ovClue");
+  var ovResp = document.getElementById("ovResp");
+  var ovRespText = document.getElementById("ovRespText");
+  var ovActions = document.getElementById("ovActions");
+
+  function renderScores(){
+    var max = Math.max.apply(null, teams.map(function(t){return t.score;}));
+    var anyPos = teams.some(function(t){return t.score>0;});
+    scoreEl.innerHTML = "";
+    teams.forEach(function(t,i){
+      var d = document.createElement("div");
+      d.className = "team" + (anyPos && t.score===max ? " lead":"");
+      d.innerHTML =
+        '<input class="tname" value="'+t.name.replace(/"/g,"&quot;")+'" data-i="'+i+'" aria-label="Team name">'+
+        '<span class="score'+(t.score<0?" neg":"")+'">'+t.score+'</span>';
+      scoreEl.appendChild(d);
+    });
+    scoreEl.querySelectorAll(".tname").forEach(function(inp){
+      inp.addEventListener("change",function(){ teams[+inp.getAttribute("data-i")].name = inp.value || ("Team "+(+inp.getAttribute("data-i")+1)); });
+    });
+  }
+
+  function renderBoard(){
+    boardEl.innerHTML = "";
+    CATEGORIES.forEach(function(cat){
+      var h = document.createElement("div");
+      h.className = "cat"; h.innerHTML = cat.title;
+      boardEl.appendChild(h);
+    });
+    for(var r=0;r<5;r++){
+      for(var c=0;c<5;c++){
+        var clue = CATEGORIES[c].clues[r];
+        var t = document.createElement("div");
+        t.className = "tile" + (clue.used?" used":"");
+        t.textContent = clue.used ? "" : ("$"+clue.v);
+        if(!clue.used){
+          (function(cc,rr){ t.addEventListener("click",function(){ openClue(cc,rr); }); })(c,r);
+        }
+        boardEl.appendChild(t);
+      }
+    }
+  }
+
+  function openClue(c,r){
+    current = {c:c,r:r};
+    var cat = CATEGORIES[c], clue = cat.clues[r];
+    ovCat.innerHTML = cat.title;
+    ovVal.textContent = "$"+clue.v;
+    ovClue.textContent = clue.clue;
+    ovRespText.textContent = clue.resp;
+    ovResp.classList.remove("show");
+    ovActions.innerHTML = "";
+    var reveal = document.createElement("button");
+    reveal.className = "btn"; reveal.textContent = "Reveal Response";
+    reveal.addEventListener("click", showResponse);
+    ovActions.appendChild(reveal);
+    overlay.classList.add("open");
+  }
+
+  function showResponse(){
+    ovResp.classList.add("show");
+    var clue = CATEGORIES[current.c].clues[current.r];
+    ovActions.innerHTML = "";
+    var row = document.createElement("div");
+    row.className = "award-row";
+    var lab = document.createElement("div");
+    lab.className = "lab"; lab.textContent = "Award $"+clue.v+" to —";
+    row.appendChild(lab);
+    teams.forEach(function(t,i){
+      var b = document.createElement("button");
+      b.className = "award-btn"; b.textContent = t.name;
+      b.addEventListener("click",function(){ award(i, clue.v); });
+      row.appendChild(b);
+    });
+    var none = document.createElement("button");
+    none.className = "award-btn none"; none.textContent = "No one";
+    none.addEventListener("click",function(){ award(-1, clue.v); });
+    row.appendChild(none);
+    ovActions.appendChild(row);
+  }
+
+  function award(teamIndex, value){
+    if(teamIndex>=0){ teams[teamIndex].score += value; }
+    CATEGORIES[current.c].clues[current.r].used = true;
+    closeOverlay();
+    renderScores();
+    renderBoard();
+  }
+
+  function closeOverlay(){ overlay.classList.remove("open"); current = null; }
+
+  // close button marks the tile used (so it isn't replayed)
+  document.getElementById("ovClose").addEventListener("click",function(){
+    if(current){ CATEGORIES[current.c].clues[current.r].used = true; }
+    closeOverlay(); renderBoard();
+  });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape" && overlay.classList.contains("open")){ document.getElementById("ovClose").click(); } });
+
+  document.getElementById("resetBtn").addEventListener("click",function(){
+    if(!confirm("Start a new game? This clears the board and all scores.")) return;
+    CATEGORIES.forEach(function(cat){ cat.clues.forEach(function(cl){ cl.used=false; }); });
+    teams.forEach(function(t,i){ t.score=0; });
+    renderScores(); renderBoard();
+  });
+
+  renderScores();
+  renderBoard();
+})();
+</script>
+</body>
+</html>

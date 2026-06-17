@@ -105,7 +105,7 @@ Written in your Google Doc before submission. Entry 1 should document your geome
 
 ## Week 2 Deliverable — RT60 Calculation & Script Output
 
-**Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Tue 06·03 · 11:59 PM
+**Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Tue 06·02 · 11:59 PM
 
 ---
 
@@ -138,7 +138,7 @@ Does your hand-calculation Eyring result agree with the script's Eyring output w
 
 ## Act I Review — The Hall, Heard
 
-**Canvas settings:** Points: 20 · Submission: File Upload + Text Entry · Due: Tue 06·10 · 11:59 PM
+**Canvas settings:** Points: 20 · Submission: File Upload + Text Entry · Due: Wed 06·10 · 11:59 PM
 
 ---
 
@@ -192,7 +192,7 @@ Act II begins. This week you commit to a daylighting strategy for the hall: aper
 
 ## Act II Review — The Hall, Lit by Day
 
-**Canvas settings:** Points: 20 · Submission: File Upload + Text Entry · Due: Tue 06·24 · 11:59 PM
+**Canvas settings:** Points: 20 · Submission: File Upload + Text Entry · Due: Wed 06·24 · 11:59 PM
 
 ---
 
@@ -210,7 +210,7 @@ Act II closes with a daylighting package. Full brief, rubric, and submission ins
 
 ## Week 6 Deliverable — Lighting & Electrical: Luminaire Selection
 
-**Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Tue 07·01 · 11:59 PM
+**Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Tue 06·30 · 11:59 PM
 
 ---
 
@@ -228,7 +228,7 @@ Act III begins. This week you select and justify luminaires for the main house a
 
 ## Week 7 Deliverable — Electrical Distribution & Load Calculation
 
-**Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Tue 07·08 · 11:59 PM
+**Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Tue 07·07 · 11:59 PM
 
 ---
 
@@ -246,7 +246,7 @@ This week you build the load summary and begin panel schedule layout. Deliverabl
 
 ## Act III Review — The Hall, Powered & Illuminated
 
-**Canvas settings:** Points: 20 · Submission: File Upload + Text Entry · Due: Tue 07·15 · 11:59 PM
+**Canvas settings:** Points: 20 · Submission: File Upload + Text Entry · Due: Wed 07·15 · 11:59 PM
 
 ---
 
@@ -264,7 +264,7 @@ Act III closes with a lighting and electrical package. Full brief, rubric, and s
 
 ## Week 9 Deliverable — Integration Study
 
-**Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Tue 07·22 · 11:59 PM
+**Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Tue 07·21 · 11:59 PM
 
 ---
 
@@ -303,14 +303,14 @@ The Encore brings all three acts together into a single submission package. Full
 |---|---|---|---|
 | Decision Log Link | ✅ Ready to post | 0 (ungraded) | Week 1 tonight |
 | Week 1 Deliverable | ✅ Ready to post | 10 | Tue 05·26 |
-| Week 2 Deliverable | ✅ Ready to post | 10 | Tue 06·03 |
-| Act I Review | ✅ Ready to post — assignment + rubric attached | 20 | Tue 06·10 |
-| Week 4 Deliverable | 🔲 TBD | 10 | Tue 06·17 |
-| Act II Review | 🔲 TBD | 20 | Tue 06·24 |
-| Week 6 Deliverable | 🔲 TBD | 10 | Tue 07·01 |
-| Week 7 Deliverable | 🔲 TBD | 10 | Tue 07·08 |
-| Act III Review | 🔲 TBD | 20 | Tue 07·15 |
-| Week 9 Deliverable | 🔲 TBD | 10 | Tue 07·22 |
+| Week 2 Deliverable | ✅ Ready to post | 10 | Tue 06·02 |
+| Act I Review | ✅ Ready to post — assignment + rubric attached | 20 | Wed 06·10 |
+| Week 4 Deliverable | 🔲 TBD | 10 | Sat 06·20 |
+| Act II Review | 🔲 TBD | 20 | Wed 06·24 |
+| Week 6 Deliverable | 🔲 TBD | 10 | Tue 06·30 |
+| Week 7 Deliverable | 🔲 TBD | 10 | Tue 07·07 |
+| Act III Review | 🔲 TBD | 20 | Wed 07·15 |
+| Week 9 Deliverable | 🔲 TBD | 10 | Tue 07·21 |
 | Encore | 🔲 TBD | 60 | Tue 07·28 |
 | **Total (graded)** | | **180 pts** | |
 

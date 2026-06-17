@@ -4,7 +4,7 @@
 **Geometry:** Shoebox / Fan / Vineyard / Horseshoe *(circle one)*
 **Site orientation:**
 **Program:** 500-seat Auditorium + Prefunction
-**Term:** Summer 2026 · Wed 05/21 – 07/22
+**Term:** Summer 2026 · Wed 05/20 – 07/22
 
 ---
 

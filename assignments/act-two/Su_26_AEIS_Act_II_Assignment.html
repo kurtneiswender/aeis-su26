@@ -168,6 +168,7 @@
   .rating-name.proficient{color:var(--blue);}
   .rating-name.developing{color:var(--amber);}
   .rating-name.beginning{color:var(--red);}
+  .rating-name.noevidence{color:var(--paper-dim);}
   .rating-pts{
     font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:500;
     color:var(--paper-dim);
@@ -375,7 +376,7 @@
       <h2 class="sec-title">Rubric &mdash; <em>20 Points.</em></h2>
     </div>
     <div class="prose" style="margin-bottom:28px;">
-      <p>Five criteria, four points each. Scores map directly to the gradebook: 20 raw points = 10% of the course grade. Each criterion is evaluated independently. <em>Proficient</em> represents full competency at the graduate level for this stage of the project.</p>
+      <p>Five criteria, four points each, on a five-level scale: <em>Exceeds</em> (4) &middot; <em>Mastery</em> (3) &middot; <em>Near</em> (2) &middot; <em>Below</em> (1) &middot; <em>No Evidence</em> (0). Scores map directly to the gradebook: 20 raw points = 10% of the course grade. Each criterion is evaluated independently. <em>Mastery</em> represents full competency at the graduate level for this stage of the project.</p>
     </div>
 
     <!-- CRITERION 1 -->
@@ -389,31 +390,38 @@
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-name exemplary">Exceeds</span>
           <span class="rating-pts">4</span>
         </div>
         <div class="rating-desc">Plan and section clearly distinguish the hall blackout zone from the prefunction daylighting zone. Aperture placement on each facade is explicitly justified by compass orientation and solar geometry: south apertures reference the controllability of horizontal shading; north apertures reference diffuse sky consistency; east/west apertures identify the glare risk and the vertical fin or setback response. WWR is stated by facade. The strategy is coherent &mdash; glass placement on any face cannot be read as a default or arbitrary choice.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-name proficient">Mastery</span>
           <span class="rating-pts">3</span>
         </div>
         <div class="rating-desc">Blackout zone and daylighting zone are identified. Primary aperture facades are selected with reasonable justification. Minor gaps: one facade's glazing rationale is unclear, or WWR is not stated. Section shows glass location but shading device geometry is approximate.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name developing">Developing</span>
+          <span class="rating-name developing">Near</span>
           <span class="rating-pts">2</span>
         </div>
         <div class="rating-desc">Glass is placed on the drawings but the plan does not distinguish the hall from the prefunction as daylighting zones. Aperture placement appears intuitive rather than derived from solar geometry or program requirements. No WWR stated.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-name beginning">Below</span>
           <span class="rating-pts">1</span>
         </div>
         <div class="rating-desc">No plan or section submitted showing aperture placement. Or: glazing is placed uniformly on all facades with no differentiation between the hall and prefunction, and no reference to orientation.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name noevidence">No Evidence</span>
+          <span class="rating-pts">0</span>
+        </div>
+        <div class="rating-desc">No drawings submitted. Neither the aperture plan nor any daylighting/blackout zoning is present in any form.</div>
       </div>
     </div>
 
@@ -429,31 +437,38 @@
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-name exemplary">Exceeds</span>
           <span class="rating-pts">4</span>
         </div>
         <div class="rating-desc">sDA and ASE maps for the prefunction analysis zone are included as LightStanza heatmap exports. Numeric sDA% and ASE% values are annotated on or adjacent to the maps. Results are compared explicitly to LEED v4 targets (sDA &ge; 55%, ASE &le; 10%). If either target is missed, the student identifies the specific cause (orientation, WWR, insufficient shading) and proposes a revision. The analysis zone boundary matches the prefunction floor area shown on the plan &mdash; the student understands what they measured.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-name proficient">Mastery</span>
           <span class="rating-pts">3</span>
         </div>
         <div class="rating-desc">sDA and ASE maps are present with numeric results annotated. LEED targets are referenced. If a target is missed, it is acknowledged. Minor gap: analysis zone boundary is not shown on the plan, or the student describes results without connecting them to aperture decisions.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name developing">Developing</span>
+          <span class="rating-name developing">Near</span>
           <span class="rating-pts">2</span>
         </div>
         <div class="rating-desc">LightStanza output is included but only as sun study screenshots &mdash; no sDA/ASE climate-based analysis maps. Or: maps are present but numeric results are not annotated and LEED targets are not referenced.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-name beginning">Below</span>
           <span class="rating-pts">1</span>
         </div>
         <div class="rating-desc">No LightStanza output submitted. Or: only a description of what the analysis showed, with no maps or numeric data. The submission does not demonstrate that climate-based analysis was run.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name noevidence">No Evidence</span>
+          <span class="rating-pts">0</span>
+        </div>
+        <div class="rating-desc">No daylighting analysis of any kind submitted &mdash; no maps, no screenshots, no numbers.</div>
       </div>
     </div>
 
@@ -469,31 +484,38 @@
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-name exemplary">Exceeds</span>
           <span class="rating-pts">4</span>
         </div>
         <div class="rating-desc">Overhang projection depth is calculated using Detroit solar altitude angles: the June 21 noon altitude (71&deg;) determines the required shading depth; the December 21 noon altitude (25&deg;) confirms winter sun admission. Calculation is shown with the formula (overhang depth = head height &divide; tan(summer altitude)), the numeric result, and a section sketch verifying the geometry. Device type is matched to orientation: horizontal overhang for south; vertical fins, louvers, or deep setback for east/west; explanation of why north requires no solar shading device. Device dimensions appear on the section drawing.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-name proficient">Mastery</span>
           <span class="rating-pts">3</span>
         </div>
         <div class="rating-desc">Shading device is specified and shown in section with approximate dimensions. Solar altitude angles for summer and winter are referenced. Calculation result is stated but derivation is incomplete or formula is not shown. Device type is appropriate to orientation.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name developing">Developing</span>
+          <span class="rating-name developing">Near</span>
           <span class="rating-pts">2</span>
         </div>
         <div class="rating-desc">A shading device is mentioned or shown without calculation. Depth or dimensions are estimated without reference to solar geometry. Device type may not be appropriate to the orientation (e.g., horizontal overhang specified for an east facade without acknowledgment of its limitations).</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-name beginning">Below</span>
           <span class="rating-pts">1</span>
         </div>
         <div class="rating-desc">No shading device shown or calculated. Or: shading is addressed only verbally (&ldquo;blinds will be provided&rdquo;) with no geometric specification, no solar angle reference, and no section drawing showing the device.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name noevidence">No Evidence</span>
+          <span class="rating-pts">0</span>
+        </div>
+        <div class="rating-desc">No shading device is shown, drawn, calculated, or mentioned anywhere in the submission.</div>
       </div>
     </div>
 
@@ -508,31 +530,38 @@
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-name exemplary">Exceeds</span>
           <span class="rating-pts">4</span>
         </div>
         <div class="rating-desc">The highest-risk glare condition in the prefunction is identified by time, date, and facade (e.g., &ldquo;west lobby at 5 PM on June 21&rdquo;). A specific glare control strategy is specified: exterior fixed shades, fritted or diffusing glass, or occupant-controlled interior shades, with reasoning for the choice. If LightStanza DGP output is available, it is included and interpreted (&lt;0.35 = imperceptible; 0.35&ndash;0.45 = perceptible; &gt;0.45 = disturbing). Aperture reveals or splay dimensions are noted as a contrast-reduction strategy. The control strategy is drawn or annotated on the section.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-name proficient">Mastery</span>
           <span class="rating-pts">3</span>
         </div>
         <div class="rating-desc">Glare risk is identified by facade. A control strategy is specified with a stated rationale. DGP output is included if available, or absence is acknowledged. Minor gap: the glare condition is described without a specific time/date reference, or the control strategy is stated without appearing on the drawings.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name developing">Developing</span>
+          <span class="rating-name developing">Near</span>
           <span class="rating-pts">2</span>
         </div>
         <div class="rating-desc">Glare is mentioned as a concern without identifying a specific condition or specifying a control strategy. &ldquo;Blinds will be provided&rdquo; without discussion of type, operability, or luminance contrast management.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-name beginning">Below</span>
           <span class="rating-pts">1</span>
         </div>
         <div class="rating-desc">No glare control addressed. Or: high-ASE result in the analysis is not connected to any design response. The submission does not demonstrate awareness that occupant discomfort is a design responsibility.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name noevidence">No Evidence</span>
+          <span class="rating-pts">0</span>
+        </div>
+        <div class="rating-desc">Glare and visual comfort are not addressed anywhere in the package.</div>
       </div>
     </div>
 
@@ -547,31 +576,38 @@
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-name exemplary">Exceeds</span>
           <span class="rating-pts">4</span>
         </div>
         <div class="rating-desc">Four or more entries covering Weeks 4&ndash;5. At least one entry references a specific solar geometry fact or LightStanza result (e.g., &ldquo;reduced south WWR from 40% to 32% after ASE came in at 18%, above the 10% LEED threshold&rdquo;). At least one entry acknowledges a trade-off with the acoustic decisions locked in during Act I (e.g., aperture placement constrained by the STC assembly, or glass area limited by the need to maintain absorption coefficient targets). Reasoning is in the student&rsquo;s own voice and demonstrates that the sDA/ASE data changed or confirmed a design decision.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-name proficient">Mastery</span>
           <span class="rating-pts">3</span>
         </div>
         <div class="rating-desc">Three or more entries covering Weeks 4&ndash;5. At least one entry connects a decision to a solar geometry fact or analysis result. Acoustic trade-off is acknowledged on at least one entry. Trade-off field is completed on most entries.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name developing">Developing</span>
+          <span class="rating-name developing">Near</span>
           <span class="rating-pts">2</span>
         </div>
         <div class="rating-desc">Two entries submitted, or entries describe what was done without referencing analysis results. sDA/ASE numbers do not appear in any entry. No acknowledgment of the acoustic&ndash;daylight relationship.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-name beginning">Below</span>
           <span class="rating-pts">1</span>
         </div>
         <div class="rating-desc">Zero or one entry submitted, or entries are placeholder text. No connection between log content and the daylighting work visible in the PDF package.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name noevidence">No Evidence</span>
+          <span class="rating-pts">0</span>
+        </div>
+        <div class="rating-desc">No Decision Log text entry submitted for Act II.</div>
       </div>
     </div>
   </section>
@@ -608,7 +644,7 @@
       <h2 class="sec-title">Score <em>Anchors.</em></h2>
     </div>
     <div class="prose" style="margin-bottom:20px;">
-      <p>Use these as calibration guides, not guarantees. A student who scores Proficient on all five criteria earns 15/20 (B range), which is the expected outcome for a graduate student running climate-based daylighting analysis for the first time.</p>
+      <p>Use these as calibration guides, not guarantees. A student who scores Mastery on all five criteria earns 15/20 (B range), which is the expected outcome for a graduate student running climate-based daylighting analysis for the first time.</p>
     </div>
     <table class="anchors">
       <thead>

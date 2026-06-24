@@ -168,6 +168,7 @@
   .rating-name.proficient{color:var(--blue);}
   .rating-name.developing{color:var(--amber);}
   .rating-name.beginning{color:var(--red);}
+  .rating-name.noevidence{color:var(--paper-dim);}
   .rating-pts{
     font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:500;
     color:var(--paper-dim);
@@ -374,7 +375,7 @@
       <h2 class="sec-title">Rubric &mdash; <em>20 Points.</em></h2>
     </div>
     <div class="prose" style="margin-bottom:28px;">
-      <p>Five criteria, four points each. Scores map directly to the gradebook: 20 raw points = 10% of the course grade. Each criterion is evaluated independently. <em>Proficient</em> represents full competency at the graduate level for this stage of the project.</p>
+      <p>Five criteria, four points each, on a five-level scale: <em>Exceeds</em> (4) &middot; <em>Mastery</em> (3) &middot; <em>Near</em> (2) &middot; <em>Below</em> (1) &middot; <em>No Evidence</em> (0). Scores map directly to the gradebook: 20 raw points = 10% of the course grade. Each criterion is evaluated independently. <em>Mastery</em> represents full competency at the graduate level for this stage of the project.</p>
     </div>
 
     <!-- CRITERION 1 -->
@@ -388,31 +389,38 @@
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-name exemplary">Exceeds</span>
           <span class="rating-pts">4</span>
         </div>
         <div class="rating-desc">Plan and section clearly show acoustic intent: volume is calculated and appropriate for the RT60 target; surface angles are drawn to direct early reflections toward listeners; geometry decisions are explicitly connected to acoustic principles in the submission. At least one geometric element (cloud angle, side wall splay, rear wall profile) is demonstrably derived from a reflection path analysis.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-name proficient">Mastery</span>
           <span class="rating-pts">3</span>
         </div>
         <div class="rating-desc">Geometry shows awareness of acoustic principles with minor gaps. Volume is approximately correct; some surface angles are considered; connection to acoustic intent is present but not fully developed in all areas.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name developing">Developing</span>
+          <span class="rating-name developing">Near</span>
           <span class="rating-pts">2</span>
         </div>
         <div class="rating-desc">Geometry is largely carried over from Week 1 without acoustic development. Volume is not calculated or is significantly off-target. Surface treatment is applied without explanation of acoustic role.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-name beginning">Below</span>
           <span class="rating-pts">1</span>
         </div>
         <div class="rating-desc">Submitted plan/section shows no evidence that acoustic principles influenced shape. Room is a default rectangle or starter geometry with no sectional response to sound.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name noevidence">No Evidence</span>
+          <span class="rating-pts">0</span>
+        </div>
+        <div class="rating-desc">No plan or section submitted. Nothing in the package shows the room&rsquo;s shape.</div>
       </div>
     </div>
 
@@ -428,31 +436,38 @@
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-name exemplary">Exceeds</span>
           <span class="rating-pts">4</span>
         </div>
         <div class="rating-desc">RT60 target is justified by program (speech-primary, music-primary, or mixed) with reference to published ranges. Hand calculation using <em>both</em> Sabine and Eyring equations is complete and accurate at three or more octave bands; student notes which method yields the more conservative estimate. RT60 script Eyring result is within &plusmn;0.2 s of hand calc, or the discrepancy is explained. Student identifies the dominant absorptive surface by name and area.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-name proficient">Mastery</span>
           <span class="rating-pts">3</span>
         </div>
         <div class="rating-desc">RT60 target is stated with reasonable justification. Hand calculation covers two or more octave bands using Sabine and/or Eyring with minor arithmetic errors. RT60 script output is submitted with the HTML report included. Discrepancy between hand calc and script result is acknowledged even if not fully resolved.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name developing">Developing</span>
+          <span class="rating-name developing">Near</span>
           <span class="rating-pts">2</span>
         </div>
         <div class="rating-desc">RT60 target is stated but not justified by program. Hand calculation covers one band only or contains errors in applying the equations. RT60 script output is present (screenshot only, or HTML report without discussion) but not compared to the hand calculation.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-name beginning">Below</span>
           <span class="rating-pts">1</span>
         </div>
         <div class="rating-desc">RT60 target is absent or incorrect by more than 0.5 s from any plausible range for this program. No hand calculation submitted, or calculation shows fundamental errors in applying Sabine or Eyring. No RT60 script output present.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name noevidence">No Evidence</span>
+          <span class="rating-pts">0</span>
+        </div>
+        <div class="rating-desc">No RT60 work of any kind submitted &mdash; no hand calculation, no script output, no target.</div>
       </div>
     </div>
 
@@ -467,31 +482,38 @@
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-name exemplary">Exceeds</span>
           <span class="rating-pts">4</span>
         </div>
         <div class="rating-desc">Material schedule lists five or more distinct assemblies with NRC values cited from MEEB tables or manufacturer data. Each surface type is tagged on the plan or section with a clear legend. Placement logic is explained for at least two surfaces — one absorptive, one reflective or diffusive. At least one material decision has been revised from an earlier draft based on RT60 feedback, and the revision is traceable to a Decision Log entry.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-name proficient">Mastery</span>
           <span class="rating-pts">3</span>
         </div>
         <div class="rating-desc">Schedule lists three or more assemblies with NRC values. Most surfaces are tagged on drawings. Placement rationale is present for the primary absorptive surface. Minor gaps in coverage or citation.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name developing">Developing</span>
+          <span class="rating-name developing">Near</span>
           <span class="rating-pts">2</span>
         </div>
         <div class="rating-desc">Materials are named but NRC values are absent or estimated without citation. Drawings show finish materials but make no acoustic distinction between absorptive, reflective, and diffusive roles.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-name beginning">Below</span>
           <span class="rating-pts">1</span>
         </div>
         <div class="rating-desc">No material schedule submitted. Finishes on drawings are generic (e.g., &ldquo;concrete,&rdquo; &ldquo;carpet&rdquo;) with no NRC values and no acoustic reasoning.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name noevidence">No Evidence</span>
+          <span class="rating-pts">0</span>
+        </div>
+        <div class="rating-desc">No materials addressed anywhere &mdash; no schedule, no finishes noted, no NRC data.</div>
       </div>
     </div>
 
@@ -506,31 +528,38 @@
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-name exemplary">Exceeds</span>
           <span class="rating-pts">4</span>
         </div>
         <div class="rating-desc">Critical partition is correctly identified and labeled on the plan. STC target is derived from the NC criterion of the hall and the expected source level, with the derivation shown. Assembly is specified with component layers. At least one flanking path (structure-borne, HVAC duct, or plenum) is identified and addressed. Entry vestibule or acoustic door seal strategy is included and shown on the plan.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-name proficient">Mastery</span>
           <span class="rating-pts">3</span>
         </div>
         <div class="rating-desc">Critical partition is identified with a reasonable STC target. Assembly is specified (stud type, layer count, decoupling) without full derivation. Flanking paths are acknowledged. Vestibule or door seal is mentioned.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name developing">Developing</span>
+          <span class="rating-name developing">Near</span>
           <span class="rating-pts">2</span>
         </div>
         <div class="rating-desc">A partition is identified but the STC target is stated without derivation. Assembly is generic (&ldquo;double drywall&rdquo;) without layer specification. Flanking and entry sealing are not addressed.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-name beginning">Below</span>
           <span class="rating-pts">1</span>
         </div>
         <div class="rating-desc">No noise isolation strategy submitted, or strategy is limited to a note such as &ldquo;use thick walls&rdquo; with no specification, no target derivation, and no plan reference.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name noevidence">No Evidence</span>
+          <span class="rating-pts">0</span>
+        </div>
+        <div class="rating-desc">Noise isolation is not addressed anywhere in the submission.</div>
       </div>
     </div>
 
@@ -545,31 +574,38 @@
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name exemplary">Exemplary</span>
+          <span class="rating-name exemplary">Exceeds</span>
           <span class="rating-pts">4</span>
         </div>
         <div class="rating-desc">Four or more substantive entries covering Weeks 1&ndash;3. At least one entry references a specific calculation or published criterion (e.g., &ldquo;lowered rear wall absorptivity after RT60 came in at 1.2 s, below the 1.6&ndash;1.8 s target for mixed program&rdquo;). At least one entry acknowledges a trade-off with a downstream system (daylight, structure, or circulation). Reasoning is written in the student&rsquo;s own voice and goes beyond description of what was done.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name proficient">Proficient</span>
+          <span class="rating-name proficient">Mastery</span>
           <span class="rating-pts">3</span>
         </div>
         <div class="rating-desc">Three or more entries covering Weeks 1&ndash;3. At least one entry connects a decision to a calculation or criterion. Trade-off field is completed on most entries. Reasoning is present but may be thin on one or two entries.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name developing">Developing</span>
+          <span class="rating-name developing">Near</span>
           <span class="rating-pts">2</span>
         </div>
         <div class="rating-desc">Two entries submitted, or entries are present but reasoning fields are brief and purely descriptive. Calculations are not referenced in the log. Trade-off field is blank on most entries.</div>
       </div>
       <div class="rating-row">
         <div class="rating-label">
-          <span class="rating-name beginning">Beginning</span>
+          <span class="rating-name beginning">Below</span>
           <span class="rating-pts">1</span>
         </div>
         <div class="rating-desc">Zero or one entry submitted, or entries are placeholder text. No connection between log content and the acoustic work visible in the PDF package.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label">
+          <span class="rating-name noevidence">No Evidence</span>
+          <span class="rating-pts">0</span>
+        </div>
+        <div class="rating-desc">No Decision Log text entry submitted for Act I.</div>
       </div>
     </div>
   </section>
@@ -606,7 +642,7 @@
       <h2 class="sec-title">Score <em>Anchors.</em></h2>
     </div>
     <div class="prose" style="margin-bottom:20px;">
-      <p>Use these as calibration guides, not guarantees. A student who scores Proficient on all five criteria earns 15/20 (B range), which is the expected outcome for a graduate student engaging fully with Act I for the first time.</p>
+      <p>Use these as calibration guides, not guarantees. A student who scores Mastery on all five criteria earns 15/20 (B range), which is the expected outcome for a graduate student engaging fully with Act I for the first time.</p>
     </div>
     <table class="anchors">
       <thead>

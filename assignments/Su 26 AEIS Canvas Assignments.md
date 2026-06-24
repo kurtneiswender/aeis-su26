@@ -208,20 +208,39 @@ Act II closes with a daylighting package. Full brief, rubric, and submission ins
 ---
 ---
 
-## Week 6 Deliverable — Lighting & Electrical: Luminaire Selection
+## Week 6 Deliverable — Lighting Kickoff: First Lumen-Method Pass + Retrospectives
 
 **Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Tue 06·30 · 11:59 PM
+**Rubric:** Universal Weekly Rubric (Deliverable Package 6 + Decision Log 4)
 
 ---
 
-[CONTENT TBD — Act III / Lighting + Electrical. Update when Week 6 materials are finalized.]
+Act III opens. Tonight the sun went down and the switch became yours. This week you turn the lumen method into your first real lighting number, and you close out the two Acts behind you with a short written retrospective. Same two halves as every weekly — a package and a Decision Log — but this week the log is reflective.
 
-Act III begins. This week you select and justify luminaires for the main house and stage. Deliverable details will be posted in the Week 6 module before class.
+**Part A — Package (file upload, PDF) · 6 pts**
 
-**Placeholder checklist (update before posting):**
-- [ ] Luminaire specification requirements
-- [ ] IES file and photometric data
-- [ ] Decision Log entries for Week 6
+A one-space lumen-method pass, written up from tonight's lab:
+
+1. **Pick a space** — your prefunction (pairs with the Act II daylight work) or the house.
+2. **Set the target** — maintained illuminance *E* in footcandles (and the lux equivalent), and cite the IES Lighting Handbook category you're designing to.
+3. **Select a real luminaire** — a manufacturer cut sheet or IES file. Record **delivered (fixture) lumens Φ**, watts, CCT, CRI, and distribution type. Use *delivered* lumens, not lamp lumens.
+4. **Justify CU and LLF** — one line each (CU 0.4–0.8 from room shape + reflectances; LLF 0.7–0.85 from dirt + lamp aging).
+5. **Solve both directions** — `N = (E·A)/(Φ·CU·LLF)` for fixture count, then plug N back to report the achieved *E*. Round N to a buildable grid.
+6. **Note installed watts** — N × fixture watts, as your first LPD data point (no full compliance yet — that's Week 8).
+
+**Part B — Decision Log Text Paste (text entry) · 4 pts — Three Retrospectives**
+
+In the text box, paste three short *Wins / Struggles / Goals* retrospectives. Three to five honest bullets per section; candor scores higher than polish.
+
+- **Log 1 · Act I — Acoustics** — wins/struggles/goals on geometry, RT60, materials, STC. What did the tools (Rhino / Revit / Dynamo) get right or wrong for you?
+- **Log 2 · Act II — Daylighting** — wins/struggles/goals on apertures, sDA/ASE, shading, and the acoustic–daylight trade-off. What would you change if you re-ran it?
+- **Log 3 · This Week's Reading** — name what you read, then one win (a takeaway you'll use in Act III), one struggle (what was unclear or surprising), and one goal (a question you want to chase). This is the reading check — keep it real.
+
+> Format note: *Wins* = what worked / what you'd repeat. *Struggles* = what fought you (a tool, a concept, the time, a number that wouldn't resolve). *Goals* = what you carry forward or do differently.
+
+Keep tonight's lumen-method numbers — they grow into the Act III luminaire schedule in Week 7.
+
+**Lecture + interactive calculator:** Week 6 lecture page (course hub → Lecture Notes → "Week 06 · Lighting").
 
 ---
 ---
@@ -307,7 +326,7 @@ The Encore brings all three acts together into a single submission package. Full
 | Act I Review | ✅ Ready to post — assignment + rubric attached | 20 | Wed 06·10 |
 | Week 4 Deliverable | 🔲 TBD | 10 | Sat 06·20 |
 | Act II Review (Week 6) | 🔲 TBD | 20 | Wed 06·24 |
-| Week 6 Deliverable | 🔲 TBD | 10 | Tue 06·30 |
+| Week 6 Deliverable | ✅ Ready to post | 10 | Tue 06·30 |
 | Week 7 Deliverable | 🔲 TBD | 10 | Tue 07·07 |
 | Week 8 Deliverable | 🔲 TBD | 10 | Tue 07·14 |
 | Act III Review (Week 9) | 🔲 TBD | 20 | Tue 07·21 |

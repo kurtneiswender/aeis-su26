@@ -287,14 +287,36 @@ A work week building toward the Act III pin-up in Week 9. You complete the power
 
 ---
 
-[CONTENT TBD — Act III / Lighting + Electrical. Update when the Act III assignment and rubric are finalized.]
+Act III closes with a two-part submission: a PDF package and a pasted Decision Log text entry. Both parts are required. A missing Decision Log text entry will score zero on Criterion 5 regardless of the quality of the PDF.
 
-Act III closes with a lighting and electrical package, presented at the Week 9 pin-up review. Full brief, rubric, and submission instructions will be posted in the Act III Assignment document in this module. The cross-system integration/tightening work carries into the Encore (Week 10).
+The full assignment brief, rubric, and submission instructions are in the **Act III Assignment document** posted in this module. Read it before you submit.
 
-**Placeholder checklist (update before posting):**
-- [ ] Act III Assignment HTML built and posted
-- [ ] Act III Rubric posted
-- [ ] Submission instructions added here
+**Part 1 — PDF Package (file upload)**
+Export everything into a single PDF. All items must be present:
+- Lighting plan / reflected ceiling plan showing the four layers (house / egress / work / accent) and their control zones
+- Lumen-method calculations for the key spaces (house, prefunction, stage/work light) — target E (fc + lux) with IES category, N solved both directions, achieved E, installed watts
+- Illuminance analysis (LightStanza or Revit false-color maps) annotated against targets and compared to the hand calc
+- Luminaire schedule — real fixtures with IES data: delivered lumens Φ, watts, CCT, CRI, distribution, mounting
+- Electrical load summary + panel schedule (connected load by circuit, breaker sizes, totals)
+- LPD compliance check — installed W/ft² vs. ASHRAE 90.1 / IECC allowance, pass/fail + response
+- PV sizing calculation — array kW, module count, roof area to offset a stated load fraction
+- Act III pin-up slides from the Week 9 in-class review (6–8 slides)
+
+**Part 2 — Decision Log Text Paste (text entry)**
+In the text entry box below the file upload, paste the full text of your Decision Log entries from Weeks 6–8. Do not summarize or edit — paste as written. Separate entries with a blank line.
+
+**Rubric (20 points total — see Act III Assignment document for full criteria):**
+- Criterion 1: Lighting Design & Illuminance — 4 pts
+- Criterion 2: Luminaire Selection & Photometric Logic — 4 pts
+- Criterion 3: Electrical Distribution & Load — 4 pts
+- Criterion 4: Energy Performance (LPD & PV) — 4 pts
+- Criterion 5: Decision Log Quality — 4 pts
+
+Rating scale (matches Act II Criteria Builder): Exceeds (4) · Mastery (3) · Near (2) · Below (1) · No Evidence (0).
+
+NAAB alignment: SC.4B (primary) · SC.4E (secondary)
+
+The cross-system integration/tightening work — including any revision of the Act I RT60 results — carries into the Encore (Week 10).
 
 ---
 ---
@@ -329,7 +351,7 @@ The Encore brings all three acts together into a single submission package. Full
 | Week 6 Deliverable | ✅ Ready to post | 10 | Tue 06·30 |
 | Week 7 Deliverable | 🔲 TBD | 10 | Tue 07·07 |
 | Week 8 Deliverable | 🔲 TBD | 10 | Tue 07·14 |
-| Act III Review (Week 9) | 🔲 TBD | 20 | Tue 07·21 |
+| Act III Review (Week 9) | ✅ Ready to post — assignment + rubric attached | 20 | Tue 07·21 |
 | Encore | 🔲 TBD | 60 | Sun 07·26 |
 | **Total (graded)** | | **180 pts** | |
 

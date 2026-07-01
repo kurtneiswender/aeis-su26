@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · Week 07 · Lighting Design + Controls, Schedule &amp; Load</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B;--ink-2:#161412;
+    --paper:#EDE4D3;--paper-2:#D9CFB9;--paper-dim:#8A8273;
+    --amber:#D4A24C;--amber-soft:rgba(212,162,76,.10);--amber-line:rgba(212,162,76,.45);
+    --red:#C8472F;--blue:#9FC8D4;--green:#7FAF78;
+    --rule:rgba(237,228,211,.18);--rule-strong:rgba(237,228,211,.42);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  body{
+    font-family:"Newsreader",Georgia,serif;font-weight:380;font-size:20px;line-height:1.6;
+    font-feature-settings:"ss01","onum";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.55;
+  }
+  ::selection{background:var(--amber);color:var(--ink);}
+  .wrap{max-width:1180px;margin:0 auto;padding:48px 56px 120px;position:relative;}
+  @media (max-width:720px){.wrap{padding:32px 22px 80px}}
+
+  /* TOPBAR */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);padding-bottom:18px;border-bottom:1px solid var(--rule);
+    margin-bottom:20px;
+  }
+  .topbar .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-right:8px;vertical-align:middle;animation:pulse 2.4s ease-in-out infinite;}
+  .topbar .act-tag{background:rgba(212,162,76,.10);border:1px solid rgba(212,162,76,.40);color:var(--amber);padding:3px 10px;font-size:10px;letter-spacing:.22em;}
+  @keyframes pulse{50%{opacity:.35}}
+
+  /* HERO */
+  .hero{padding:60px 0 40px;display:grid;grid-template-columns:1fr 220px;gap:48px;align-items:end;}
+  @media (max-width:820px){.hero{grid-template-columns:1fr}.hero .ornament{display:none}}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-bottom:18px;}
+  .kicker .pipe{color:var(--paper-dim);margin:0 10px;}
+  h1.title{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;
+    font-weight:380;font-size:clamp(48px,8vw,110px);line-height:.88;letter-spacing:-.03em;margin:0;
+  }
+  h1.title em{font-style:italic;color:var(--amber);font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+  .sub{margin-top:28px;max-width:760px;font-family:"Newsreader",serif;font-size:clamp(18px,1.8vw,22px);line-height:1.45;color:var(--paper-2);font-style:italic;}
+
+  /* META */
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);margin-top:48px;}
+  .meta > div{padding:18px 18px 18px 0;border-right:1px solid var(--rule);}
+  .meta > div:last-child{border-right:none}
+  .meta dt{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:6px;}
+  .meta dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:19px;line-height:1.2;font-variation-settings:"opsz" 36;}
+  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:12.5px;color:var(--paper-dim);margin-top:3px;font-style:italic;}
+  @media (max-width:820px){.meta{grid-template-columns:repeat(2,1fr)}.meta > div:nth-child(2){border-right:none}}
+
+  /* SECTION */
+  section{margin-top:96px;}
+  .sec-label{display:flex;align-items:baseline;gap:22px;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--rule-strong);}
+  .sec-num{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.18em;color:var(--amber);}
+  .sec-title{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(30px,4vw,46px);line-height:1;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 72,"SOFT" 40;}
+  .sec-title em{font-style:italic;color:var(--amber);}
+
+  .prose{max-width:820px;color:var(--paper-2);font-size:18px;line-height:1.65;}
+  .prose p{margin:0 0 1em;}
+  .prose em{color:var(--paper);font-style:italic;}
+  .prose strong{color:var(--paper);}
+  .prose ul{padding-left:20px;}
+  .prose ul li{margin-bottom:10px;}
+  .prose h5{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin:24px 0 10px;font-weight:500;}
+
+  /* TIMETABLE */
+  .timetable{margin-top:8px;border-top:1px solid var(--rule-strong);}
+  .timetable .row{display:grid;grid-template-columns:160px 70px 1fr;gap:20px;padding:14px 0;border-bottom:1px solid var(--rule);align-items:baseline;}
+  .timetable .row .when{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--amber);letter-spacing:.06em;}
+  .timetable .row .dur{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--paper-dim);letter-spacing:.14em;}
+  .timetable .row .what{font-size:15.5px;color:var(--paper);}
+  .timetable .row .what em{font-style:italic;color:var(--amber);}
+  .timetable .row.lab{background:var(--amber-soft);padding-left:14px;padding-right:14px;}
+  .timetable .row.lab .what{font-weight:500;}
+  .timetable .row.break{color:var(--paper-dim);}
+  .timetable .row.review{background:rgba(159,200,212,.06);padding-left:14px;padding-right:14px;}
+  .timetable .row.review .what{color:var(--blue);}
+
+  /* LECTURE BLOCK */
+  .lec{border:1px solid var(--rule-strong);padding:28px 30px;margin-top:24px;background:rgba(237,228,211,.02);}
+  .lec .lec-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:1px solid var(--rule);padding-bottom:14px;margin-bottom:18px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);flex-wrap:wrap;gap:8px;
+  }
+  .lec .lec-head .name{color:var(--amber);}
+  .lec h3{font-family:"Fraunces",serif;font-weight:380;font-size:28px;line-height:1.1;margin:0 0 6px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .lec h3 em{font-style:italic;color:var(--amber);}
+  .lec .one-liner{margin:0 0 18px;color:var(--paper-2);font-style:italic;font-size:15.5px;}
+  .lec h4{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin:20px 0 8px;font-weight:500;}
+  .lec ul{margin:0;padding-left:18px;color:var(--paper-2);font-size:17px;line-height:1.6;}
+  .lec li{margin-bottom:8px;}
+  .lec li strong{color:var(--paper);}
+
+  /* CONCEPT CALLOUT */
+  .concept{margin-top:28px;padding:22px 28px;border-left:3px solid var(--amber);background:var(--amber-soft);}
+  .concept .c-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-weight:500;}
+  .concept h4{font-family:"Fraunces",serif;font-weight:380;font-size:24px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .concept h4 em{font-style:italic;color:var(--amber);}
+  .concept p{margin:0 0 8px;color:var(--paper-2);font-size:15.5px;line-height:1.6;}
+  .concept p strong{color:var(--paper);}
+  .concept p:last-child{margin-bottom:0;}
+
+  /* BLUE RULE CALLOUT */
+  .concept.blue-rule{border-left-color:var(--blue);background:rgba(159,200,212,.07);}
+  .concept.blue-rule .c-label{color:var(--blue);}
+  .concept.blue-rule h4{color:var(--paper);}
+
+  /* DIAGRAM */
+  .diagram{margin:28px 0 20px;padding:26px 22px 18px;background:rgba(237,228,211,.03);border:1px solid var(--rule);text-align:center;break-inside:avoid;}
+  .diagram svg{display:block;margin:0 auto;max-width:100%;height:auto;}
+  .diagram figcaption{margin-top:16px;font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-2);text-align:left;line-height:1.65;}
+  .diagram figcaption b{color:var(--amber);font-weight:600;margin-right:10px;letter-spacing:.18em;}
+
+  /* TWO-COL CONCEPT GRID */
+  .concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:24px;border:1px solid var(--rule-strong);}
+  .concept-cell{padding:26px 28px;border-right:1px solid var(--rule);}
+  .concept-cell:last-child{border-right:none;}
+  .concept-cell .cc-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:10px;}
+  .concept-cell h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .concept-cell h4 em{font-style:italic;color:var(--blue);}
+  .concept-cell p{margin:0 0 8px;color:var(--paper-2);font-size:15px;line-height:1.55;}
+  .concept-cell p strong{color:var(--paper);}
+  .concept-cell ul{padding-left:18px;color:var(--paper-2);font-size:14.5px;line-height:1.6;margin:6px 0 0;}
+  .concept-cell li{margin-bottom:6px;}
+  @media (max-width:680px){.concept-grid{grid-template-columns:1fr}.concept-cell{border-right:none;border-bottom:1px solid var(--rule)}.concept-cell:last-child{border-bottom:none}}
+
+  /* METRICS TABLE */
+  .stc-table{width:100%;border-collapse:collapse;margin-top:20px;font-size:14.5px;}
+  .stc-table th{padding:9px 14px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);text-align:left;border-bottom:1px solid var(--rule-strong);font-weight:400;background:rgba(14,13,11,.4);}
+  .stc-table td{padding:10px 14px;border-bottom:1px solid var(--rule);color:var(--paper-2);vertical-align:top;}
+  .stc-table tr:last-child td{border-bottom:none;}
+  .stc-table td:first-child{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--amber);letter-spacing:.06em;white-space:nowrap;}
+  .stc-table td:nth-child(2){color:var(--paper);}
+  .stc-table tbody tr:hover{background:rgba(212,162,76,.04);}
+
+  /* FORMULA BLOCK */
+  .formula-block{border:1px solid var(--rule-strong);padding:24px 28px;margin-top:24px;background:rgba(14,13,11,.35);}
+  .formula-block .f-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:12px;}
+  .formula-block .f-eq{font-family:"JetBrains Mono",monospace;font-size:19px;color:var(--amber);letter-spacing:.04em;margin-bottom:14px;line-height:1.4;}
+  .formula-block .f-vars{display:grid;grid-template-columns:90px 1fr;gap:6px 14px;font-size:14px;color:var(--paper-2);}
+  .formula-block .f-vars dt{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--amber);}
+  .formula-block .f-vars dd{margin:0;}
+  .formula-block .f-note{margin-top:14px;font-size:14px;color:var(--paper-2);font-style:italic;border-top:1px solid var(--rule);padding-top:12px;}
+
+  /* PRECEDENT CARDS */
+  .precedent-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:24px;border:1px solid var(--rule-strong);}
+  .prec-card{padding:24px 26px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+  .prec-card:nth-child(2n){border-right:none;}
+  .prec-card:nth-last-child(-n+2){border-bottom:none;}
+  .prec-card .p-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:6px;}
+  .prec-card h4{font-family:"Fraunces",serif;font-weight:380;font-size:20px;margin:0 0 4px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .prec-card h4 em{font-style:italic;color:var(--amber);}
+  .prec-card .p-meta{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--paper-dim);margin-bottom:12px;letter-spacing:.06em;}
+  .prec-card p{margin:0 0 8px;color:var(--paper-2);font-size:14px;line-height:1.55;}
+  .prec-card p strong{color:var(--paper);}
+  @media (max-width:680px){.precedent-grid{grid-template-columns:1fr}.prec-card{border-right:none;}}
+
+  /* TOOL CALLOUT */
+  .tool-callout{margin-top:28px;padding:22px 28px;border:1px solid var(--blue);background:rgba(159,200,212,.05);}
+  .tool-callout .t-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;font-weight:500;}
+  .tool-callout h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .tool-callout p{margin:0 0 8px;color:var(--paper-2);font-size:15.5px;line-height:1.6;}
+  .tool-callout a{color:var(--blue);text-underline-offset:3px;}
+  .tool-callout strong{color:var(--paper);}
+  .tool-callout ul{margin:6px 0 0;padding-left:18px;color:var(--paper-2);font-size:15px;line-height:1.6;}
+  .tool-callout li{margin-bottom:6px;}
+
+  /* SCENE MATRIX */
+  .matrix{width:100%;border-collapse:collapse;margin-top:8px;}
+  .matrix th{padding:8px 8px;font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-dim);text-align:center;border-bottom:1px solid var(--rule-strong);font-weight:400;}
+  .matrix th:first-child{text-align:left;color:var(--amber);}
+  .matrix td{padding:0;border:1px solid var(--rule);text-align:center;height:34px;}
+  .matrix td:first-child{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--paper);letter-spacing:.04em;text-align:left;padding:0 10px;border-left:none;white-space:nowrap;}
+  .matrix .lvl{display:block;width:100%;height:100%;font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink);line-height:34px;font-weight:600;}
+  .matrix .l0{background:transparent;color:var(--paper-dim);font-weight:400;}
+  .matrix .l-lo{background:rgba(212,162,76,.18);color:var(--amber);}
+  .matrix .l-mid{background:rgba(212,162,76,.45);}
+  .matrix .l-hi{background:rgba(212,162,76,.85);}
+  .matrix .l-egr{background:rgba(159,200,212,.4);color:var(--ink);}
+  .matrix-key{margin-top:12px;display:flex;gap:16px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--paper-dim);}
+  .matrix-key span{display:inline-flex;align-items:center;gap:7px;}
+  .matrix-key i{width:13px;height:13px;display:inline-block;}
+
+  /* LAB SHEET */
+  .lab-sheet{margin-top:24px;}
+  .lab-row{display:grid;grid-template-columns:60px 1fr 1.2fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule);align-items:start;}
+  .lab-row:last-child{border-bottom:1px solid var(--rule);}
+  .lab-row .g{font-family:"Fraunces",serif;font-style:italic;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-size:42px;color:var(--blue);line-height:.9;font-weight:300;}
+  .lab-row h5{font-family:"Fraunces",serif;font-weight:380;font-size:22px;line-height:1.1;margin:0 0 6px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .lab-row h5 em{font-style:italic;color:var(--amber);}
+  .lab-row .tag{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:2px 8px;border:1px solid var(--rule-strong);color:var(--paper-dim);margin-bottom:6px;}
+  .lab-row p{margin:0 0 8px;color:var(--paper-2);font-size:16px;line-height:1.55;}
+  .lab-row ul{margin:6px 0 0;padding-left:18px;color:var(--paper-2);font-size:16px;}
+  .lab-row li{margin-bottom:6px;}
+  @media (max-width:680px){.lab-row{grid-template-columns:50px 1fr}.lab-row .tasks{grid-column:1/-1;border-top:1px dashed var(--rule);padding-top:10px;}}
+
+  /* DELIVERABLE */
+  .deliverable{border-left:3px solid var(--amber);background:var(--amber-soft);padding:22px 28px;margin-top:24px;}
+  .deliverable .label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-weight:500;}
+  .deliverable h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 12px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .deliverable ul{margin:8px 0;padding-left:20px;color:var(--paper);font-size:15px;line-height:1.6;}
+  .deliverable li{margin-bottom:6px;}
+
+  .checklist{margin-top:18px;}
+  .check{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--rule);align-items:flex-start;}
+  .check:last-child{border-bottom:none}
+  .check .box{flex:0 0 auto;width:18px;height:18px;border:1.5px solid var(--paper-dim);margin-top:2px;}
+  .check .text{font-size:15px;color:var(--paper-2);line-height:1.5;}
+  .check .text strong{color:var(--paper);}
+
+  /* TRANSITION BRIDGE */
+  .bridge{margin-top:56px;padding:18px 24px;border-left:2px solid var(--amber-line);background:rgba(212,162,76,.04);font-size:16px;color:var(--paper-2);font-style:italic;line-height:1.6;}
+  .bridge strong{color:var(--amber);font-style:normal;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;display:block;margin-bottom:6px;}
+
+  /* INTERACTIVE LOAD / LPD CALCULATOR */
+  .calc{margin-top:30px;border:1px solid var(--blue);background:rgba(159,200,212,.04);}
+  .calc-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding:16px 22px;border-bottom:1px solid var(--rule-strong);background:rgba(159,200,212,.07);}
+  .calc-head .ct{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--blue);}
+  .calc-modes{display:flex;border:1px solid var(--rule-strong);flex-wrap:wrap;}
+  .calc-mode{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-2);background:transparent;border:none;padding:8px 14px;cursor:pointer;border-right:1px solid var(--rule-strong);}
+  .calc-mode:last-child{border-right:none;}
+  .calc-mode.active{background:var(--amber);color:var(--ink);font-weight:600;}
+  .calc-body{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+  .calc-view{padding:14px 16px;border-right:1px solid var(--rule-strong);background:rgba(14,13,11,.45);display:flex;align-items:center;}
+  .calc-view svg{display:block;width:100%;height:auto;}
+  .calc-panel{padding:20px 24px;}
+  .calc-slider{margin-bottom:16px;}
+  .calc-slider label{display:flex;justify-content:space-between;align-items:baseline;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-2);margin-bottom:9px;}
+  .calc-slider label b{color:var(--amber);font-size:14px;letter-spacing:.02em;}
+  .calc-slider input[type=range]{width:100%;accent-color:var(--amber);height:5px;cursor:pointer;}
+  .calc-math{margin-top:6px;padding:16px 18px;background:rgba(14,13,11,.6);border:1px solid var(--rule-strong);font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.9;color:var(--paper);}
+  .calc-math .mv{color:var(--blue);}
+  .calc-math .mr{color:var(--amber);font-weight:600;}
+  .calc-badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+  .calc-badge{flex:1;min-width:130px;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;padding:11px 13px;border:1px solid var(--rule-strong);line-height:1.4;color:var(--paper-2);}
+  .calc-badge b{display:block;font-size:20px;margin-bottom:3px;letter-spacing:0;}
+  .calc-badge.ok{border-color:rgba(127,175,120,.55);background:rgba(127,175,120,.08);}
+  .calc-badge.ok b{color:var(--green);}
+  .calc-badge.warn{border-color:rgba(200,71,47,.55);background:rgba(200,71,47,.09);}
+  .calc-badge.warn b{color:var(--red);}
+  .calc-note{padding:0 24px 18px;font-size:13.5px;color:var(--paper-2);font-style:italic;line-height:1.55;}
+  @media(max-width:680px){.calc-body{grid-template-columns:1fr}.calc-view{border-right:none;border-bottom:1px solid var(--rule-strong);}}
+
+  /* FOOT */
+  footer{margin-top:120px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .hero, section{animation:rise .9s ease both;}
+
+  @media print{
+    html{background:var(--ink) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    body{background:var(--ink) !important;margin:0;padding:0;font-size:14.5px;}
+    body::before{display:none !important;}
+    .wrap{max-width:none;padding:0;}
+    .hero, section{animation:none !important;}
+    section{break-inside:avoid;}
+    .prec-card,.diagram,.lec{break-inside:avoid;}
+  }
+</style>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span><span class="dot"></span>Week 07 &middot; Class Plan &middot; v1 &middot; 2026.07.01</span>
+    <span class="act-tag">Act III &middot; Lighting + Electrical</span>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div>
+      <div class="kicker">Week 07 <span class="pipe">/</span> Act III <span class="pipe">/</span> Controls &middot; Schedule &middot; Load</div>
+      <h1 class="title">One Light<br><em>Becomes a System.</em></h1>
+      <p class="sub">Last week you sized a single fixture by hand. Tonight that one calc grows up &mdash; every space on the schedule, every layer on its own control, the whole thing verified in simulation, and the first honest tally of the watts it all draws.</p>
+    </div>
+    <svg class="ornament" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- console faders: four lighting layers at four scene levels -->
+      <g stroke="#8A8273" stroke-width="1">
+        <line x1="48" y1="34" x2="48" y2="186"/>
+        <line x1="92" y1="34" x2="92" y2="186"/>
+        <line x1="136" y1="34" x2="136" y2="186"/>
+        <line x1="180" y1="34" x2="180" y2="186"/>
+      </g>
+      <!-- fader knobs at different heights -->
+      <rect x="38" y="52" width="20" height="9" rx="1.5" fill="rgba(212,162,76,.85)" stroke="#D4A24C" stroke-width="1"/>
+      <rect x="82" y="150" width="20" height="9" rx="1.5" fill="rgba(159,200,212,.6)" stroke="#9FC8D4" stroke-width="1"/>
+      <rect x="126" y="98" width="20" height="9" rx="1.5" fill="rgba(212,162,76,.5)" stroke="#D4A24C" stroke-width="1"/>
+      <rect x="170" y="74" width="20" height="9" rx="1.5" fill="rgba(212,162,76,.7)" stroke="#D4A24C" stroke-width="1"/>
+      <text x="48" y="204" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="1">HOUSE</text>
+      <text x="92" y="204" text-anchor="middle" fill="#9FC8D4" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="1">EGR</text>
+      <text x="136" y="204" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="1">WORK</text>
+      <text x="180" y="204" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="1">ACC</text>
+      <text x="114" y="26" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="7" letter-spacing="2">SCENE &middot; PERFORMANCE</text>
+    </svg>
+  </header>
+
+  <!-- META -->
+  <dl class="meta">
+    <div><dt>Date</dt><dd>Wed 07&middot;01<small>19:30 &ndash; 23:35</small></dd></div>
+    <div><dt>Format</dt><dd>Online &middot; Zoom<small>cameras on, 100%</small></dd></div>
+    <div><dt>Reading</dt><dd>MEEB Ch 16&ndash;17<small>Lighting design &amp; applications</small></dd></div>
+    <div><dt>Wk 7 Due</dt><dd>Tue 07&middot;07<small>11:59 PM via Canvas</small></dd></div>
+  </dl>
+
+  <!-- WHITEBOARD LINK -->
+  <div style="margin-top:32px;display:flex;align-items:center;gap:20px;padding:16px 22px;border:1px solid var(--rule-strong);background:rgba(237,228,211,.02);">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="flex-shrink:0;">
+      <rect x="1" y="1" width="26" height="26" rx="2" stroke="rgba(212,162,76,.5)" stroke-width="1.5" fill="rgba(212,162,76,.06)"/>
+      <line x1="5" y1="10" x2="23" y2="10" stroke="rgba(212,162,76,.4)" stroke-width="1"/>
+      <line x1="5" y1="14" x2="18" y2="14" stroke="rgba(212,162,76,.4)" stroke-width="1"/>
+      <line x1="5" y1="18" x2="20" y2="18" stroke="rgba(212,162,76,.4)" stroke-width="1"/>
+      <circle cx="22" cy="18" r="3" fill="rgba(159,200,212,.7)"/>
+    </svg>
+    <div style="flex:1;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:5px;">Course Whiteboard &middot; Lucidspark</div>
+      <a href="https://lucid.app/lucidspark/53cea859-ab48-4e2a-b5c3-b883766730c2/edit?viewport_loc=-759%2C162%2C2512%2C1297%2C0_0&invitationId=inv_f380e33e-1dcf-4f06-ae5c-5cad3a909dd7" target="_blank" rel="noopener" style="font-family:'Fraunces',serif;font-size:20px;font-variation-settings:'opsz' 48,'SOFT' 30;color:var(--amber);text-decoration:none;font-weight:380;">Open the Whiteboard &rarr;</a>
+    </div>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);border:1px solid var(--rule-strong);padding:6px 12px;white-space:nowrap;flex-shrink:0;">One board, all weeks</span>
+  </div>
+
+
+  <!-- § 01 SESSION OBJECTIVES -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 01</span>
+      <h2 class="sec-title">Session <em>Objectives.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Tonight turns last week&rsquo;s single hand-calc into a designed, controlled, verified, and <em>powered</em> lighting system. The deliverable stops being one number and becomes a real document set. This week&rsquo;s reading &mdash; <em>MEEB Ch.&nbsp;16 &amp; 17, Lighting Design &amp; Applications</em> &mdash; is the backbone for all of it. You should leave able to:</p>
+      <ul>
+        <li><strong>Design light as scenes, not a level.</strong> Put the four layers &mdash; house, egress/aisle, work/rehearsal, accent &mdash; on real controls: occupancy/vacancy sensing, daylight harvesting, scene presets, and the code-required emergency/egress layer.</li>
+        <li><strong>Build a complete luminaire schedule.</strong> Every space becomes a row: type tag, delivered &Phi; lumens, input watts, CCT, CRI, distribution, mounting, and quantity &mdash; real products, each matched to its job.</li>
+        <li><strong>Verify by simulation, not just by hand.</strong> Run the electric-lighting module in <em>LightStanza</em> with your IES files for <em>both</em> the house and the prefunction, read the false-color illuminance maps, and reconcile each against your lumen-method numbers and the IES target.</li>
+        <li><strong>Trace the path from grid to fixture.</strong> Utility &rarr; meter &rarr; main panel &rarr; subpanel &rarr; branch circuit &rarr; luminaire &mdash; and know exactly where your schedule plugs into it.</li>
+        <li><strong>Read your schedule as an electrical load.</strong> Sum input watts into a <em>connected load</em>, divide by area for a first <em>LPD</em> figure, and see whether you&rsquo;re inside the energy-code allowance before Week&nbsp;8 makes it official.</li>
+        <li><strong>Log the decision.</strong> One Decision Log entry (Entry&nbsp;10) on a control or schedule choice &mdash; the reasoning and the trade-off behind it.</li>
+      </ul>
+    </div>
+  </section>
+
+
+  <!-- § 02 RUN OF SHOW -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 02</span>
+      <h2 class="sec-title">Run of <em>Show.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:14px;">
+      <p>Four hours and five minutes, online. Four short lectures move from <em>design intent</em> (controls) to <em>document</em> (the schedule) to <em>proof</em> (simulation) to <em>consequence</em> (the load), then a long lab to build all four on your own hall.</p>
+    </div>
+    <div class="timetable">
+      <div class="row review"><div class="when">19:30 &middot; 19:45</div><div class="dur">15 min</div><div class="what"><em>Open &amp; Recap.</em> From last week&rsquo;s single hand-calc to tonight&rsquo;s full system &mdash; a quick poll of where everyone landed on their first space. (&sect;&nbsp;03)</div></div>
+      <div class="row"><div class="when">19:45 &middot; 20:10</div><div class="dur">25 min</div><div class="what"><em>Lecture 1 &mdash; Controls &amp; Scenes.</em> The four layers on real controls: occupancy/vacancy, daylight harvesting, scene presets, emergency/egress. (&sect;&nbsp;04)</div></div>
+      <div class="row"><div class="when">20:10 &middot; 20:38</div><div class="dur">28 min</div><div class="what"><em>Lecture 2 &mdash; The Luminaire Schedule.</em> Turn one fixture into the whole document &mdash; columns, task-matching, delivered lumens, and the watts column that feeds the rest of the night. (&sect;&nbsp;05)</div></div>
+      <div class="row break"><div class="when">20:38 &middot; 20:48</div><div class="dur">10 min</div><div class="what">Break.</div></div>
+      <div class="row"><div class="when">20:48 &middot; 21:13</div><div class="dur">25 min</div><div class="what"><em>Lecture 3 &mdash; Verify in LightStanza.</em> The electric-lighting module: import IES, run the analysis, read the false-color map, and reconcile it with the hand calc. (&sect;&nbsp;06)</div></div>
+      <div class="row"><div class="when">21:13 &middot; 21:40</div><div class="dur">27 min</div><div class="what"><em>Lecture 4 &mdash; The Wire Behind the Light.</em> The distribution path, connected vs. demand load, and the first LPD check &mdash; with the live load calculator. (&sect;&nbsp;07)</div></div>
+      <div class="row review"><div class="when">21:40 &middot; 21:55</div><div class="dur">15 min</div><div class="what"><em>Applied Case &mdash; The Load Side of a Real Relight.</em> The same Urban&nbsp;Colab auditorium &mdash; the watts it cost to buy back the light. (&sect;&nbsp;08)</div></div>
+      <div class="row"><div class="when">21:55 &middot; 22:05</div><div class="dur">10 min</div><div class="what"><em>Precedent &mdash; Controlled Halls.</em> Four reference moves for scenes, harvesting, egress, and the LPD-lean schedule. (&sect;&nbsp;09)</div></div>
+      <div class="row lab"><div class="when">22:05 &middot; 23:20</div><div class="dur">75 min</div><div class="what"><em>Lab &mdash; Build the Schedule.</em> Expand to your spaces, assign controls, run the house + prefunction LightStanza passes, and tally the load. Live screen-share help. (&sect;&nbsp;10)</div></div>
+      <div class="row"><div class="when">23:20 &middot; 23:35</div><div class="dur">15 min</div><div class="what"><em>Wrap.</em> The week&rsquo;s deliverable, Decision Log Entry&nbsp;10, and the watts column you carry into Week&nbsp;8. (&sect;&nbsp;11)</div></div>
+    </div>
+  </section>
+
+
+  <!-- § 03 RECAP & BRIDGE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 03</span>
+      <h2 class="sec-title">From One Calc <em>to a System.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Last week ended with a single defensible number: a target footcandle level and the fixture count that holds it, by hand. Hold onto it &mdash; that calc is the seed of everything tonight. The reverse form is still your workhorse:</p>
+    </div>
+
+    <div class="formula-block">
+      <div class="f-label">Last Week, Still Running &mdash; The Lumen Method</div>
+      <div class="f-eq">E = ( N &times; &Phi; &times; CU &times; LLF ) &divide; A&nbsp;&nbsp;&rarr;&nbsp;&nbsp;N = ( E &times; A ) &divide; ( &Phi; &times; CU &times; LLF )</div>
+      <div class="f-note">The <strong>CU</strong> still comes from the <em>zonal-cavity</em> method &mdash; the room cavity ratio and your surface reflectances. Tonight we keep <strong>E</strong> as the target but stop trusting the average alone: the simulation in &sect;&nbsp;06 shows what the single number hides, and the watts behind <strong>N</strong> become the load in &sect;&nbsp;07.</div>
+    </div>
+
+    <div class="prose" style="margin-top:24px;">
+      <h5>Four things change tonight</h5>
+      <ul>
+        <li><strong>From a level to a scene.</strong> You stop lighting the room to one number and start designing <em>states</em> &mdash; load-in, rehearsal, show, intermission &mdash; each a stored set of layer levels.</li>
+        <li><strong>From one fixture to a schedule.</strong> The single luminaire becomes a full, task-matched document covering every space.</li>
+        <li><strong>From hand-calc to verified.</strong> You check the average against a false-color map and find the dark corners the average can&rsquo;t see.</li>
+        <li><strong>From lumens to watts.</strong> Every lumen has an electrical bill &mdash; tonight you start counting it.</li>
+      </ul>
+    </div>
+
+    <div class="bridge">
+      <strong>The through-line</strong>
+      Acoustics asked what the hall <em>sounds</em> like; daylighting, what it does with the sun; last week, how you light it at all. Tonight is the night the lighting stops being a sketch and becomes a buildable, switchable, billable system &mdash; the same leap a real project makes when the design set goes to the electrical engineer.
+    </div>
+  </section>
+
+
+  <!-- § 04 LECTURE 1 — CONTROLS & SCENES -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 04</span>
+      <h2 class="sec-title">Controls &amp; <em>Scenes.</em></h2>
+    </div>
+
+    <div class="lec">
+      <div class="lec-head"><span class="name">Lecture 1</span><span>Lighting the Verbs &middot; 25 min</span></div>
+      <h3>A hall is lit in <em>scenes</em> &mdash; and a scene is a set of layers at set levels.</h3>
+      <p class="one-liner">Last week gave you the four layers. Tonight each layer gets a control: a way to turn on, dim, hold, or store. The control intent is a design decision, separate from the fixture &mdash; and it&rsquo;s where most of the energy savings live.</p>
+
+      <h4>The four control moves</h4>
+      <ul>
+        <li><strong>Occupancy vs. vacancy sensing.</strong> PIR or ultrasonic sensors. <em>Occupancy</em> (auto-on) suits corridors and back-of-house; <em>vacancy</em> (manual-on, auto-off) is the energy-code default for rooms people enter deliberately &mdash; it never turns a fully daylit room on for you.</li>
+        <li><strong>Daylight harvesting / dimming.</strong> The prefunction you daylit in Act&nbsp;II dims its electric layer as the sun does the work &mdash; a photosensor holds the target. <em>Open-loop</em> reads the daylight source; <em>closed-loop</em> reads the lit surface itself.</li>
+        <li><strong>Scene presets &amp; theatrical dimming.</strong> Stored sets of layer levels: load-in, rehearsal, pre-show, performance, intermission, cleaning &mdash; one button recalls a whole room state, no chasing faders live. The architectural layers ride a preset dimming console; the performance rig runs on its own <em>DMX</em> control, a separate world you leave hooks for.</li>
+        <li><strong>Emergency &amp; egress.</strong> Code-required, on a protected/illuminated circuit, comes on at power loss and stays on. UL&nbsp;924 transfer devices; design for roughly <em>1&nbsp;fc average</em> on the egress path. Never folded into the house dimmer.</li>
+      </ul>
+    </div>
+
+    <div class="concept">
+      <div class="c-label">The habit to build tonight</div>
+      <h4>Design the <em>verbs</em>, not just the fixtures.</h4>
+      <p>&ldquo;House dims to 10% at performance and egress holds&rdquo; is a design decision you can write down and defend &mdash; independent of which downlight you picked. Capture the <em>control intent</em> per layer per scene; the fixture schedule says <em>what</em>, the controls plan says <em>when and how bright</em>. The two together are the lighting design.</p>
+    </div>
+
+    <div class="prose" style="margin-top:28px;">
+      <h5>The scene matrix &mdash; layers &times; states</h5>
+      <p>This is the single most useful artifact in lighting controls: the four layers down the side, the room&rsquo;s scenes across the top, each cell a level. Build one for your primary space and the control intent designs itself.</p>
+    </div>
+
+    <table class="matrix" aria-label="Scene matrix: lighting layers by scene state">
+      <thead>
+        <tr><th>Layer / Scene</th><th>Load-in</th><th>Rehearsal</th><th>Pre-show</th><th>Performance</th><th>Intermission</th><th>Clean</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>House</td><td><span class="lvl l-hi">100</span></td><td><span class="lvl l-mid">60</span></td><td><span class="lvl l-mid">50</span></td><td><span class="lvl l-lo">10</span></td><td><span class="lvl l-mid">60</span></td><td><span class="lvl l-hi">100</span></td></tr>
+        <tr><td>Egress / aisle</td><td><span class="lvl l-egr">ON</span></td><td><span class="lvl l-egr">ON</span></td><td><span class="lvl l-egr">ON</span></td><td><span class="lvl l-egr">ON</span></td><td><span class="lvl l-egr">ON</span></td><td><span class="lvl l-egr">ON</span></td></tr>
+        <tr><td>Work / rehearsal</td><td><span class="lvl l-hi">100</span></td><td><span class="lvl l-hi">100</span></td><td><span class="lvl l0">off</span></td><td><span class="lvl l0">off</span></td><td><span class="lvl l0">off</span></td><td><span class="lvl l-hi">100</span></td></tr>
+        <tr><td>Accent / cove</td><td><span class="lvl l0">off</span></td><td><span class="lvl l-lo">30</span></td><td><span class="lvl l-hi">90</span></td><td><span class="lvl l-mid">40</span></td><td><span class="lvl l-hi">80</span></td><td><span class="lvl l0">off</span></td></tr>
+      </tbody>
+    </table>
+    <div class="matrix-key">
+      <span><i style="background:rgba(212,162,76,.85)"></i>Full</span>
+      <span><i style="background:rgba(212,162,76,.45)"></i>Mid</span>
+      <span><i style="background:rgba(212,162,76,.18)"></i>Low</span>
+      <span><i style="background:rgba(159,200,212,.4)"></i>Egress (always on)</span>
+      <span><i style="border:1px solid var(--rule-strong)"></i>Off</span>
+    </div>
+  </section>
+
+
+  <!-- § 05 LECTURE 2 — THE LUMINAIRE SCHEDULE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 05</span>
+      <h2 class="sec-title">The Luminaire <em>Schedule.</em></h2>
+    </div>
+
+    <div class="lec">
+      <div class="lec-head"><span class="name">Lecture 2</span><span>The Document That Builds &middot; 28 min</span></div>
+      <h3>The schedule is what turns a <em>sketch</em> into a build.</h3>
+      <p class="one-liner">A luminaire schedule is the contract: one row per fixture <em>type</em>, every number a fabricator or estimator needs. It is also where lumens quietly become watts &mdash; the column that feeds tonight&rsquo;s electrical lecture and next week&rsquo;s panel.</p>
+
+      <h4>One row per type &mdash; the columns that matter</h4>
+      <ul>
+        <li><strong>Type tag</strong> (L1, L2&hellip;) &mdash; the symbol you&rsquo;ll place on the reflected ceiling plan.</li>
+        <li><strong>Product &amp; distribution</strong> &mdash; real manufacturer/model, and the distribution type (direct, diffuse, asymmetric, accent) that matches its job.</li>
+        <li><strong>Delivered &Phi; (lm)</strong> &mdash; <em>fixture</em> lumens, not lamp lumens &mdash; and <strong>input W</strong>, the number the electrical side actually cares about.</li>
+        <li><strong>CCT &amp; CRI</strong> &mdash; the color decisions from last week, now committed per type.</li>
+        <li><strong>Mounting &amp; Qty</strong> &mdash; recessed / pendant / surface / track, and how many. Qty &times; input&nbsp;W is the connected load.</li>
+      </ul>
+    </div>
+
+    <table class="stc-table">
+      <thead><tr><th>Tag</th><th>Type / Distribution</th><th>&Phi; (lm)</th><th>W</th><th>CCT / CRI</th><th>Serves</th></tr></thead>
+      <tbody>
+        <tr><td>L1</td><td>Recessed downlight &middot; diffuse</td><td>4,000</td><td>32 W</td><td>3000K / 90</td><td>House (general)</td></tr>
+        <tr><td>L2</td><td>Aisle / step light &middot; direct</td><td>350</td><td>4 W</td><td>3000K / 80</td><td>Egress &amp; aisles</td></tr>
+        <tr><td>L3</td><td>Linear high-output &middot; wide</td><td>6,500</td><td>48 W</td><td>3500K / 80</td><td>Stage work light</td></tr>
+        <tr><td>L4</td><td>Cove / wall-wash &middot; asymmetric</td><td>1,200</td><td>14 W/ft</td><td>2700K / 90</td><td>Architectural accent</td></tr>
+        <tr><td>L5</td><td>Track projector &middot; accent</td><td>1,800</td><td>20 W</td><td>3000K / 95</td><td>Display / feature</td></tr>
+      </tbody>
+    </table>
+
+    <div class="concept-grid" style="margin-top:24px;">
+      <div class="concept-cell">
+        <div class="cc-label">Every row earns its job</div>
+        <h4>Distribution is a <em>choice</em>, not a default.</h4>
+        <p>Narrow/direct over aisles and the stage apron; wide/diffuse warm light for the house and lobby; high-CRI (&ge;&nbsp;90) accent on the stage and displays; asymmetric wash to graze your Act&nbsp;I architectural surfaces. If two rows have the same distribution doing different jobs, ask whether one of them is wrong.</p>
+      </div>
+      <div class="concept-cell" style="border-right:none;">
+        <div class="cc-label">Watts ride along</div>
+        <h4>The schedule <em>is</em> the load list.</h4>
+        <p>Add one more column &mdash; <strong>Qty &times; input&nbsp;W</strong> &mdash; and the lighting schedule becomes the connected-load table for the whole building. That single column is what &sect;&nbsp;07 divides by area for your LPD, and what Week&nbsp;8 groups into circuits and a panel schedule. Use <em>delivered</em> lumens for light and <em>input</em> watts for load &mdash; never mix them up.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- § 06 LECTURE 3 — VERIFY IN LIGHTSTANZA -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 06</span>
+      <h2 class="sec-title">Verify in <em>LightStanza.</em></h2>
+    </div>
+
+    <div class="lec">
+      <div class="lec-head"><span class="name">Lecture 3</span><span>The Map Behind the Average &middot; 25 min</span></div>
+      <h3>Your hand-calc gives the <em>average</em>; the simulation shows the <em>map</em>.</h3>
+      <p class="one-liner">The lumen method is fast and defensible, but it reports a single average maintained level for a whole space. Simulation places your real fixtures with their real distributions and shows you where the light actually lands &mdash; including the corners the average hides.</p>
+
+      <h4>The electric-lighting workflow</h4>
+      <ul>
+        <li><strong>Import the IES file</strong> for each type from the manufacturer page &mdash; the same file your schedule references. The simulation reads its candela distribution, lumens, and watts.</li>
+        <li><strong>Place &amp; lay out</strong> the fixtures on your plan at the spacing your lumen method implied (the N you solved for).</li>
+        <li><strong>Run the analysis</strong> at the 30-inch workplane and read the <em>false-color illuminance map</em> in footcandles.</li>
+        <li><strong>Check uniformity</strong> &mdash; the ratio of average to minimum. A good average with dark aisle corners is still a failing room.</li>
+      </ul>
+    </div>
+
+    <div class="concept blue-rule">
+      <div class="c-label">Why this step is not optional</div>
+      <h4>The average <em>lies</em> about the edges.</h4>
+      <p>A space can hand-calc to a comfortable 25&nbsp;fc average and still drop to 8&nbsp;fc in the corners and under the balcony &mdash; exactly where someone trips. The lumen method literally cannot see that; it has no geometry. The simulation does. When the map and the hand-calc disagree, that gap <em>is</em> the finding &mdash; usually a too-optimistic CU, a distribution that throws the wrong way, or reflectances you assumed but the room doesn&rsquo;t have.</p>
+    </div>
+
+    <div class="tool-callout">
+      <div class="t-label">Tool &middot; LightStanza &mdash; Electric Lighting Module</div>
+      <h4>Same software as Act&nbsp;II, electric mode.</h4>
+      <p>You already ran daylight in <strong>LightStanza</strong> for the sDA/ASE work; the electric-lighting module uses the same model. Confirm the site, building type (performing-arts theater), and grid before you run, then:</p>
+      <ul>
+        <li>Pull the <strong>IES file</strong> from each fixture&rsquo;s manufacturer page (it sits next to the cut sheet).</li>
+        <li>Run your two key spaces tonight &mdash; the <em>house</em> and the <em>prefunction</em> &mdash; and export each false-color map as an image for the deliverable.</li>
+        <li>Annotate the map with your hand-calc <em>E</em> and the IES target, and write one line reconciling them.</li>
+      </ul>
+      <p style="font-size:13.5px;color:var(--paper-dim);font-style:italic;margin-bottom:0;">If the electric module fights you, a Revit lighting analysis with the same IES files is an accepted substitute &mdash; flag it like we did for the daylight tools.</p>
+    </div>
+  </section>
+
+
+  <!-- § 07 LECTURE 4 — THE WIRE BEHIND THE LIGHT -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 07</span>
+      <h2 class="sec-title">The Wire Behind <em>the Light.</em></h2>
+    </div>
+
+    <div class="lec">
+      <div class="lec-head"><span class="name">Lecture 4</span><span>Distribution &amp; Load &middot; 27 min</span></div>
+      <h3>Every lumen has an <em>electrical bill.</em></h3>
+      <p class="one-liner">The schedule you just built draws power. Tonight we follow that power backward from the fixture to the street, then total it into a load &mdash; the first half of the electrical work Week&nbsp;8 finishes with a panel schedule.</p>
+
+      <h4>Connected load vs. demand load</h4>
+      <ul>
+        <li><strong>Connected load</strong> &mdash; the sum of every fixture&rsquo;s input watts if all were on at once. That&rsquo;s your schedule&rsquo;s watts column, totaled. For lighting, this is what LPD is checked against.</li>
+        <li><strong>Demand load</strong> &mdash; what the building actually draws, after diversity and controls. Because scenes mean layers are rarely all at full, demand is lower &mdash; but you size protection from connected load first.</li>
+        <li><strong>Volt-amps &amp; amps</strong> &mdash; for LED drivers, treat VA &asymp; W for now; amps&nbsp;=&nbsp;VA&nbsp;&divide;&nbsp;voltage. We&rsquo;ll size breakers from this in Week&nbsp;8.</li>
+      </ul>
+    </div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 600 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Power distribution path from utility to luminaire">
+        <line x1="20" y1="62" x2="580" y2="62" stroke="rgba(212,162,76,.4)" stroke-width="1.2"/>
+        <!-- utility -->
+        <g><circle cx="48" cy="62" r="12" fill="none" stroke="#D4A24C" stroke-width="1.3"/><path d="M44 56 l5 6 -4 0 5 6" fill="none" stroke="#D4A24C" stroke-width="1.2"/>
+        <text x="48" y="96" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="9" font-weight="600">UTILITY</text>
+        <text x="48" y="108" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="7">the grid</text></g>
+        <!-- meter -->
+        <g><circle cx="150" cy="62" r="13" fill="rgba(212,162,76,.1)" stroke="#D4A24C" stroke-width="1.3"/><line x1="150" y1="62" x2="156" y2="55" stroke="#D4A24C" stroke-width="1.2"/>
+        <text x="150" y="96" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="9" font-weight="600">METER</text>
+        <text x="150" y="108" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="7">what you pay</text></g>
+        <!-- main panel -->
+        <g><rect x="240" y="46" width="26" height="32" fill="rgba(212,162,76,.12)" stroke="#D4A24C" stroke-width="1.3"/>
+        <line x1="246" y1="54" x2="260" y2="54" stroke="#D4A24C" stroke-width=".8"/><line x1="246" y1="62" x2="260" y2="62" stroke="#D4A24C" stroke-width=".8"/><line x1="246" y1="70" x2="260" y2="70" stroke="#D4A24C" stroke-width=".8"/>
+        <text x="253" y="96" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="9" font-weight="600">MAIN</text>
+        <text x="253" y="108" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="7">service panel</text></g>
+        <!-- subpanel -->
+        <g><rect x="350" y="50" width="22" height="24" fill="rgba(212,162,76,.08)" stroke="#D4A24C" stroke-width="1.2"/>
+        <line x1="355" y1="57" x2="367" y2="57" stroke="#D4A24C" stroke-width=".8"/><line x1="355" y1="64" x2="367" y2="64" stroke="#D4A24C" stroke-width=".8"/>
+        <text x="361" y="96" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="9" font-weight="600">SUBPANEL</text>
+        <text x="361" y="108" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="7">lighting zone</text></g>
+        <!-- branch circuit -->
+        <g><path d="M450 62 l8 -6 l0 12 z" fill="rgba(159,200,212,.5)" stroke="#9FC8D4" stroke-width="1"/>
+        <text x="462" y="96" text-anchor="middle" fill="#9FC8D4" font-family="JetBrains Mono, monospace" font-size="9" font-weight="600">BRANCH</text>
+        <text x="462" y="108" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="7">breaker + wire</text></g>
+        <!-- luminaire -->
+        <g><ellipse cx="552" cy="58" rx="11" ry="5" fill="rgba(212,162,76,.4)" stroke="#D4A24C" stroke-width="1.2"/><path d="M544 60 L536 78 L568 78 L560 60 Z" fill="rgba(212,162,76,.12)" stroke="rgba(212,162,76,.4)" stroke-width=".8"/>
+        <text x="552" y="96" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="9" font-weight="600">LUMINAIRE</text>
+        <text x="552" y="108" text-anchor="middle" fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="7">your schedule</text></g>
+        <!-- arrows -->
+        <g fill="#8A8273" font-family="JetBrains Mono, monospace" font-size="12">
+          <text x="99" y="40" text-anchor="middle">&rarr;</text><text x="200" y="40" text-anchor="middle">&rarr;</text>
+          <text x="306" y="40" text-anchor="middle">&rarr;</text><text x="410" y="40" text-anchor="middle">&rarr;</text><text x="505" y="40" text-anchor="middle">&rarr;</text>
+        </g>
+      </svg>
+      <figcaption><b>READ</b> Power flows one way &mdash; the grid to the meter you pay, to the main service panel, split to a lighting <b>SUBPANEL</b>, onto a <b>BRANCH</b> circuit (breaker + wire), and finally to the luminaires on your schedule. Tonight you total the load at the right-hand end; Week&nbsp;8 sizes the breakers and the panel that feed it.</figcaption>
+    </div>
+
+    <div class="formula-block">
+      <div class="f-label">Connected Lighting Load &amp; Lighting Power Density</div>
+      <div class="f-eq">Connected W = &Sigma; ( Qty &times; input W ) &nbsp;&middot;&nbsp; LPD = Connected W &divide; Area</div>
+      <dl class="f-vars">
+        <dt>Connected W</dt><dd>sum of input watts across the schedule (lighting only)</dd>
+        <dt>Area</dt><dd>the floor area the fixtures serve (ft²)</dd>
+        <dt>LPD</dt><dd>lighting power density, W/ft² &mdash; checked against the ASHRAE&nbsp;90.1 / IECC allowance for the space type</dd>
+      </dl>
+      <div class="f-note">Tonight this is a <strong>first pass</strong> &mdash; an honest watts-per-foot number you sanity-check against the allowance. Week&nbsp;8 makes it official with the real space-type allowance and a controls credit if you earn one.</div>
+    </div>
+
+    <!-- INTERACTIVE LOAD / LPD CALCULATOR -->
+    <div class="calc" id="loadCalc">
+      <div class="calc-head">
+        <span class="ct">Interactive &middot; Connected Load &amp; LPD</span>
+        <div class="calc-modes">
+          <button type="button" class="calc-mode active" data-allow="1.0" data-name="Lobby">Lobby &middot; 1.0</button>
+          <button type="button" class="calc-mode" data-allow="0.8" data-name="House">House &middot; 0.8</button>
+          <button type="button" class="calc-mode" data-allow="1.1" data-name="Shops / BOH">Shops &middot; 1.1</button>
+        </div>
+      </div>
+      <div class="calc-body">
+        <div class="calc-view"><svg id="ldSvg" viewBox="0 0 360 250" role="img" aria-label="Bar comparing installed lighting power density to the code allowance"></svg></div>
+        <div class="calc-panel">
+          <div class="calc-slider">
+            <label><span>Fixtures <span style="color:var(--paper-dim)">N</span></span><b><span id="lN">18</span></b></label>
+            <input type="range" id="rN" min="1" max="80" step="1" value="18">
+          </div>
+          <div class="calc-slider">
+            <label><span>Input watts / fixture <span style="color:var(--paper-dim)">W</span></span><b><span id="lW">32</span> W</b></label>
+            <input type="range" id="rW" min="4" max="200" step="1" value="32">
+          </div>
+          <div class="calc-slider">
+            <label><span>Floor area <span style="color:var(--paper-dim)">A</span></span><b><span id="lA">2000</span> ft&sup2;</b></label>
+            <input type="range" id="rA" min="400" max="8000" step="50" value="2000">
+          </div>
+          <div class="calc-math" id="ldMath"></div>
+          <div class="calc-badges" id="ldBadges"></div>
+        </div>
+      </div>
+      <div class="calc-note" id="ldNote"></div>
+    </div>
+
+    <div class="concept blue-rule">
+      <div class="c-label">The thread into Week 8 &mdash; Panels &amp; PV</div>
+      <h4>Tonight&rsquo;s watts become next week&rsquo;s <em>panel</em>.</h4>
+      <p>Keep the watts column alive. Next week you&rsquo;ll group it into circuits (by layer, zone, or control scene), size breakers with the 80% rule, organize it into a <strong>panel schedule</strong>, settle the LPD against the real ASHRAE&nbsp;90.1 allowance, and size a <strong>PV array</strong> to offset a slice of it. Every number tonight is a number you reuse &mdash; don&rsquo;t throw away the arithmetic.</p>
+    </div>
+  </section>
+
+
+  <!-- § 08 APPLIED CASE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 08</span>
+      <h2 class="sec-title">Applied Case &mdash; <em>The Load Side.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Back to the live Urban&nbsp;Colab relight from last week &mdash; the assembly / banquet auditorium that hand-calc&rsquo;d to a third of its target. Last week the lumen method exposed the <em>light</em> deficit. Tonight, look at the <em>other</em> side of the same fix: buying the footcandles back cost watts. The question an energy reviewer asks next is simple &mdash; <em>did the heavier scheme blow the LPD budget?</em></p>
+      <p style="font-size:15px;"><strong>Two different numbers &mdash; don&rsquo;t mix them.</strong> <em>Connected load</em> is total watts (a sum &mdash; you size wire and breakers from it). <em>LPD</em> is watts per square foot (a density &mdash; you check energy code against it). Same fixtures, two jobs.</p>
+    </div>
+
+    <table class="stc-table">
+      <thead><tr><th>Two zones</th><th>Installed (decorative)</th><th>Engineer&rsquo;s spec (commercial)</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td>Delivered light</td><td>~7 fc</td><td>~18 fc</td><td>bought back ~11 fc</td></tr>
+        <tr><td>Connected load</td><td>1,016 W</td><td>1,791 W</td><td>+775 W (+76%)</td></tr>
+        <tr><td>LPD (W/ft²)&nbsp;*</td><td>~0.23</td><td>~0.41</td><td>+0.18 (+76%)</td></tr>
+        <tr><td>vs. LPD allowance</td><td>passes</td><td>passes</td><td>both clear ~0.8&ndash;1.0</td></tr>
+        <tr><td>Large fixture &Phi;</td><td>4,500 lm (36&Prime;)</td><td>13,000 lm (48&Prime;)</td><td>&mdash;</td></tr>
+      </tbody>
+    </table>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.03em;color:var(--paper-dim);margin-top:10px;line-height:1.6;">* LPD = connected load &divide; ~4,411 ft² auditorium floor. Assembly allowance &asymp; 0.8&ndash;1.0 W/ft² (ASHRAE 90.1 space-by-space) &mdash; the exact space-type value is confirmed in Week&nbsp;8.</p>
+
+    <div class="concept">
+      <div class="c-label">The finding &mdash; and the headroom</div>
+      <h4>The load jumped 76% &mdash; and <em>both</em> schemes still clear LPD.</h4>
+      <p>Reaching the IES target nearly <strong>doubled the connected load</strong> (1,016&nbsp;&rarr;&nbsp;1,791&nbsp;W), so the LPD rose the same 76% &mdash; same floor area. Yet even the brighter scheme lands near <strong>0.41&nbsp;W/ft²</strong>, comfortably under a typical assembly allowance of roughly <strong>0.8&ndash;1.0&nbsp;W/ft²</strong>. Both pass; the decorative set with wide margin, the brighter LED set still with clear room.</p>
+      <p>Why the headroom? <strong>LED efficacy.</strong> Modern LED delivers so many lumens per watt that you usually have room to spare on LPD. So here the binding constraint was never the energy code &mdash; it was the <em>footcandles</em>. The room failed on <em>light</em>, not on watts.</p>
+    </div>
+
+    <div class="concept blue-rule">
+      <div class="c-label">The takeaway &mdash; but don&rsquo;t ignore it</div>
+      <h4>With LED, LPD is rarely the tightest limit &mdash; but it is never free.</h4>
+      <p>The lesson is <em>not</em> &ldquo;LPD doesn&rsquo;t matter.&rdquo; The headroom above is real but spendable: a decorative low-efficacy fixture, a much heavier layout, or a tight cavity with poor CU can eat it fast &mdash; and older sources (halogen, fluorescent) blew past these caps routinely. That is <em>why</em> the code exists.</p>
+      <p>So run the LPD check every time &mdash; but read it correctly. With LED you&rsquo;ll usually pass, which means your design energy goes into hitting the <em>footcandle</em> targets and choosing efficacy, not squeaking under the cap. Total your schedule&rsquo;s watts in &sect;&nbsp;10, divide by area, confirm it clears the allowance, and note it. That&rsquo;s the same call the energy reviewer makes.</p>
+    </div>
+  </section>
+
+
+  <!-- § 09 PRECEDENT -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 09</span>
+      <h2 class="sec-title">Precedent &mdash; <em>Controlled Halls.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:6px;">
+      <p>Four reference moves for how real halls control and account for their light &mdash; each hands you something for your controls plan and your load tally.</p>
+    </div>
+    <div class="precedent-grid">
+      <div class="prec-card">
+        <div class="p-label">Scene Control</div>
+        <h4>The Architectural <em>Dimming Console</em></h4>
+        <div class="p-meta">Stored presets &middot; one-button recall</div>
+        <p>House, cove, and accent layers live on a preset console (Lutron / ETC-style); an operator recalls <em>load-in, pre-show, performance</em> with one button instead of riding faders during a show.</p>
+        <p><strong>Take:</strong> store scenes, don&rsquo;t chase levels live &mdash; your scene matrix <em>is</em> the console programming.</p>
+      </div>
+      <div class="prec-card">
+        <div class="p-label">Daylight Harvesting</div>
+        <h4>The <em>Dawn-to-Dusk</em> Lobby</h4>
+        <div class="p-meta">Photosensor dimming &middot; closed loop</div>
+        <p>The prefunction you daylit holds a steady ~25&nbsp;fc whether the sun or the fixtures are doing the work &mdash; a photosensor trims the electric layer continuously.</p>
+        <p><strong>Take:</strong> your Act&nbsp;II daylight strategy <em>sets the control law</em> for the electric layer &mdash; the two acts meet at the sensor.</p>
+      </div>
+      <div class="prec-card">
+        <div class="p-label">Life Safety</div>
+        <h4>The <em>Egress</em> Layer Apart</h4>
+        <div class="p-meta">UL 924 &middot; protected circuit</div>
+        <p>Emergency and egress lighting sits on its own circuit with a transfer device, comes on at power loss, and is never dimmable with the house &mdash; roughly 1&nbsp;fc on the path, always.</p>
+        <p><strong>Take:</strong> draw egress as a separate layer and a separate circuit from the start; it&rsquo;s a rubric line and a code line.</p>
+      </div>
+      <div class="prec-card">
+        <div class="p-label">Energy Discipline</div>
+        <h4>The <em>LPD-Lean</em> Schedule</h4>
+        <div class="p-meta">High efficacy &middot; controls credit</div>
+        <p>Energy-tight projects hit target light with the <em>fewest, most efficient</em> fixtures, then bank a controls credit (occupancy + daylight dimming) to drop further under the allowance.</p>
+        <p><strong>Take:</strong> a short, high-lm/W schedule is the LPD win you&rsquo;ll defend in Week&nbsp;8 &mdash; controls are extra headroom.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- § 10 LAB -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 10</span>
+      <h2 class="sec-title">Lab &mdash; Build the <em>Schedule.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:6px;">
+      <p>Seventy-five minutes to turn tonight&rsquo;s four lectures into four artifacts on your own hall: a schedule, a controls plan, one verified space, and a load number. Screen-share for live help &mdash; this <em>is</em> your Week&nbsp;7 deliverable, started in the room.</p>
+    </div>
+    <div class="lab-sheet">
+      <div class="lab-row">
+        <div class="g">a</div>
+        <div>
+          <span class="tag">Schedule</span>
+          <h5>Expand to <em>all your spaces.</em></h5>
+          <p>Grow last week&rsquo;s single fixture into a real schedule &mdash; at least <strong>three spaces</strong>, one row per type. Pull real products and their IES files.</p>
+        </div>
+        <div class="tasks">
+          <ul>
+            <li>Columns: tag, product, distribution, delivered &Phi;, input W, CCT, CRI, mounting, qty.</li>
+            <li>Use <em>delivered</em> lumens for light, <em>input</em> watts for load.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="lab-row">
+        <div class="g">b</div>
+        <div>
+          <span class="tag">Controls</span>
+          <h5>Put the layers <em>on cues.</em></h5>
+          <p>For your primary space, fill in a <strong>scene matrix</strong> &mdash; the four layers across the room&rsquo;s real scenes &mdash; and name the control type for each layer.</p>
+        </div>
+        <div class="tasks">
+          <ul>
+            <li>Sensor type (occupancy/vacancy), daylight-dimming zones, scene presets.</li>
+            <li>Draw egress as its own always-on layer and circuit.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="lab-row">
+        <div class="g">c</div>
+        <div>
+          <span class="tag">Verify</span>
+          <h5>Run <em>both</em> spaces.</h5>
+          <p>Run a LightStanza electric-lighting pass on the <em>house</em> and the <em>prefunction</em>, export each false-color map, and compare each to its hand-calc <em>E</em> and IES target (the prefunction also ties back to your Act&nbsp;II daylight zone).</p>
+        </div>
+        <div class="tasks">
+          <ul>
+            <li>For each: note the average <em>and</em> the worst corner (uniformity).</li>
+            <li>One line per space: why the map and the hand calc agree or differ.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="lab-row">
+        <div class="g">d</div>
+        <div>
+          <span class="tag">Load &amp; Log</span>
+          <h5>Total the <em>watts.</em></h5>
+          <p>Sum Qty&nbsp;&times;&nbsp;input&nbsp;W into a connected load, divide by area for a first LPD, and check it against the allowance with the calculator. Then write Decision Log <strong>Entry&nbsp;10</strong>.</p>
+        </div>
+        <div class="tasks">
+          <ul>
+            <li>One control or schedule decision + its trade-off.</li>
+            <li>Flag what you&rsquo;ll circuit and panel in Week&nbsp;8.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- § 11 DELIVERABLE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 11</span>
+      <h2 class="sec-title">This Week&rsquo;s <em>Work.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:8px;">
+      <p>The Week&nbsp;7 weekly deliverable is due <strong>Tue 07&middot;07 at 11:59&nbsp;PM</strong> via Canvas. Same two halves as every weekly &mdash; a <strong>package</strong> worth 6 and a <strong>Decision Log</strong> worth 4. This is the heart of the Act&nbsp;III lighting set: the schedule, the controls plan, one verified space, and the first load number. Every piece feeds directly into the Week&nbsp;8 electrical work and the Week&nbsp;9 pin-up.</p>
+    </div>
+
+    <div class="deliverable">
+      <div class="label">Part A &mdash; Package &middot; 6 pts</div>
+      <h4>Luminaire Schedule + Controls Plan + Verification + First Load</h4>
+      <div class="checklist">
+        <div class="check"><div class="box"></div><div class="text"><strong>Luminaire schedule, 3+ spaces</strong> &mdash; one row per type with real product, distribution, delivered &Phi;, input W, CCT, CRI, mounting, and qty. IES file noted for each type.</div></div>
+        <div class="check"><div class="box"></div><div class="text"><strong>Controls / scene plan</strong> &mdash; the four layers mapped to sensors, daylight zones, and scene presets, with the emergency/egress layer drawn separately. A scene matrix or an annotated plan.</div></div>
+        <div class="check"><div class="box"></div><div class="text"><strong>Two LightStanza verifications &mdash; house + prefunction</strong> &mdash; a false-color illuminance map for each, compared to its hand-calc <em>E</em> and IES target, with the reconciliation noted in one line per space.</div></div>
+        <div class="check"><div class="box"></div><div class="text"><strong>Connected load + first LPD</strong> &mdash; &Sigma;(Qty&times;W) and W/ft² for the lit area, sanity-checked against the ASHRAE&nbsp;90.1 / IECC allowance (approximate pass/fail &mdash; confirmed in Week&nbsp;8).</div></div>
+      </div>
+    </div>
+
+    <div class="deliverable">
+      <div class="label">Part B &mdash; Decision Log &middot; 4 pts (Entry 10)</div>
+      <h4>One Control or Schedule Decision, With Its Trade-off</h4>
+      <div class="checklist">
+        <div class="check"><div class="box"></div><div class="text"><strong>Decision</strong> &mdash; the control or schedule choice you made (e.g., vacancy sensing + a stored performance scene for the house; or raising fixture efficacy to hold target light under the LPD cap).</div></div>
+        <div class="check"><div class="box"></div><div class="text"><strong>Reasoning</strong> &mdash; the number behind it: the target <em>E</em>, the simulation result, or the W/ft² that pushed the decision.</div></div>
+        <div class="check"><div class="box"></div><div class="text"><strong>Trade-off &amp; reconsider</strong> &mdash; what you gave up (warmth vs. CRI, fixture count vs. uniformity, watts vs. light), and what the Week&nbsp;8 panel/LPD work might make you revisit.</div></div>
+      </div>
+    </div>
+
+    <div class="concept">
+      <div class="c-label">Act III Roadmap &mdash; Weeks 6&ndash;9</div>
+      <h4>Where this is going.</h4>
+      <p><strong>Wk 6</strong> &mdash; photometry + lumen method, first general-lighting pass. <strong>Wk 7 (tonight)</strong> &mdash; controls, the full luminaire schedule, simulation verification, and the first load/LPD pass. <strong>Wk 8</strong> &mdash; electrical: circuiting, the panel schedule, LPD compliance, and PV sizing. <strong>Wk 9</strong> &mdash; <em>Act III Review</em> (Lighting + Electrical pin-up). The Act&nbsp;III package is due <strong>Tue 07&middot;21</strong> &mdash; tonight&rsquo;s schedule and watts are the spine of it.</p>
+    </div>
+
+    <div class="bridge">
+      <strong>Before you log off tonight</strong>
+      Save the watts column and the IES files in one place &mdash; they are the raw material of next week&rsquo;s panel schedule and the LPD/PV math. The fastest way to fall behind in Act&nbsp;III is to redo the schedule from scratch every week; the fastest way to stay ahead is to keep one living document and add a column to it each session.
+    </div>
+  </section>
+
+
+  <footer>
+    <span>ARC 5443 &middot; Week 07 &middot; Lighting Design + Controls, Schedule &amp; Load</span>
+    <span>Summer 2026 &middot; LTU CoAD &middot; Wed 07&middot;01</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var SVG="http://www.w3.org/2000/svg";
+  var rN=document.getElementById("rN"), rW=document.getElementById("rW"), rA=document.getElementById("rA");
+  var lN=document.getElementById("lN"), lW=document.getElementById("lW"), lA=document.getElementById("lA");
+  var svg=document.getElementById("ldSvg");
+  var mathEl=document.getElementById("ldMath"),
+      badgeEl=document.getElementById("ldBadges"),
+      noteEl=document.getElementById("ldNote");
+  var modes=document.querySelectorAll("#loadCalc .calc-mode");
+  var allow=1.0, allowName="Lobby";
+  var SCALE=110, BASE=212, AXMAX=1.6; // px per W/ft^2, baseline y, cap
+
+  function el(tag,attrs){var e=document.createElementNS(SVG,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);return e;}
+  function clear(){while(svg.firstChild)svg.removeChild(svg.firstChild);}
+  function yFor(v){return BASE - Math.min(v,AXMAX)*SCALE;}
+
+  function draw(lpd){
+    clear();
+    // baseline
+    svg.appendChild(el("line",{x1:40,y1:BASE,x2:330,y2:BASE,stroke:"rgba(237,228,211,.42)","stroke-width":1.4}));
+    svg.appendChild(el("text",{x:40,y:BASE+18,fill:"#8A8273","font-family":"JetBrains Mono, monospace","font-size":9})).textContent="0 W/ft²";
+    // allowance line
+    var ay=yFor(allow);
+    svg.appendChild(el("line",{x1:40,y1:ay,x2:330,y2:ay,stroke:"#D4A24C","stroke-width":1.3,"stroke-dasharray":"6 4"}));
+    var al=el("text",{x:330,y:ay-7,"text-anchor":"end",fill:"#D4A24C","font-family":"JetBrains Mono, monospace","font-size":10,"font-weight":600});
+    al.textContent="ALLOWANCE "+allow.toFixed(1); svg.appendChild(al);
+    // installed bar
+    var under = lpd<=allow;
+    var col = under ? "rgba(127,175,120,0.85)" : "rgba(200,71,47,0.85)";
+    var stroke = under ? "#7FAF78" : "#C8472F";
+    var by=yFor(lpd);
+    svg.appendChild(el("rect",{x:128,y:by,width:120,height:(BASE-by),fill:col.replace("0.85","0.18"),stroke:stroke,"stroke-width":1.4}));
+    var bl=el("text",{x:188,y:by-9,"text-anchor":"middle",fill:stroke,"font-family":"JetBrains Mono, monospace","font-size":15,"font-weight":600});
+    bl.textContent=lpd.toFixed(2); svg.appendChild(bl);
+    svg.appendChild(el("text",{x:188,y:BASE+18,"text-anchor":"middle",fill:"#8A8273","font-family":"JetBrains Mono, monospace","font-size":9})).textContent="INSTALLED W/ft²";
+  }
+
+  function update(){
+    var N=+rN.value, W=+rW.value, A=+rA.value;
+    lN.textContent=N; lW.textContent=W; lA.textContent=A;
+    var conn=N*W;
+    var lpd=conn/A;
+    var allowW=allow*A;
+    var head=allowW-conn;
+    mathEl.innerHTML=
+      "Connected = N × W = <span class='mv'>"+N+"</span> × <span class='mv'>"+W+"</span> = <span class='mr'>"+conn.toLocaleString()+" W</span><br>"+
+      "LPD = "+conn.toLocaleString()+" / <span class='mv'>"+A.toLocaleString()+"</span> = <span class='mr'>"+lpd.toFixed(2)+" W/ft²</span><br>"+
+      "Allowance ("+allowName+") = <span class='mv'>"+allow.toFixed(1)+" W/ft²</span>";
+    var under = lpd<=allow;
+    badgeEl.innerHTML=
+      "<div class='calc-badge "+(under?"ok":"warn")+"'><b>"+lpd.toFixed(2)+"</b>W/ft² vs "+allow.toFixed(1)+" &middot; "+allowName+"<br>"+(under?"WITHIN ALLOWANCE":"OVER ALLOWANCE")+"</div>"+
+      "<div class='calc-badge'><b>"+conn.toLocaleString()+" W</b>connected lighting load<br>"+(head>=0?Math.round(head).toLocaleString()+" W of budget left":"over by "+Math.round(-head).toLocaleString()+" W")+"</div>";
+    noteEl.innerHTML="A schedule of <strong style='color:var(--paper)'>"+N+"</strong> fixtures at <strong style='color:var(--paper)'>"+W+" W</strong> draws <strong style='color:var(--paper)'>"+conn.toLocaleString()+" W</strong> over "+A.toLocaleString()+" ft² &mdash; "+lpd.toFixed(2)+" W/ft². "+(under?"That clears the "+allowName+" allowance; bank the headroom or add fixtures where the map is dark.":"That is over the "+allowName+" allowance &mdash; raise efficacy (more lm/W), cut fixtures, or claim a controls credit in Week 8.");
+    draw(lpd);
+  }
+
+  modes.forEach(function(b){
+    b.addEventListener("click",function(){
+      modes.forEach(function(x){x.classList.remove("active");});
+      b.classList.add("active");
+      allow=+b.getAttribute("data-allow");
+      allowName=b.getAttribute("data-name");
+      update();
+    });
+  });
+  [rN,rW,rA].forEach(function(s){s.addEventListener("input",update);});
+  update();
+})();
+</script>
+</body>
+</html>

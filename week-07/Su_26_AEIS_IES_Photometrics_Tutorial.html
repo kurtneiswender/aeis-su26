@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARC 5443 · IES &amp; Photometrics Tutorial · Revit + LightStanza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink:    #0E0D0B;
+  --paper:  #EDE4D3;
+  --amber:  #D4A24C;
+  --red:    #C8472F;
+  --blue:   #9FC8D4;
+  --green:  #6BAA7E;
+  --paper2: #E2D8C4;
+  --rule:   rgba(14,13,11,.15);
+}
+html { font-size: 16px; scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: 'Newsreader', Georgia, serif; line-height: 1.7; }
+img { display: block; max-width: 100%; }
+a { color: var(--amber); }
+
+.page { max-width: 880px; margin: 0 auto; padding: 0 28px 100px; }
+
+/* HERO */
+.hero { border-bottom: 3px solid var(--ink); padding: 64px 0 32px; margin-bottom: 56px; }
+.hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); margin-bottom: 12px; }
+.hero h1 { font-family: 'Fraunces', serif; font-size: clamp(2.4rem, 6vw, 3.8rem); font-weight: 700; line-height: 1.05; letter-spacing: -.03em; margin-bottom: 16px; }
+.hero-sub { font-size: 1.1rem; font-style: italic; color: rgba(14,13,11,.65); max-width: 620px; }
+.meta-strip { display: flex; gap: 28px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--rule); flex-wrap: wrap; }
+.meta-item { font-family: 'JetBrains Mono', monospace; font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: rgba(14,13,11,.5); }
+.meta-item strong { color: var(--ink); display: block; font-size: .8rem; margin-top: 2px; }
+
+/* SECTION */
+.section { margin-bottom: 72px; }
+.section-num { font-family: 'JetBrains Mono', monospace; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); margin-bottom: 6px; }
+.section h2 { font-family: 'Fraunces', serif; font-size: 1.9rem; font-weight: 600; letter-spacing: -.02em; margin-bottom: 20px; line-height: 1.15; }
+.section p { margin-bottom: 1rem; font-size: 1.02rem; }
+.subhead { font-family:'Fraunces',serif; font-size:1.3rem; font-weight:600; margin:30px 0 14px; }
+
+/* STEPS */
+.steps { counter-reset: step; list-style: none; margin: 24px 0; }
+.steps li { counter-increment: step; display: flex; gap: 18px; margin-bottom: 22px; align-items: flex-start; }
+.steps li::before {
+  content: counter(step);
+  font-family: 'JetBrains Mono', monospace; font-size: .8rem; font-weight: 600;
+  background: var(--amber); color: var(--ink);
+  min-width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 3px;
+}
+.steps.blue li::before { background: var(--blue); }
+.steps li .step-body { flex: 1; font-size: 1rem; }
+.steps li strong { display: block; margin-bottom: 4px; font-size: 1.05rem; }
+.steps li p { margin: 4px 0 0; color: rgba(14,13,11,.7); font-size: .95rem; }
+.steps li code { font-family: 'JetBrains Mono', monospace; font-size: .83em; background: rgba(14,13,11,.08); padding: 1px 5px; border-radius: 3px; }
+.steps li ul { margin: 8px 0 0 0; padding-left: 20px; color: rgba(14,13,11,.7); font-size: .95rem; }
+.steps li ul li { margin-bottom: 5px; display:list-item; }
+.steps li ul li::before { display: none; }
+
+/* PULLQUOTE */
+.pullquote { border-left: 4px solid var(--amber); padding: 16px 24px; margin: 28px 0; background: rgba(212,162,76,.08); border-radius: 0 6px 6px 0; font-size: 1.1rem; font-style: italic; color: rgba(14,13,11,.8); }
+
+/* CALLOUT */
+.callout { background: var(--ink); color: var(--paper); border-radius: 10px; padding: 26px 30px; margin: 28px 0; }
+.callout h3 { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 600; color: var(--amber); margin-bottom: 12px; }
+.callout p { font-size: .95rem; color: rgba(237,228,211,.82); line-height: 1.6; margin-bottom: .7rem; }
+.callout p:last-child { margin-bottom: 0; }
+.callout ul { padding-left: 20px; color: rgba(237,228,211,.75); font-size: .93rem; line-height: 1.65; }
+.callout li { margin-bottom: 6px; }
+.callout strong { color: var(--paper); }
+.callout code { font-family: 'JetBrains Mono', monospace; font-size: .82em; background: rgba(237,228,211,.1); padding: 1px 5px; border-radius: 3px; color: var(--blue); }
+
+/* TWO-COL */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0; }
+@media (max-width: 580px) { .two-col { grid-template-columns: 1fr; } }
+.col-box { border: 1px solid var(--rule); border-radius: 8px; padding: 20px 22px; }
+.col-box h4 { font-family: 'JetBrains Mono', monospace; font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--amber); margin-bottom: 10px; }
+.col-box ul { padding-left: 18px; font-size: .93rem; color: rgba(14,13,11,.75); line-height: 1.6; }
+.col-box li { margin-bottom: 5px; }
+.col-box.revit h4 { color: #3f7d92; }
+
+/* WORKFLOW DIAGRAM */
+.workflow { display: flex; align-items: center; gap: 0; margin: 28px 0; flex-wrap: wrap; }
+.wf-step { text-align: center; padding: 14px 18px; background: rgba(14,13,11,.04); border: 1px solid var(--rule); border-radius: 6px; flex: 1; min-width: 100px; }
+.wf-step .wf-num { font-family: 'JetBrains Mono', monospace; font-size: .65rem; text-transform: uppercase; letter-spacing: .1em; color: var(--amber); margin-bottom: 5px; }
+.wf-step .wf-label { font-size: .86rem; font-weight: 600; color: var(--ink); line-height: 1.3; }
+.wf-arrow { font-size: 1.2rem; color: rgba(14,13,11,.25); padding: 0 6px; flex-shrink: 0; }
+@media (max-width: 600px) { .wf-arrow { display: none; } .wf-step { flex: 0 0 48%; margin-bottom: 8px; } }
+
+/* TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: .9rem; margin: 20px 0; }
+.data-table th { background: var(--ink); color: var(--paper); padding: 9px 12px; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+.data-table td { padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.data-table tr:nth-child(even) td { background: rgba(14,13,11,.03); }
+.data-table td:first-child { font-family: 'JetBrains Mono', monospace; font-size: .82rem; color: var(--amber); white-space: nowrap; }
+
+/* CHECKLIST */
+.checklist { margin: 20px 0; }
+.check-item { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--rule); align-items: flex-start; font-size: .97rem; }
+.check-item:last-child { border-bottom: none; }
+.check-box { flex-shrink: 0; width: 18px; height: 18px; border: 1.5px solid rgba(14,13,11,.3); border-radius: 3px; margin-top: 3px; }
+.check-item strong { color: var(--ink); }
+.check-item span { color: rgba(14,13,11,.65); }
+
+/* SECTION DIVIDER */
+.divider { border: none; border-top: 2px solid var(--rule); margin: 56px 0; }
+
+/* ASIDE / NOTE */
+.note { background: rgba(159,200,212,.12); border-left: 3px solid var(--blue); padding: 14px 20px; margin: 20px 0; border-radius: 0 6px 6px 0; font-size: .93rem; color: rgba(14,13,11,.75); }
+.note strong { color: var(--ink); }
+.note.warn { background: rgba(200,71,47,.08); border-left-color: var(--red); }
+.note code { font-family:'JetBrains Mono',monospace; font-size:.82em; background:rgba(14,13,11,.08); padding:1px 5px; border-radius:3px; }
+
+/* DELIVERABLE BOX */
+.deliverable { border: 2px solid var(--amber); border-radius: 8px; padding: 26px 30px; margin-top: 32px; }
+.deliverable .d-label { font-family: 'JetBrains Mono', monospace; font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; color: var(--amber); margin-bottom: 10px; }
+.deliverable h3 { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 600; margin-bottom: 14px; }
+.deliverable ul { padding-left: 20px; font-size: .97rem; line-height: 1.7; }
+.deliverable li { margin-bottom: 6px; }
+
+/* PATH TABS (jump links) */
+.pathbar { display:flex; gap:10px; flex-wrap:wrap; margin:24px 0 8px; }
+.pathbar a { font-family:'JetBrains Mono',monospace; font-size:.74rem; letter-spacing:.06em; text-decoration:none; padding:9px 15px; border-radius:6px; border:1.5px solid var(--rule); color:var(--ink); }
+.pathbar a.revit { border-color:var(--blue); background:rgba(159,200,212,.14); color:#3f7d92; }
+.pathbar a.ls { border-color:var(--amber); background:rgba(212,162,76,.12); color:#9a7426; }
+
+/* CONVERGE DIAGRAM */
+.converge { margin: 26px 0 8px; border: 1px solid var(--rule); border-radius: 10px; padding: 22px; background: rgba(14,13,11,.025); }
+.converge-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.cv-sources { display: flex; flex-direction: column; gap: 10px; }
+.cv-box { text-align: center; padding: 12px 16px; border-radius: 6px; min-width: 150px; font-size: .9rem; font-weight: 600; line-height: 1.25; border: 1.5px solid var(--rule); }
+.cv-box .cv-tag { display: block; font-family: 'JetBrains Mono', monospace; font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 400; margin-bottom: 4px; }
+.cv-box.ies { border-color: var(--amber); background: rgba(212,162,76,.10); }
+.cv-box.ies .cv-tag { color: #9a7426; }
+.cv-box.revit { border-color: var(--blue); background: rgba(159,200,212,.16); }
+.cv-box.revit .cv-tag { color: #3f7d92; }
+.cv-arrow { font-size: 1.3rem; color: rgba(14,13,11,.3); flex-shrink: 0; }
+.cv-engine { text-align: center; padding: 16px 20px; border-radius: 8px; background: var(--ink); color: var(--paper); flex: 1; min-width: 150px; }
+.cv-engine .cv-tag { display: block; font-family: 'JetBrains Mono', monospace; font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: var(--amber); margin-bottom: 5px; }
+.cv-engine strong { font-family: 'Fraunces', serif; font-size: 1.15rem; }
+.cv-chain { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--rule); justify-content: center; }
+.cv-chip { font-family: 'JetBrains Mono', monospace; font-size: .7rem; letter-spacing: .04em; padding: 6px 11px; border: 1px solid var(--rule); border-radius: 20px; background: var(--paper); white-space: nowrap; }
+.cv-chip.end { border-color: var(--amber); background: rgba(212,162,76,.12); color: #8a6a22; font-weight: 600; }
+.cv-chain .cv-arrow { font-size: 1rem; }
+@media (max-width: 600px){ .converge-row { flex-direction: column; } .cv-sources { flex-direction: row; } }
+
+/* ANATOMY (IES file fields) */
+.anatomy { border:1px solid var(--rule); border-radius:8px; overflow:hidden; margin:22px 0; }
+.anatomy-row { display:grid; grid-template-columns: 200px 1fr; border-bottom:1px solid var(--rule); }
+.anatomy-row:last-child { border-bottom:none; }
+.anatomy-row .a-k { font-family:'JetBrains Mono',monospace; font-size:.8rem; color:var(--amber); padding:12px 14px; background:rgba(14,13,11,.03); border-right:1px solid var(--rule); }
+.anatomy-row .a-v { padding:12px 16px; font-size:.94rem; color:rgba(14,13,11,.78); }
+@media (max-width:580px){ .anatomy-row { grid-template-columns:1fr; } .anatomy-row .a-k { border-right:none; border-bottom:1px solid var(--rule);} }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-eyebrow">ARC 5443 AEIS &nbsp;&middot;&nbsp; Act III &nbsp;&middot;&nbsp; Illumination Systems</div>
+  <h1>Lighting with IES Files &mdash;<br>Revit &amp; LightStanza</h1>
+  <p class="hero-sub">How to place luminaires, assign real photometric data, and calculate illuminance &mdash; the two ways the course actually does it. Author and schedule in Revit; verify in the LightStanza cloud engine. Both read the same IES file.</p>
+  <div class="meta-strip">
+    <div class="meta-item">Tools<strong>Revit 2021&ndash;2026 &middot; LightStanza</strong></div>
+    <div class="meta-item">Photometric Source<strong>Manufacturer .ies files</strong></div>
+    <div class="meta-item">Applies To<strong>Act III &middot; Weeks 6&ndash;8</strong></div>
+    <div class="meta-item">Reference<strong>MEEB Ch. 15, 16</strong></div>
+  </div>
+</header>
+
+<!-- OVERVIEW -->
+<div class="section">
+  <div class="section-num">Overview</div>
+  <h2>Two Front-Ends, One Photometric Truth</h2>
+  <p>Every accurate lighting calculation &mdash; in any software &mdash; starts from the same artifact: the manufacturer&rsquo;s <strong>IES file</strong>. It is the luminaire&rsquo;s photometric &ldquo;score,&rdquo; describing the candela in every direction plus the rated lumens and input watts. Revit and LightStanza are just two readers of that one file. This tutorial walks both.</p>
+
+  <div class="converge">
+    <div class="converge-row">
+      <div class="cv-sources">
+        <div class="cv-box revit"><span class="cv-tag">Author + schedule</span>Revit</div>
+        <div class="cv-box ies"><span class="cv-tag">The truth</span>IES file</div>
+      </div>
+      <span class="cv-arrow">&rarr;</span>
+      <div class="cv-engine"><span class="cv-tag">Cloud calc engine</span><strong>LightStanza</strong></div>
+    </div>
+    <div class="cv-chain">
+      <span class="cv-chip">Get IES</span><span class="cv-arrow">&rarr;</span>
+      <span class="cv-chip">Place luminaires</span><span class="cv-arrow">&rarr;</span>
+      <span class="cv-chip">Position &amp; aim</span><span class="cv-arrow">&rarr;</span>
+      <span class="cv-chip">Run Grid Illuminance</span><span class="cv-arrow">&rarr;</span>
+      <span class="cv-chip end">False-color fc</span>
+    </div>
+  </div>
+  <p style="font-size:.92rem;color:rgba(14,13,11,.6);">Use <strong>Revit</strong> to place fixtures in your real model, attach photometric webs, and produce the <em>luminaire schedule</em> your deliverable needs. Use <strong>LightStanza</strong> for the rigorous illuminance calc and the false-color map. The plugin connects them so you don&rsquo;t place fixtures twice &mdash; or work entirely in LightStanza if your model lives there.</p>
+
+  <div class="workflow">
+    <div class="wf-step"><div class="wf-num">§ 02</div><div class="wf-label">Get the IES file</div></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step"><div class="wf-num">§ 03 · Revit</div><div class="wf-label">Place &amp; assign photometrics</div></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step"><div class="wf-num">§ 04 · LightStanza</div><div class="wf-label">Calculate illuminance</div></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step"><div class="wf-num">§ 05</div><div class="wf-label">Read &amp; reconcile</div></div>
+  </div>
+
+  <div class="pathbar">
+    <a href="#sec-revit" class="revit">&#9654; Jump to the Revit path</a>
+    <a href="#sec-ls" class="ls">&#9654; Jump to the LightStanza path</a>
+  </div>
+
+  <div class="note"><strong>Account &amp; plugin:</strong> Join the course LightStanza team with your <code>@ltu.edu</code> email (accept the invitation &mdash; don&rsquo;t make a free standalone account). Download the Revit plugin at <a href="https://lightstanza.com/plugins/" target="_blank"><strong>lightstanza.com/plugins</strong></a> (Revit 2021&ndash;2026, not Revit LT); run the <code>.msi</code>, restart Revit, and it appears under the <strong>Add-Ins</strong> tab. Official walkthroughs live at <a href="https://lightstanza.com/electric-lighting-tutorials/" target="_blank">lightstanza.com/electric-lighting-tutorials</a>.</div>
+</div>
+
+<hr class="divider">
+
+<!-- § 01 PHOTOMETRICS REFRESHER -->
+<div class="section">
+  <div class="section-num">§ 01</div>
+  <h2>Photometrics in Ninety Seconds</h2>
+  <p>Before any software: four quantities, and the one rule that ties them to a calculation. You met these in Week&nbsp;6 &mdash; here they are as the inputs and outputs of the tools.</p>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Quantity</th><th>Unit</th><th>What it is</th><th>Where it shows up</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Luminous flux</td><td>lumen (lm)</td><td>Total light a source emits, all directions</td><td>The IES file&rsquo;s rated/delivered lumens &mdash; the &Phi; you calculate with</td></tr>
+      <tr><td>Luminous intensity</td><td>candela (cd)</td><td>Flux aimed in one direction</td><td>The candela grid <em>inside</em> the IES file &mdash; the polar distribution</td></tr>
+      <tr><td>Illuminance</td><td>footcandle / lux</td><td>Light arriving on a surface</td><td>What the calc <strong>outputs</strong> on your grid &mdash; your design target</td></tr>
+      <tr><td>Luminance</td><td>cd/m&sup2; (nit)</td><td>Light leaving a surface toward the eye</td><td>Perceived brightness &amp; glare &mdash; what false-color renders show</td></tr>
+    </tbody>
+  </table>
+
+  <div class="pullquote">
+    You design to <em>illuminance</em> (the footcandle target); the eye judges <em>luminance</em>. The software calculates the first and lets you see the second &mdash; never confuse the number you hit with the brightness people feel.
+  </div>
+
+  <div class="two-col">
+    <div class="col-box">
+      <h4>Two lumen numbers &mdash; don&rsquo;t mix them</h4>
+      <ul>
+        <li><strong>Lamp lumens</strong> &mdash; what the bare source emits.</li>
+        <li><strong>Delivered (fixture) lumens</strong> &mdash; what actually leaves the housing after the lens and reflector. <em>This</em> is what the IES file reports and what the calc uses.</li>
+        <li>Always design with delivered lumens &mdash; the &Phi; in <code>E = (N&middot;&Phi;&middot;CU&middot;LLF)/A</code>.</li>
+      </ul>
+    </div>
+    <div class="col-box">
+      <h4>Light Loss Factor (LLF)</h4>
+      <ul>
+        <li>A multiplier (typ. <strong>0.70&ndash;0.85</strong>) for dirt accumulation and lamp aging over time.</li>
+        <li>Both Revit and LightStanza expose it per fixture &mdash; LightStanza&rsquo;s default is <strong>0.82</strong>.</li>
+        <li>&ldquo;Maintained&rdquo; illuminance = with LLF applied. That&rsquo;s what you report.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note"><strong>The hand calc still rules.</strong> The lumen method from Week&nbsp;6 gives you the <em>average</em> you expect before you open any software. Run it first &mdash; then the simulation in §&nbsp;04 either confirms it or tells you something the average couldn&rsquo;t see. A simulation you can&rsquo;t sanity-check by hand is a simulation you can&rsquo;t trust.</div>
+</div>
+
+<hr class="divider">
+
+<!-- § 02 GET THE IES FILE -->
+<div class="section">
+  <div class="section-num">§ 02</div>
+  <h2>Get the Right IES File</h2>
+  <p>No real IES file, no real calculation. A fixture without photometric data simply cannot contribute to a lighting result &mdash; the software has nothing to distribute. Start every fixture choice by finding its <code>.ies</code> file <em>and</em> its spec/cut sheet on the manufacturer&rsquo;s product page.</p>
+
+  <div class="two-col">
+    <div class="col-box">
+      <h4>Where to download</h4>
+      <ul>
+        <li>The manufacturer&rsquo;s product page &mdash; look for a <em>Downloads / Photometrics</em> tab.</li>
+        <li>Acuity (Lithonia, Gotham), Signify (Philips), Cooper, Cree, Zumtobel, Selux &mdash; all publish IES.</li>
+        <li>Course shortlist starts at <a href="https://www.lightology.com" target="_blank">Lightology</a>; more manufacturer links are posted on Canvas.</li>
+        <li>Search pattern: <em>[brand] [model code] IES download</em>.</li>
+      </ul>
+    </div>
+    <div class="col-box">
+      <h4>Grab both, match them</h4>
+      <ul>
+        <li>Download the <strong>.ies</strong> file <em>and</em> the <strong>cut sheet</strong> &mdash; you need both for the deliverable.</li>
+        <li>The IES filename usually contains the product code; confirm it matches the sheet.</li>
+        <li>From the sheet, record: delivered lumens, input watts, CCT, CRI, distribution type, mounting.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="subhead">What&rsquo;s inside the file</h3>
+  <p>An IES file is plain text. You don&rsquo;t edit it by hand, but knowing its fields tells you whether a calc will be right.</p>
+  <div class="anatomy">
+    <div class="anatomy-row"><div class="a-k">Candela values</div><div class="a-v">Intensity at a grid of vertical &amp; horizontal angles &mdash; the photometric web. This is the distribution &ldquo;shape.&rdquo;</div></div>
+    <div class="anatomy-row"><div class="a-k">Rated lumens</div><div class="a-v">Total delivered flux. Some tools recompute lumens from the candela grid; a mismatch with the spec sheet is worth a second look.</div></div>
+    <div class="anatomy-row"><div class="a-k">Input watts</div><div class="a-v">The electrical load this fixture draws &mdash; the number your Week&nbsp;7 connected-load tally and Week&nbsp;8 panel need.</div></div>
+    <div class="anatomy-row"><div class="a-k">Luminous dimensions</div><div class="a-v">The physical size of the light-emitting area. Set these accurately &mdash; a zero/point source produces calculation and rendering artifacts.</div></div>
+    <div class="anatomy-row"><div class="a-k">Photometry type</div><div class="a-v"><strong>Absolute</strong> (LED &mdash; candela are real, fixed) vs. <strong>relative</strong> (scaled to a lamp lumen value you set). Most modern LED IES files are absolute; don&rsquo;t override their lumens.</div></div>
+  </div>
+
+  <div class="note warn"><strong>Verify before you trust it.</strong> Open the IES in the tool&rsquo;s viewer and look at the polar plot: a downlight should show a downward cone, a wall-wash an asymmetric lobe, a linear fixture a longitudinal spread. If the shape is wrong, you have the wrong file &mdash; or it&rsquo;s aimed wrong (fixed in §&nbsp;04).</div>
+</div>
+
+<hr class="divider">
+
+<!-- § 03 REVIT PATH -->
+<div class="section" id="sec-revit">
+  <div class="section-num">§ 03 &middot; Path A</div>
+  <h2>Revit &mdash; Place Luminaires &amp; Assign Photometrics</h2>
+  <p>Revit is where your fixtures live on the real model and where the <strong>luminaire schedule</strong> &mdash; a graded Act&nbsp;III deliverable &mdash; is built. The job here: place lighting-fixture families, give each one a photometric web, set its lumens / watts / color / loss factor, and schedule it.</p>
+
+  <ol class="steps blue">
+    <li>
+      <div class="step-body">
+        <strong>Load a lighting-fixture family with a defined light source</strong>
+        <p>Use <code>Insert &rarr; Load Family</code> (or a manufacturer&rsquo;s Revit family). The family must contain a <strong>Light Source</strong> &mdash; in the Family Editor, <code>Create &rarr; Light Source</code>, with the source placed <em>below the fixture opening</em> so housing geometry doesn&rsquo;t clip it. Families with no light source cannot contribute to a calculation.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Place fixtures on a host</strong>
+        <p><code>Architecture/Systems &rarr; Component</code> (or the <em>Lighting Fixture</em> tool). Place on the ceiling plane or a face. For a regular layout, place one and use <code>Copy / Array</code> at your target on-center spacing (from the lumen method). Work in a reflected ceiling plan so you&rsquo;re placing where the light actually is.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Assign the IES photometric web</strong>
+        <p>Select the fixture &rarr; <code>Edit Type</code> &rarr; the <strong>Photometrics</strong> group. Set <strong>Photometric Web File</strong> to your <code>.ies</code>. This replaces Revit&rsquo;s generic distribution with the real candela web. The Light Source shape should read <em>Photometric Web</em>.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Set intensity, color, and loss factor</strong>
+        <p>Still in the Photometrics group, confirm:</p>
+        <ul>
+          <li><strong>Initial Intensity</strong> &mdash; lumens (or candela / watts). For absolute LED files, leave the IES value; don&rsquo;t inflate it.</li>
+          <li><strong>Initial Color</strong> &mdash; the <em>Color Temperature</em> (CCT, e.g. 3000&nbsp;K) so renders read warm/neutral correctly.</li>
+          <li><strong>Light Loss Factor</strong> &mdash; 0.70&ndash;0.85 for a maintained result.</li>
+          <li><strong>Wattage</strong> (in the family&rsquo;s electrical parameters) &mdash; needed for the load column, not for the light calc.</li>
+        </ul>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Build the luminaire schedule</strong>
+        <p><code>View &rarr; Schedules &rarr; Schedule/Quantities &rarr; Lighting Fixtures</code>. Add fields: Type Mark, Family and Type, Photometric Web File, Initial Intensity (lumens), CCT, Wattage, and Count. This <em>is</em> your Act&nbsp;III luminaire schedule &mdash; one row per type. Add a calculated <code>Count &times; Wattage</code> field for the connected load.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Get an illuminance result from Revit</strong>
+        <p>Three options, increasing rigor:</p>
+        <ul>
+          <li><strong>Render</strong> (<code>View &rarr; Render</code>, photometric/absolute exposure) &mdash; a qualitative look at distribution and brightness, not a measured grid.</li>
+          <li><strong>Insight Lighting analysis</strong> (<code>Analyze &rarr; Lighting</code>, cloud) &mdash; quantitative false-color illuminance at a workplane, in footcandles/lux. Good for a native check.</li>
+          <li><strong>ElumTools</strong> (third-party add-in) &mdash; full point-by-point illuminance inside Revit if your firm has it.</li>
+        </ul>
+        <p>For this course, the rigorous engine is LightStanza &mdash; so most of you will place + schedule in Revit, then hand the model to LightStanza (§&nbsp;04) for the calc and the false-color map you submit.</p>
+      </div>
+    </li>
+  </ol>
+
+  <div class="note"><strong>Tag rooms before you export.</strong> LightStanza builds its calculation grids from Revit <em>Rooms</em> or <em>Spaces</em>. Place Rooms/Spaces in the areas you want analyzed (seating, lobby, stage) before syncing &mdash; ungridded areas get no result.</div>
+</div>
+
+<hr class="divider">
+
+<!-- § 04 LIGHTSTANZA PATH -->
+<div class="section" id="sec-ls">
+  <div class="section-num">§ 04 &middot; Path B</div>
+  <h2>LightStanza &mdash; Calculate the Illuminance</h2>
+  <p>LightStanza is the calc engine. There are two ways in: <strong>sync from Revit</strong> (most of you), or <strong>build natively</strong> in LightStanza. Past the import, both run the same Grid Illuminance calculation.</p>
+
+  <h3 class="subhead">Route 1 &mdash; Sync from Revit (the plugin)</h3>
+  <ol class="steps">
+    <li>
+      <div class="step-body">
+        <strong>Export the model</strong>
+        <p><code>Add-Ins &rarr; LightStanza &rarr; Export</code>. In the <strong>Export Window &rarr; Other Settings</strong>, choose the spatial type the grids follow &mdash; <em>Rooms</em>, <em>Spaces</em>, or <em>Areas</em> &mdash; and set the <strong>Calc Grid Height</strong> (workplane, e.g. 30&Prime; / 2.5&nbsp;ft). Horizontal illuminance grids generate automatically per Room/Space.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Check what came across</strong>
+        <p>Two schedules ride along: <strong>&ldquo;LightStanza Luminaires&rdquo;</strong> (the fixtures in the model) and <strong>&ldquo;LightStanza Report&rdquo;</strong> (the full illuminance matrix, after you calc). Materials and fixture types map automatically &mdash; review them.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Confirm / reassign IES files</strong>
+        <p>Open the <strong>IES / Family Manager</strong>. For each luminaire type, verify the assigned <code>.ies</code> or upload the correct one (directly, or from your team library). This is where the photometric web becomes real for the calc.</p>
+      </div>
+    </li>
+  </ol>
+
+  <h3 class="subhead">Route 2 &mdash; Build natively in LightStanza</h3>
+  <ol class="steps">
+    <li>
+      <div class="step-body">
+        <strong>Upload IES files</strong>
+        <p>In the <strong>Luminaires panel</strong>, open the <strong>IES Manager</strong> &rarr; <em>Add IES File</em> (upload your download) or pick one from the team library. The viewer shows the candela polar plot and total lumens &mdash; confirm the shape.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Place fixtures on the 2D plan</strong>
+        <p>Switch to a <strong>2D lighting plan</strong> via the level dropdown. <em>Add Fixture</em>, choose the IES type, then click to place. Right-click a fixture for <code>Copy</code>, <code>Mirror</code>, <code>Duplicate</code>, <code>Replace</code>, <code>Array</code>, <code>Rotate</code>, <code>Align</code>, and <code>Aim</code>; nudge with arrow keys. Build a regular grid at your target spacing.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Set mounting height &amp; loss factor</strong>
+        <p>Per type, set mounting <strong>Height</strong> above floor, aiming (tilt/rotation) for adjustable fixtures, and <strong>LLF</strong> (default 0.82). Color/CCT here is for visualization and does not change the calculated illuminance.</p>
+      </div>
+    </li>
+  </ol>
+
+  <h3 class="subhead">Position the IES inside the housing</h3>
+  <p>This is the step people skip &mdash; and it&rsquo;s the most common reason a map looks wrong. The light source must sit where the light actually leaves the fixture, aimed the right way.</p>
+  <ol class="steps">
+    <li>
+      <div class="step-body">
+        <strong>Open the IES editor</strong>
+        <p>Click the <strong>three dots</strong> under the luminaire type &rarr; <em>View/Edit IES File</em> (also reachable from the IES/Family Manager).</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Reposition &amp; rotate relative to the fixture</strong>
+        <p>Use <em>Edit IES Position Relative to Fixture</em> to move the source in <strong>X/Y/Z</strong> so housing geometry doesn&rsquo;t block it, and <em>Edit IES Rotation Relative to Fixture</em> to correct aiming:</p>
+        <ul>
+          <li><strong>Ceiling-mounted:</strong> a <strong>90&deg;</strong> rotation usually points the web down correctly.</li>
+          <li><strong>Wall-mounted:</strong> <strong>0&deg;</strong> is the usual start.</li>
+          <li>It depends on the file&rsquo;s own coordinate system &mdash; confirm against the 3D view.</li>
+        </ul>
+        <p>Set the <strong>luminous dimensions</strong> to match the real aperture; avoid zeros (point-source artifacts).</p>
+      </div>
+    </li>
+  </ol>
+
+  <h3 class="subhead">Run the calculation</h3>
+  <ol class="steps">
+    <li>
+      <div class="step-body">
+        <strong>New &rarr; Grid Illuminance</strong>
+        <p>In the Activity Bar, <code>New &rarr; Grid Illuminance</code>. Select your luminaire group and the calc grid. Set:</p>
+        <ul>
+          <li><strong>Unit:</strong> Footcandle (imperial) or Lux.</li>
+          <li><strong>Point spacing:</strong> finer = more detail, slower.</li>
+          <li><strong>Quality:</strong> Draft / High / Very High &mdash; <em>High</em> for design.</li>
+          <li><strong>Emergency lighting</strong> checkbox &mdash; toggle on for the egress-only run (egress fixtures only, ~1&nbsp;fc path target).</li>
+        </ul>
+        <p>Click <strong>Run</strong>. Electric calcs are fast &mdash; iterate freely.</p>
+      </div>
+    </li>
+  </ol>
+
+  <div class="callout">
+    <h3>Daylight + electric don&rsquo;t run as one</h3>
+    <p>LightStanza calculates daylighting and electric lighting <strong>separately</strong>. To tell the combined story, run each and compare in the comparison view:</p>
+    <ul>
+      <li>Strong-sDA zones (from Act&nbsp;II) get <strong>daylight-dimming controls</strong> &mdash; electric load there drops toward zero in daytime.</li>
+      <li>Weak-sDA zones need <strong>full electric</strong> &mdash; these drive your connected-load number for Week&nbsp;7.</li>
+      <li>Mark the <em>daylight-fill</em> vs. <em>electric-fill</em> zones on your annotated plan.</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- § 05 READ & RECONCILE -->
+<div class="section">
+  <div class="section-num">§ 05</div>
+  <h2>Read the Map, Reconcile the Number</h2>
+  <p>The result is a false-color illuminance plan plus min / max / average and a uniformity ratio. Your job is to read it against two things: the <strong>IES target</strong> for the space, and your own <strong>hand-calc average</strong> from Week&nbsp;6.</p>
+
+  <ol class="steps">
+    <li>
+      <div class="step-body">
+        <strong>Read the false-color result</strong>
+        <p>Click the activity card to overlay the grid on the model. Use <strong>False Color</strong> mode &mdash; adjust the luminance/illuminance bounds and toggle <strong>log scale</strong> so the range fits your numbers. Turn on <strong>Contour Lines</strong> to trace specific footcandle thresholds (e.g. the 1&nbsp;fc egress line).</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Check the average and the worst corner</strong>
+        <p>The panel reports min, max, and average fc plus uniformity. A healthy average with an 8&nbsp;fc corner under the balcony is still a problem &mdash; <em>uniformity</em> is the value the average hides. Note both.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Compare to the IES target</strong>
+        <p>Hold the average against the recommended maintained level for the space (table below). Over, under, or on target &mdash; and is the minimum acceptable for egress and task?</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Reconcile with the hand calc</strong>
+        <p>Put the simulated average next to your Week&nbsp;6 <code>E = (N&middot;&Phi;&middot;CU&middot;LLF)/A</code> result. If they agree, you&rsquo;ve earned confidence in both. If they don&rsquo;t, the gap <em>is</em> the finding &mdash; chase it down (next section). Write one line explaining the agreement or the gap; that sentence is what the rubric rewards.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Export the proof</strong>
+        <p>Download the report from the activity card, or pull the <strong>LightStanza Report</strong> calc matrix. Drop the false-color image into the editable PowerPoint <em>report sheet template</em>. You can also export the luminaire schedule back to <strong>Revit</strong> or to <strong>DXF</strong> to overlay on your plan.</p>
+      </div>
+    </li>
+  </ol>
+
+  <h3 class="subhead">Recommended maintained illuminance &mdash; targets</h3>
+  <table class="data-table">
+    <thead>
+      <tr><th>Space / task</th><th>Target (fc)</th><th>Target (lux)</th><th>Note</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Lobby / prefunction</td><td>20&ndash;30</td><td>200&ndash;300</td><td>dimmable for evening events</td></tr>
+      <tr><td>House &mdash; performance</td><td>2&ndash;5</td><td>20&ndash;50</td><td>egress visible, focus on stage</td></tr>
+      <tr><td>House &mdash; between acts</td><td>10&ndash;15</td><td>100&ndash;150</td><td>read a program, find a seat</td></tr>
+      <tr><td>Aisles / egress</td><td>1&ndash;5</td><td>10&ndash;50</td><td>code-driven; run the emergency calc</td></tr>
+      <tr><td>Stage &mdash; work light</td><td>50</td><td>500</td><td>rehearsal / load-in, not show lighting</td></tr>
+      <tr><td>Back-of-house / shops</td><td>30&ndash;50</td><td>300&ndash;500</td><td>higher CRI for finishing</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider">
+
+<!-- § 06 TROUBLESHOOTING -->
+<div class="section">
+  <div class="section-num">§ 06</div>
+  <h2>When the Map Looks Wrong</h2>
+  <p>Most bad results trace to a handful of causes. Work this table before you redesign anything &mdash; the fix is usually data, not the layout.</p>
+
+  <table class="data-table">
+    <thead>
+      <tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Flat / all one color</td><td>No real photometric web, or generic distribution</td><td>Assign the manufacturer <code>.ies</code>; confirm the polar plot in the viewer</td></tr>
+      <tr><td>Much too dark</td><td>IES blocked by housing, or wrong aiming</td><td>Reposition the source in X/Y/Z; rotate (90&deg; ceiling / 0&deg; wall) so the web faces the room</td></tr>
+      <tr><td>Hot point / artifacts</td><td>Zero luminous dimensions (point source)</td><td>Set real luminous dimensions to match the aperture</td></tr>
+      <tr><td>Average right, corners dark</td><td>Spacing too wide for the distribution</td><td>Tighten on-center spacing or add a supplemental layer; check uniformity</td></tr>
+      <tr><td>No grid / no result in a room</td><td>Room/Space not placed before export</td><td>Add Revit Rooms/Spaces, re-export; or draw the grid manually in LightStanza</td></tr>
+      <tr><td>Lumens disagree with cut sheet</td><td>Relative vs. absolute photometry confusion</td><td>For absolute LED files, don&rsquo;t override lumens; trust the IES</td></tr>
+      <tr><td>Glass / layers missing (Rhino route)</td><td>Surfaces didn&rsquo;t export with materials</td><td>Model glazing as distinct surfaces; export Collada with layers, re-check materials</td></tr>
+      <tr><td>Sim &ne; hand calc</td><td>Optimistic CU, wrong reflectances, or aiming</td><td>Re-check surface reflectances and CU assumption; verify IES orientation; then trust the sim</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note"><strong>Tool trouble is not a reason to fall behind.</strong> If the LightStanza electric module fights you, a Revit Insight lighting analysis (or a documented hand-calc with a render) is an accepted substitute for the weekly &mdash; flag it the same way we did for the daylight tools. Email the instructor your specific glitch so it can go to LightStanza support.</div>
+</div>
+
+<hr class="divider">
+
+<!-- DELIVERABLE -->
+<div class="section">
+  <div class="section-num">§ 07</div>
+  <h2>How This Feeds Your Deliverable</h2>
+  <p>This tutorial is the engine behind the Act&nbsp;III lighting set. Three of the things you submit come straight out of it.</p>
+
+  <div class="deliverable">
+    <div class="d-label">Act III &middot; Lighting set &middot; built across Weeks 6&ndash;8</div>
+    <h3>What you produce with these tools</h3>
+    <ul>
+      <li><strong>Luminaire schedule</strong> &mdash; one row per type from Revit: product, distribution, delivered &Phi;, input W, CCT, CRI, mounting, qty. Real fixtures, real IES files.</li>
+      <li><strong>Verified illuminance</strong> &mdash; a LightStanza false-color map for your primary space, with average, minimum, and uniformity, compared to the IES target and your hand-calc <em>E</em>, plus a one-line reconciliation.</li>
+      <li><strong>Connected load + LPD</strong> &mdash; &Sigma;(qty &times; input W) from the schedule&rsquo;s watts column, divided by area &mdash; the Week&nbsp;7 number that becomes the Week&nbsp;8 panel and LPD check.</li>
+      <li><strong>Decision Log entry</strong> &mdash; one fixture, aiming, or layout choice that the false-color map caused you to confirm or revise.</li>
+    </ul>
+  </div>
+
+  <div class="checklist" style="margin-top:28px;">
+    <div class="check-item"><div class="check-box"></div><div><strong>LightStanza team joined</strong> <span>&mdash; LTU email, via the course invitation; Revit plugin installed (2021&ndash;2026)</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Real IES + cut sheet per fixture type</strong> <span>&mdash; polar plot verified in the viewer</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Fixtures placed &amp; photometric web assigned</strong> <span>&mdash; in Revit (Photometrics group) or natively in LightStanza</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>IES positioned/aimed in the housing</strong> <span>&mdash; ceiling 90&deg;, luminous dimensions set, not blocked</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Rooms/Spaces placed before export</strong> <span>&mdash; grids generate per space at workplane height</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Grid Illuminance run</strong> <span>&mdash; unit set to footcandles; quality High; emergency run for egress</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Result read &amp; reconciled</strong> <span>&mdash; avg / min / uniformity vs. IES target and the hand calc</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Schedule + watts captured</strong> <span>&mdash; one living document carried into Weeks 7&ndash;8</span></div></div>
+  </div>
+</div>
+
+<footer style="margin-top:80px;padding-top:24px;border-top:2px solid var(--rule);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(14,13,11,.4);">
+  <span>ARC 5443 AEIS &middot; Summer 2026 &middot; Act III</span>
+  <span>IES &amp; Photometrics &middot; Revit + LightStanza</span>
+  <span>Neiswender &middot; Lawrence Technological University</span>
+</footer>
+
+</div>
+</body>
+</html>

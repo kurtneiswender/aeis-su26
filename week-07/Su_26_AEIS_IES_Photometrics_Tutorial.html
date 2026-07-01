@@ -165,7 +165,7 @@ a { color: var(--amber); }
 <header class="hero">
   <div class="hero-eyebrow">ARC 5443 AEIS &nbsp;&middot;&nbsp; Act III &nbsp;&middot;&nbsp; Illumination Systems</div>
   <h1>Lighting with IES Files &mdash;<br>Revit &amp; LightStanza</h1>
-  <p class="hero-sub">How to place luminaires, assign real photometric data, and calculate illuminance &mdash; the two ways the course actually does it. Author and schedule in Revit; verify in the LightStanza cloud engine. Both read the same IES file.</p>
+  <p class="hero-sub">Get your geometry into LightStanza &mdash; from Revit, Rhino, or even a scaled PDF &mdash; then place fixtures, assign IES photometric data, and calculate illuminance, all in LightStanza. False-color maps and renderings included.</p>
   <div class="meta-strip">
     <div class="meta-item">Tools<strong>Revit 2021&ndash;2026 &middot; LightStanza</strong></div>
     <div class="meta-item">Photometric Source<strong>Manufacturer .ies files</strong></div>
@@ -177,41 +177,43 @@ a { color: var(--amber); }
 <!-- OVERVIEW -->
 <div class="section">
   <div class="section-num">Overview</div>
-  <h2>Two Front-Ends, One Photometric Truth</h2>
-  <p>Every accurate lighting calculation &mdash; in any software &mdash; starts from the same artifact: the manufacturer&rsquo;s <strong>IES file</strong>. It is the luminaire&rsquo;s photometric &ldquo;score,&rdquo; describing the candela in every direction plus the rated lumens and input watts. Revit and LightStanza are just two readers of that one file. This tutorial walks both.</p>
+  <h2>LightStanza Is Home &mdash; Geometry Comes to It</h2>
+  <p>Every accurate lighting calculation starts from one artifact: the manufacturer&rsquo;s <strong>IES file</strong> &mdash; the luminaire&rsquo;s photometric &ldquo;score,&rdquo; describing candela in every direction plus rated lumens and input watts. In this course, <strong>LightStanza is where you place the fixtures, run the calc, and export the maps and renderings.</strong> Your <em>geometry</em> just needs to get there &mdash; from Revit, from Rhino, or built from a scaled PDF.</p>
 
   <div class="converge">
     <div class="converge-row">
       <div class="cv-sources">
-        <div class="cv-box revit"><span class="cv-tag">Author + schedule</span>Revit</div>
-        <div class="cv-box ies"><span class="cv-tag">The truth</span>IES file</div>
+        <div class="cv-box revit"><span class="cv-tag">Geometry from</span>Revit &middot; Rooms</div>
+        <div class="cv-box ies"><span class="cv-tag">Geometry from</span>Rhino &middot; drag-drop</div>
+        <div class="cv-box"><span class="cv-tag">No 3D model?</span>PDF &middot; scale &amp; draw</div>
       </div>
       <span class="cv-arrow">&rarr;</span>
-      <div class="cv-engine"><span class="cv-tag">Cloud calc engine</span><strong>LightStanza</strong></div>
+      <div class="cv-engine"><span class="cv-tag">Place &middot; calculate &middot; render</span><strong>LightStanza</strong></div>
     </div>
     <div class="cv-chain">
-      <span class="cv-chip">Get IES</span><span class="cv-arrow">&rarr;</span>
-      <span class="cv-chip">Place luminaires</span><span class="cv-arrow">&rarr;</span>
+      <span class="cv-chip">Geometry in</span><span class="cv-arrow">&rarr;</span>
+      <span class="cv-chip">Upload IES</span><span class="cv-arrow">&rarr;</span>
+      <span class="cv-chip">Place fixtures</span><span class="cv-arrow">&rarr;</span>
       <span class="cv-chip">Position &amp; aim</span><span class="cv-arrow">&rarr;</span>
-      <span class="cv-chip">Run Grid Illuminance</span><span class="cv-arrow">&rarr;</span>
-      <span class="cv-chip end">False-color fc</span>
+      <span class="cv-chip">Grid Illuminance</span><span class="cv-arrow">&rarr;</span>
+      <span class="cv-chip end">Map + rendering</span>
     </div>
   </div>
-  <p style="font-size:.92rem;color:rgba(14,13,11,.6);">Use <strong>Revit</strong> to place fixtures in your real model, attach photometric webs, and produce the <em>luminaire schedule</em> your deliverable needs. Use <strong>LightStanza</strong> for the rigorous illuminance calc and the false-color map. The plugin connects them so you don&rsquo;t place fixtures twice &mdash; or work entirely in LightStanza if your model lives there.</p>
+  <p style="font-size:.92rem;color:rgba(14,13,11,.6);">Whatever tool your model lives in, it comes <em>into</em> LightStanza &mdash; and that is where the lighting work happens. Revit&rsquo;s job here is to hand off clean geometry (via <em>Rooms</em>); Rhino drags straight in; and if you have no 3D model at all, you build a quick one from a scaled floor-plan PDF. Then you place IES fixtures and calculate, all in LightStanza.</p>
 
   <div class="workflow">
     <div class="wf-step"><div class="wf-num">§ 02</div><div class="wf-label">Get the IES file</div></div>
     <div class="wf-arrow">&rarr;</div>
-    <div class="wf-step"><div class="wf-num">§ 03 · Revit</div><div class="wf-label">Place &amp; assign photometrics</div></div>
+    <div class="wf-step"><div class="wf-num">§ 03</div><div class="wf-label">Geometry into LightStanza</div></div>
     <div class="wf-arrow">&rarr;</div>
-    <div class="wf-step"><div class="wf-num">§ 04 · LightStanza</div><div class="wf-label">Calculate illuminance</div></div>
+    <div class="wf-step"><div class="wf-num">§ 04</div><div class="wf-label">Place &amp; calculate</div></div>
     <div class="wf-arrow">&rarr;</div>
     <div class="wf-step"><div class="wf-num">§ 05</div><div class="wf-label">Read &amp; reconcile</div></div>
   </div>
 
   <div class="pathbar">
-    <a href="#sec-revit" class="revit">&#9654; Jump to the Revit path</a>
-    <a href="#sec-ls" class="ls">&#9654; Jump to the LightStanza path</a>
+    <a href="#sec-geo" class="revit">&#9654; Get geometry in</a>
+    <a href="#sec-calc" class="ls">&#9654; Place &amp; calculate in LightStanza</a>
   </div>
 
   <div class="note"><strong>Account &amp; plugin:</strong> Join the course LightStanza team with your <code>@ltu.edu</code> email (accept the invitation &mdash; don&rsquo;t make a free standalone account). Download the Revit plugin at <a href="https://lightstanza.com/plugins/" target="_blank"><strong>lightstanza.com/plugins</strong></a> (Revit 2021&ndash;2026, not Revit LT); run the <code>.msi</code>, restart Revit, and it appears under the <strong>Add-Ins</strong> tab. Official walkthroughs live at <a href="https://lightstanza.com/electric-lighting-tutorials/" target="_blank">lightstanza.com/electric-lighting-tutorials</a>.</div>
@@ -306,164 +308,143 @@ a { color: var(--amber); }
 
 <hr class="divider">
 
-<!-- § 03 REVIT PATH -->
-<div class="section" id="sec-revit">
-  <div class="section-num">§ 03 &middot; Path A</div>
-  <h2>Revit &mdash; Place Luminaires &amp; Assign Photometrics</h2>
-  <p>Revit is where your fixtures live on the real model and where the <strong>luminaire schedule</strong> &mdash; a graded Act&nbsp;III deliverable &mdash; is built. The job here: place lighting-fixture families, give each one a photometric web, set its lumens / watts / color / loss factor, and schedule it.</p>
+<!-- § 03 GEOMETRY INTO LIGHTSTANZA -->
+<div class="section" id="sec-geo">
+  <div class="section-num">§ 03</div>
+  <h2>Get Your Geometry into LightStanza</h2>
+  <p>You can&rsquo;t light a room LightStanza doesn&rsquo;t have. Step one is always getting your spaces &mdash; walls, floor, ceiling height &mdash; into the app. Pick the route that matches where your model already lives; all three end the same way: a space with a floor/grid, ready for fixtures in §&nbsp;04.</p>
 
+  <h3 class="subhead">Route A &mdash; Revit (preferred: use Rooms)</h3>
   <ol class="steps blue">
     <li>
       <div class="step-body">
-        <strong>Load a lighting-fixture family with a defined light source</strong>
-        <p>Use <code>Insert &rarr; Load Family</code> (or a manufacturer&rsquo;s Revit family). The family must contain a <strong>Light Source</strong> &mdash; in the Family Editor, <code>Create &rarr; Light Source</code>, with the source placed <em>below the fixture opening</em> so housing geometry doesn&rsquo;t clip it. Families with no light source cannot contribute to a calculation.</p>
+        <strong>Place Rooms in the spaces you&rsquo;ll analyze</strong>
+        <p>LightStanza builds its calculation grids from Revit <strong>Rooms</strong> (or Spaces). Before exporting, make sure a Room is placed in each space you&rsquo;ll light &mdash; the house, the prefunction, the utility room. Ungridded areas come across with no grid and get no result.</p>
       </div>
     </li>
     <li>
       <div class="step-body">
-        <strong>Place fixtures on a host</strong>
-        <p><code>Architecture/Systems &rarr; Component</code> (or the <em>Lighting Fixture</em> tool). Place on the ceiling plane or a face. For a regular layout, place one and use <code>Copy / Array</code> at your target on-center spacing (from the lumen method). Work in a reflected ceiling plan so you&rsquo;re placing where the light actually is.</p>
-      </div>
-    </li>
-    <li>
-      <div class="step-body">
-        <strong>Assign the IES photometric web</strong>
-        <p>Select the fixture &rarr; <code>Edit Type</code> &rarr; the <strong>Photometrics</strong> group. Set <strong>Photometric Web File</strong> to your <code>.ies</code>. This replaces Revit&rsquo;s generic distribution with the real candela web. The Light Source shape should read <em>Photometric Web</em>.</p>
-      </div>
-    </li>
-    <li>
-      <div class="step-body">
-        <strong>Set intensity, color, and loss factor</strong>
-        <p>Still in the Photometrics group, confirm:</p>
-        <ul>
-          <li><strong>Initial Intensity</strong> &mdash; lumens (or candela / watts). For absolute LED files, leave the IES value; don&rsquo;t inflate it.</li>
-          <li><strong>Initial Color</strong> &mdash; the <em>Color Temperature</em> (CCT, e.g. 3000&nbsp;K) so renders read warm/neutral correctly.</li>
-          <li><strong>Light Loss Factor</strong> &mdash; 0.70&ndash;0.85 for a maintained result.</li>
-          <li><strong>Wattage</strong> (in the family&rsquo;s electrical parameters) &mdash; needed for the load column, not for the light calc.</li>
-        </ul>
-      </div>
-    </li>
-    <li>
-      <div class="step-body">
-        <strong>Build the luminaire schedule</strong>
-        <p><code>View &rarr; Schedules &rarr; Schedule/Quantities &rarr; Lighting Fixtures</code>. Add fields: Type Mark, Family and Type, Photometric Web File, Initial Intensity (lumens), CCT, Wattage, and Count. This <em>is</em> your Act&nbsp;III luminaire schedule &mdash; one row per type. Add a calculated <code>Count &times; Wattage</code> field for the connected load.</p>
-      </div>
-    </li>
-    <li>
-      <div class="step-body">
-        <strong>Get an illuminance result from Revit</strong>
-        <p>Three options, increasing rigor:</p>
-        <ul>
-          <li><strong>Render</strong> (<code>View &rarr; Render</code>, photometric/absolute exposure) &mdash; a qualitative look at distribution and brightness, not a measured grid.</li>
-          <li><strong>Insight Lighting analysis</strong> (<code>Analyze &rarr; Lighting</code>, cloud) &mdash; quantitative false-color illuminance at a workplane, in footcandles/lux. Good for a native check.</li>
-          <li><strong>ElumTools</strong> (third-party add-in) &mdash; full point-by-point illuminance inside Revit if your firm has it.</li>
-        </ul>
-        <p>For this course, the rigorous engine is LightStanza &mdash; so most of you will place + schedule in Revit, then hand the model to LightStanza (§&nbsp;04) for the calc and the false-color map you submit.</p>
+        <strong>Sync with the plugin</strong>
+        <p><code>Add-Ins &rarr; LightStanza &rarr; Export</code>. In <strong>Export Window &rarr; Other Settings</strong>, set the spatial type to <em>Rooms</em> and the <strong>Calc Grid Height</strong> (workplane, 30&Prime; / 2.5&nbsp;ft). Horizontal illuminance grids generate automatically per Room. Materials map across &mdash; review them on import.</p>
       </div>
     </li>
   </ol>
 
-  <div class="note"><strong>Tag rooms before you export.</strong> LightStanza builds its calculation grids from Revit <em>Rooms</em> or <em>Spaces</em>. Place Rooms/Spaces in the areas you want analyzed (seating, lobby, stage) before syncing &mdash; ungridded areas get no result.</div>
+  <h3 class="subhead">Route B &mdash; Rhino (drag-and-drop)</h3>
+  <ol class="steps blue">
+    <li>
+      <div class="step-body">
+        <strong>Drop the file straight in</strong>
+        <p>Drag your <code>.3dm</code> / <code>.dae</code> into the LightStanza window. Check the <strong>units</strong> (a mis-scaled model gives wrong illuminance) and the <strong>materials</strong> on import. Draw an illuminance grid on the floor of each space if one isn&rsquo;t already there.</p>
+      </div>
+    </li>
+  </ol>
+
+  <h3 class="subhead">Route C &mdash; No 3D model? Build it from a PDF</h3>
+  <p>The worst-case fallback &mdash; and it&rsquo;s genuinely fast. If your model isn&rsquo;t ready, you can light a space from a floor-plan PDF alone. (Video: <a href="https://www.youtube.com/watch?v=Zl0YgbXj_NI" target="_blank">building geometry from a PDF in LightStanza</a>.)</p>
+  <ol class="steps blue">
+    <li>
+      <div class="step-body">
+        <strong>Import the plan</strong>
+        <p>Bring a floor-plan <strong>PDF</strong> (or DWG / DXF / image) into LightStanza as an underlay.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Scale it to a known dimension</strong>
+        <p>Set the scale against something you know &mdash; a dimensioned wall, a door, a column grid. Get this right: every illuminance number depends on the plan being the correct size.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Draw walls, rooms, and the floor</strong>
+        <p>Trace the space with LightStanza&rsquo;s drawing tools &mdash; walls for the boundary, and the <strong>floor</strong>, which uploads as your illuminance grid. Draw a separate shape per space if you want separate grids, and set a ceiling height. That&rsquo;s enough geometry to light the room.</p>
+      </div>
+    </li>
+  </ol>
+
+  <div class="note"><strong>Which route?</strong> Model in Revit &rarr; use Rooms (A). Model in Rhino &rarr; drag it in (B). Not modeled yet &mdash; or the import is fighting you &rarr; build the one space you need from a PDF (C) and keep moving. You do <em>not</em> need a perfect model to start lighting.</div>
 </div>
 
 <hr class="divider">
 
-<!-- § 04 LIGHTSTANZA PATH -->
-<div class="section" id="sec-ls">
-  <div class="section-num">§ 04 &middot; Path B</div>
-  <h2>LightStanza &mdash; Calculate the Illuminance</h2>
-  <p>LightStanza is the calc engine. There are two ways in: <strong>sync from Revit</strong> (most of you), or <strong>build natively</strong> in LightStanza. Past the import, both run the same Grid Illuminance calculation.</p>
+<!-- § 04 PLACE & CALCULATE IN LIGHTSTANZA -->
+<div class="section" id="sec-calc">
+  <div class="section-num">§ 04</div>
+  <h2>Place Fixtures &amp; Calculate in LightStanza</h2>
+  <p>Geometry&rsquo;s in &mdash; now the lighting. You upload each IES file, place fixtures on the plan, aim them, and run the calc. This is the core of the week; do it for all three of your spaces (house, prefunction, back-of-house utility).</p>
 
-  <h3 class="subhead">Route 1 &mdash; Sync from Revit (the plugin)</h3>
-  <ol class="steps">
-    <li>
-      <div class="step-body">
-        <strong>Export the model</strong>
-        <p><code>Add-Ins &rarr; LightStanza &rarr; Export</code>. In the <strong>Export Window &rarr; Other Settings</strong>, choose the spatial type the grids follow &mdash; <em>Rooms</em>, <em>Spaces</em>, or <em>Areas</em> &mdash; and set the <strong>Calc Grid Height</strong> (workplane, e.g. 30&Prime; / 2.5&nbsp;ft). Horizontal illuminance grids generate automatically per Room/Space.</p>
-      </div>
-    </li>
-    <li>
-      <div class="step-body">
-        <strong>Check what came across</strong>
-        <p>Two schedules ride along: <strong>&ldquo;LightStanza Luminaires&rdquo;</strong> (the fixtures in the model) and <strong>&ldquo;LightStanza Report&rdquo;</strong> (the full illuminance matrix, after you calc). Materials and fixture types map automatically &mdash; review them.</p>
-      </div>
-    </li>
-    <li>
-      <div class="step-body">
-        <strong>Confirm / reassign IES files</strong>
-        <p>Open the <strong>IES / Family Manager</strong>. For each luminaire type, verify the assigned <code>.ies</code> or upload the correct one (directly, or from your team library). This is where the photometric web becomes real for the calc.</p>
-      </div>
-    </li>
-  </ol>
+  <div class="note"><strong>Came in from Revit?</strong> If fixtures rode across with the model, you&rsquo;ll see a <strong>&ldquo;LightStanza Luminaires&rdquo;</strong> schedule and can confirm or swap each IES in the <strong>IES / Family Manager</strong>. If you came in from Rhino or a PDF (no fixtures yet), just place them here &mdash; the steps below are identical either way.</div>
 
-  <h3 class="subhead">Route 2 &mdash; Build natively in LightStanza</h3>
+  <h3 class="subhead">Upload &amp; place</h3>
   <ol class="steps">
     <li>
       <div class="step-body">
         <strong>Upload IES files</strong>
-        <p>In the <strong>Luminaires panel</strong>, open the <strong>IES Manager</strong> &rarr; <em>Add IES File</em> (upload your download) or pick one from the team library. The viewer shows the candela polar plot and total lumens &mdash; confirm the shape.</p>
+        <p>In the <strong>Luminaires panel</strong>, open the <strong>IES Manager</strong> &rarr; <em>Add IES File</em> (upload your download) or pick one from the team library. The viewer shows the candela polar plot and total lumens &mdash; confirm the shape matches the fixture (downlight = downward cone, wall-wash = asymmetric lobe).</p>
       </div>
     </li>
     <li>
       <div class="step-body">
         <strong>Place fixtures on the 2D plan</strong>
-        <p>Switch to a <strong>2D lighting plan</strong> via the level dropdown. <em>Add Fixture</em>, choose the IES type, then click to place. Right-click a fixture for <code>Copy</code>, <code>Mirror</code>, <code>Duplicate</code>, <code>Replace</code>, <code>Array</code>, <code>Rotate</code>, <code>Align</code>, and <code>Aim</code>; nudge with arrow keys. Build a regular grid at your target spacing.</p>
+        <p>Switch to a <strong>2D lighting plan</strong> via the level dropdown. <em>Add Fixture</em>, choose the IES type, and click to place. Right-click for <code>Copy</code>, <code>Mirror</code>, <code>Array</code>, <code>Rotate</code>, <code>Align</code>, and <code>Aim</code>; nudge with arrow keys. Build a regular grid at the on-center spacing your lumen method implied.</p>
       </div>
     </li>
     <li>
       <div class="step-body">
         <strong>Set mounting height &amp; loss factor</strong>
-        <p>Per type, set mounting <strong>Height</strong> above floor, aiming (tilt/rotation) for adjustable fixtures, and <strong>LLF</strong> (default 0.82). Color/CCT here is for visualization and does not change the calculated illuminance.</p>
+        <p>Per type: mounting <strong>Height</strong> above floor, aiming for adjustable fixtures, and <strong>LLF</strong> (default 0.82) for a maintained result. CCT here is for visualization only &mdash; it does not change the calculated illuminance.</p>
       </div>
     </li>
   </ol>
 
   <h3 class="subhead">Position the IES inside the housing</h3>
-  <p>This is the step people skip &mdash; and it&rsquo;s the most common reason a map looks wrong. The light source must sit where the light actually leaves the fixture, aimed the right way.</p>
+  <p>The step people skip &mdash; and the most common reason a map looks wrong. The light source must sit where light actually leaves the fixture, aimed the right way.</p>
   <ol class="steps">
     <li>
       <div class="step-body">
         <strong>Open the IES editor</strong>
-        <p>Click the <strong>three dots</strong> under the luminaire type &rarr; <em>View/Edit IES File</em> (also reachable from the IES/Family Manager).</p>
+        <p>Click the <strong>three dots</strong> under the luminaire type &rarr; <em>View/Edit IES File</em> (also in the IES/Family Manager).</p>
       </div>
     </li>
     <li>
       <div class="step-body">
         <strong>Reposition &amp; rotate relative to the fixture</strong>
-        <p>Use <em>Edit IES Position Relative to Fixture</em> to move the source in <strong>X/Y/Z</strong> so housing geometry doesn&rsquo;t block it, and <em>Edit IES Rotation Relative to Fixture</em> to correct aiming:</p>
+        <p><em>Edit IES Position Relative to Fixture</em> moves the source in <strong>X/Y/Z</strong> so housing doesn&rsquo;t block it; <em>Edit IES Rotation Relative to Fixture</em> corrects aiming:</p>
         <ul>
-          <li><strong>Ceiling-mounted:</strong> a <strong>90&deg;</strong> rotation usually points the web down correctly.</li>
+          <li><strong>Ceiling-mounted:</strong> a <strong>90&deg;</strong> rotation usually points the web down.</li>
           <li><strong>Wall-mounted:</strong> <strong>0&deg;</strong> is the usual start.</li>
-          <li>It depends on the file&rsquo;s own coordinate system &mdash; confirm against the 3D view.</li>
+          <li>It depends on the file&rsquo;s coordinate system &mdash; confirm against the 3D view.</li>
         </ul>
-        <p>Set the <strong>luminous dimensions</strong> to match the real aperture; avoid zeros (point-source artifacts).</p>
+        <p>Set <strong>luminous dimensions</strong> to match the real aperture; avoid zeros (point-source artifacts).</p>
       </div>
     </li>
   </ol>
 
-  <h3 class="subhead">Run the calculation</h3>
+  <h3 class="subhead">Calculate &amp; render</h3>
   <ol class="steps">
     <li>
       <div class="step-body">
         <strong>New &rarr; Grid Illuminance</strong>
-        <p>In the Activity Bar, <code>New &rarr; Grid Illuminance</code>. Select your luminaire group and the calc grid. Set:</p>
-        <ul>
-          <li><strong>Unit:</strong> Footcandle (imperial) or Lux.</li>
-          <li><strong>Point spacing:</strong> finer = more detail, slower.</li>
-          <li><strong>Quality:</strong> Draft / High / Very High &mdash; <em>High</em> for design.</li>
-          <li><strong>Emergency lighting</strong> checkbox &mdash; toggle on for the egress-only run (egress fixtures only, ~1&nbsp;fc path target).</li>
-        </ul>
-        <p>Click <strong>Run</strong>. Electric calcs are fast &mdash; iterate freely.</p>
+        <p>In the Activity Bar, <code>New &rarr; Grid Illuminance</code>. Select the luminaire group and the calc grid. Set <strong>Unit</strong> (Footcandle / Lux), <strong>point spacing</strong>, and <strong>Quality</strong> (Draft / High / Very High &mdash; <em>High</em> for design). Toggle <strong>Emergency lighting</strong> for an egress-only run (~1&nbsp;fc path &mdash; mark your egress fixtures as emergency <em>first</em>). Click <strong>Run</strong> &mdash; electric calcs are fast, so iterate freely.</p>
+      </div>
+    </li>
+    <li>
+      <div class="step-body">
+        <strong>Export a rendering</strong>
+        <p>Activity Bar &rarr; <em>New Simulation</em> &rarr; <strong>Rendering</strong>. Set the camera &mdash; lens (Perspective), field of view, and resolution / super-sampling for a crisp image &mdash; and use a <strong>Section Cut</strong> to see into the room when the ceiling blocks the view. The rendering shows CCT, brightness, and how the light reads; it goes in the deliverable next to the false-color map.</p>
       </div>
     </li>
   </ol>
+
+  <div class="note"><strong>Faster runs:</strong> use the <strong>crop</strong> tool in the Illuminance Grids panel to limit a calc to the space you&rsquo;re working on, and keep <strong>point spacing</strong> sensible &mdash; finer grids are slower. Iterate at <em>Draft</em>, then confirm at <em>High</em>.</div>
 
   <div class="callout">
     <h3>Daylight + electric don&rsquo;t run as one</h3>
     <p>LightStanza calculates daylighting and electric lighting <strong>separately</strong>. To tell the combined story, run each and compare in the comparison view:</p>
     <ul>
       <li>Strong-sDA zones (from Act&nbsp;II) get <strong>daylight-dimming controls</strong> &mdash; electric load there drops toward zero in daytime.</li>
-      <li>Weak-sDA zones need <strong>full electric</strong> &mdash; these drive your connected-load number for Week&nbsp;7.</li>
+      <li>Weak-sDA zones need <strong>full electric</strong> &mdash; these drive your connected-watts number for Week&nbsp;7.</li>
       <li>Mark the <em>daylight-fill</em> vs. <em>electric-fill</em> zones on your annotated plan.</li>
     </ul>
   </div>
@@ -544,6 +525,8 @@ a { color: var(--amber); }
       <tr><td>Hot point / artifacts</td><td>Zero luminous dimensions (point source)</td><td>Set real luminous dimensions to match the aperture</td></tr>
       <tr><td>Average right, corners dark</td><td>Spacing too wide for the distribution</td><td>Tighten on-center spacing or add a supplemental layer; check uniformity</td></tr>
       <tr><td>No grid / no result in a room</td><td>Room/Space not placed before export</td><td>Add Revit Rooms/Spaces, re-export; or draw the grid manually in LightStanza</td></tr>
+      <tr><td>Emergency run shows nothing</td><td>Fixtures not flagged as emergency</td><td>Mark the egress fixtures as emergency, then re-run with the Emergency checkbox on</td></tr>
+      <tr><td>DXF / schedule not visible in Revit</td><td>Cut plane below the grid, or sync off</td><td>Enable syncing (link button); raise the view&rsquo;s Cut Plane above the grid height</td></tr>
       <tr><td>Lumens disagree with cut sheet</td><td>Relative vs. absolute photometry confusion</td><td>For absolute LED files, don&rsquo;t override lumens; trust the IES</td></tr>
       <tr><td>Glass / layers missing (Rhino route)</td><td>Surfaces didn&rsquo;t export with materials</td><td>Model glazing as distinct surfaces; export Collada with layers, re-check materials</td></tr>
       <tr><td>Sim &ne; hand calc</td><td>Optimistic CU, wrong reflectances, or aiming</td><td>Re-check surface reflectances and CU assumption; verify IES orientation; then trust the sim</td></tr>
@@ -563,24 +546,24 @@ a { color: var(--amber); }
 
   <div class="deliverable">
     <div class="d-label">Act III &middot; Lighting set &middot; built across Weeks 6&ndash;8</div>
-    <h3>What you produce with these tools</h3>
+    <h3>What you produce &mdash; three spaces, lit in LightStanza</h3>
     <ul>
-      <li><strong>Luminaire schedule</strong> &mdash; one row per type from Revit: product, distribution, delivered &Phi;, input W, CCT, CRI, mounting, qty. Real fixtures, real IES files.</li>
-      <li><strong>Verified illuminance</strong> &mdash; a LightStanza false-color map for your primary space, with average, minimum, and uniformity, compared to the IES target and your hand-calc <em>E</em>, plus a one-line reconciliation.</li>
-      <li><strong>Connected load + LPD</strong> &mdash; &Sigma;(qty &times; input W) from the schedule&rsquo;s watts column, divided by area &mdash; the Week&nbsp;7 number that becomes the Week&nbsp;8 panel and LPD check.</li>
-      <li><strong>Decision Log entry</strong> &mdash; one fixture, aiming, or layout choice that the false-color map caused you to confirm or revise.</li>
+      <li><strong>Luminaire schedule</strong> &mdash; one row per type: product, distribution, delivered &Phi;, input W, CCT, CRI, mounting, qty. Real fixtures, real IES files.</li>
+      <li><strong>Three verified spaces</strong> &mdash; the <em>house</em>, one <em>prefunction</em>, and one <em>back-of-house utility</em> (restroom / storage). For each: a LightStanza false-color map <em>and</em> a rendering, with average, minimum, and uniformity, compared to its IES target and hand-calc <em>E</em>, plus a one-line reconciliation.</li>
+      <li><strong>Connected-watts note (bridge)</strong> &mdash; &Sigma;(qty &times; input W) from the schedule&rsquo;s watts column &mdash; a first load number carried into Week&nbsp;8 (no LPD pass required this week).</li>
+      <li><strong>Decision Log entry</strong> &mdash; one fixture, aiming, or layout choice that a false-color map caused you to confirm or revise.</li>
     </ul>
   </div>
 
   <div class="checklist" style="margin-top:28px;">
-    <div class="check-item"><div class="check-box"></div><div><strong>LightStanza team joined</strong> <span>&mdash; LTU email, via the course invitation; Revit plugin installed (2021&ndash;2026)</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>LightStanza team joined</strong> <span>&mdash; LTU email, via the course invitation (Revit plugin installed if you&rsquo;re importing from Revit)</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Geometry in for three spaces</strong> <span>&mdash; Revit Rooms, Rhino drag-drop, or built from a scaled PDF; a grid per space</span></div></div>
     <div class="check-item"><div class="check-box"></div><div><strong>Real IES + cut sheet per fixture type</strong> <span>&mdash; polar plot verified in the viewer</span></div></div>
-    <div class="check-item"><div class="check-box"></div><div><strong>Fixtures placed &amp; photometric web assigned</strong> <span>&mdash; in Revit (Photometrics group) or natively in LightStanza</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Fixtures placed in LightStanza</strong> <span>&mdash; arrayed at target spacing across the three spaces</span></div></div>
     <div class="check-item"><div class="check-box"></div><div><strong>IES positioned/aimed in the housing</strong> <span>&mdash; ceiling 90&deg;, luminous dimensions set, not blocked</span></div></div>
-    <div class="check-item"><div class="check-box"></div><div><strong>Rooms/Spaces placed before export</strong> <span>&mdash; grids generate per space at workplane height</span></div></div>
-    <div class="check-item"><div class="check-box"></div><div><strong>Grid Illuminance run</strong> <span>&mdash; unit set to footcandles; quality High; emergency run for egress</span></div></div>
-    <div class="check-item"><div class="check-box"></div><div><strong>Result read &amp; reconciled</strong> <span>&mdash; avg / min / uniformity vs. IES target and the hand calc</span></div></div>
-    <div class="check-item"><div class="check-box"></div><div><strong>Schedule + watts captured</strong> <span>&mdash; one living document carried into Weeks 7&ndash;8</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Grid Illuminance run &amp; rendered</strong> <span>&mdash; footcandles, quality High; false-color map + rendering per space; emergency run for egress</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Results read &amp; reconciled</strong> <span>&mdash; avg / min / uniformity vs. IES target and the hand calc, per space</span></div></div>
+    <div class="check-item"><div class="check-box"></div><div><strong>Schedule + watts + models saved</strong> <span>&mdash; one living set carried into the Week 8 session</span></div></div>
   </div>
 </div>
 

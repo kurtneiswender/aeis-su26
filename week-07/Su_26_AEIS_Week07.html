@@ -347,9 +347,9 @@
       <ul>
         <li><strong>Design light as scenes, not a level.</strong> Put the four layers &mdash; house, egress/aisle, work/rehearsal, accent &mdash; on real controls: occupancy/vacancy sensing, daylight harvesting, scene presets, and the code-required emergency/egress layer.</li>
         <li><strong>Build a complete luminaire schedule.</strong> Every space becomes a row: type tag, delivered &Phi; lumens, input watts, CCT, CRI, distribution, mounting, and quantity &mdash; real products, each matched to its job.</li>
-        <li><strong>Verify by simulation, not just by hand.</strong> Run the electric-lighting module in <em>LightStanza</em> with your IES files for <em>both</em> the house and the prefunction, read the false-color illuminance maps, and reconcile each against your lumen-method numbers and the IES target.</li>
-        <li><strong>Trace the path from grid to fixture.</strong> Utility &rarr; meter &rarr; main panel &rarr; subpanel &rarr; branch circuit &rarr; luminaire &mdash; and know exactly where your schedule plugs into it.</li>
-        <li><strong>Read your schedule as an electrical load.</strong> Sum input watts into a <em>connected load</em>, divide by area for a first <em>LPD</em> figure, and see whether you&rsquo;re inside the energy-code allowance before Week&nbsp;8 makes it official.</li>
+        <li><strong>Get your model into <em>LightStanza</em> &mdash; our primary tool.</strong> Bring geometry in from Revit (via Rooms) or Rhino, or build it from a scaled PDF, then place your IES fixtures right in LightStanza and run the calc. The click-by-click is in the course tutorial.</li>
+        <li><strong>Light and verify three real spaces.</strong> The <em>house</em>, one <em>prefunction</em>, and one <em>back-of-house utility</em> (a restroom or storage room). Read the false-color maps, export a rendering, and reconcile each average against your hand-calc <em>E</em> and the IES target &mdash; three very different footcandle worlds.</li>
+        <li><strong>See the electrical bill &mdash; a bridge.</strong> Note the connected watts your schedule draws and where power comes from (grid &rarr; panel &rarr; fixture). The real load, panel, LPD, and PV work is Week&nbsp;8.</li>
         <li><strong>Log the decision.</strong> One Decision Log entry (Entry&nbsp;10) on a control or schedule choice &mdash; the reasoning and the trade-off behind it.</li>
       </ul>
     </div>
@@ -363,19 +363,19 @@
       <h2 class="sec-title">Run of <em>Show.</em></h2>
     </div>
     <div class="prose" style="margin-bottom:14px;">
-      <p>Four hours and five minutes, online. Four short lectures move from <em>design intent</em> (controls) to <em>document</em> (the schedule) to <em>proof</em> (simulation) to <em>consequence</em> (the load), then a long lab to build all four on your own hall.</p>
+      <p>Four hours and five minutes, online. Short lectures move from <em>design intent</em> (controls) to <em>document</em> (the schedule) to <em>the tool that proves it</em> (LightStanza), with a brief bridge to the electrical load &mdash; then a long lab lighting three spaces in LightStanza on your own hall.</p>
     </div>
     <div class="timetable">
       <div class="row review"><div class="when">19:30 &middot; 19:45</div><div class="dur">15 min</div><div class="what"><em>Open &amp; Recap.</em> From last week&rsquo;s single hand-calc to tonight&rsquo;s full system &mdash; a quick poll of where everyone landed on their first space. (&sect;&nbsp;03)</div></div>
       <div class="row"><div class="when">19:45 &middot; 20:10</div><div class="dur">25 min</div><div class="what"><em>Lecture 1 &mdash; Controls &amp; Scenes.</em> The four layers on real controls: occupancy/vacancy, daylight harvesting, scene presets, emergency/egress. (&sect;&nbsp;04)</div></div>
-      <div class="row"><div class="when">20:10 &middot; 20:38</div><div class="dur">28 min</div><div class="what"><em>Lecture 2 &mdash; The Luminaire Schedule.</em> Turn one fixture into the whole document &mdash; columns, task-matching, delivered lumens, and the watts column that feeds the rest of the night. (&sect;&nbsp;05)</div></div>
-      <div class="row break"><div class="when">20:38 &middot; 20:48</div><div class="dur">10 min</div><div class="what">Break.</div></div>
-      <div class="row"><div class="when">20:48 &middot; 21:13</div><div class="dur">25 min</div><div class="what"><em>Lecture 3 &mdash; Verify in LightStanza.</em> The electric-lighting module: import IES, run the analysis, read the false-color map, and reconcile it with the hand calc. (&sect;&nbsp;06)</div></div>
-      <div class="row"><div class="when">21:13 &middot; 21:40</div><div class="dur">27 min</div><div class="what"><em>Lecture 4 &mdash; The Wire Behind the Light.</em> The distribution path, connected vs. demand load, and the first LPD check &mdash; with the live load calculator. (&sect;&nbsp;07)</div></div>
-      <div class="row review"><div class="when">21:40 &middot; 21:55</div><div class="dur">15 min</div><div class="what"><em>Applied Case &mdash; The Load Side of a Real Relight.</em> The same Urban&nbsp;Colab auditorium &mdash; the watts it cost to buy back the light. (&sect;&nbsp;08)</div></div>
-      <div class="row"><div class="when">21:55 &middot; 22:05</div><div class="dur">10 min</div><div class="what"><em>Precedent &mdash; Controlled Halls.</em> Four reference moves for scenes, harvesting, egress, and the LPD-lean schedule. (&sect;&nbsp;09)</div></div>
-      <div class="row lab"><div class="when">22:05 &middot; 23:20</div><div class="dur">75 min</div><div class="what"><em>Lab &mdash; Build the Schedule.</em> Expand to your spaces, assign controls, run the house + prefunction LightStanza passes, and tally the load. Live screen-share help. (&sect;&nbsp;10)</div></div>
-      <div class="row"><div class="when">23:20 &middot; 23:35</div><div class="dur">15 min</div><div class="what"><em>Wrap.</em> The week&rsquo;s deliverable, Decision Log Entry&nbsp;10, and the watts column you carry into Week&nbsp;8. (&sect;&nbsp;11)</div></div>
+      <div class="row"><div class="when">20:10 &middot; 20:35</div><div class="dur">25 min</div><div class="what"><em>Lecture 2 &mdash; The Luminaire Schedule.</em> Turn one fixture into the whole document &mdash; columns, task-matching, delivered lumens, and the watts column. (&sect;&nbsp;05)</div></div>
+      <div class="row break"><div class="when">20:35 &middot; 20:45</div><div class="dur">10 min</div><div class="what">Break.</div></div>
+      <div class="row lab"><div class="when">20:45 &middot; 21:20</div><div class="dur">35 min</div><div class="what"><em>Lecture 3 &mdash; Build &amp; Verify in LightStanza.</em> Our primary tool: get geometry in (Revit&nbsp;Rooms / Rhino / scaled PDF), place IES fixtures, run the calc, read the false-color map + rendering. (&sect;&nbsp;06)</div></div>
+      <div class="row"><div class="when">21:20 &middot; 21:33</div><div class="dur">13 min</div><div class="what"><em>Lecture 4 &mdash; The Wire Behind the Light (bridge).</em> Where the power comes from and the two load numbers to know &mdash; the full electrical work is Week&nbsp;8. (&sect;&nbsp;07)</div></div>
+      <div class="row review"><div class="when">21:33 &middot; 21:45</div><div class="dur">12 min</div><div class="what"><em>Applied Case &mdash; LED &amp; LPD.</em> The same Urban&nbsp;Colab auditorium &mdash; why the watts jumped and both schemes still cleared LPD. (&sect;&nbsp;08)</div></div>
+      <div class="row"><div class="when">21:45 &middot; 21:53</div><div class="dur">8 min</div><div class="what"><em>Precedent &mdash; Controlled Halls.</em> Four reference moves for scenes, harvesting, egress, and the LPD-lean schedule. (&sect;&nbsp;09)</div></div>
+      <div class="row lab"><div class="when">21:53 &middot; 23:22</div><div class="dur">89 min</div><div class="what"><em>Lab &mdash; Light Three Spaces in LightStanza.</em> Model in, place fixtures, and calculate the house, a prefunction, and a back-of-house utility. Live screen-share help. (&sect;&nbsp;10)</div></div>
+      <div class="row"><div class="when">23:22 &middot; 23:35</div><div class="dur">13 min</div><div class="what"><em>Wrap.</em> The week&rsquo;s deliverable, Decision Log Entry&nbsp;10, and the watts + models you carry into Week&nbsp;8. (&sect;&nbsp;11)</div></div>
     </div>
   </section>
 
@@ -518,20 +518,26 @@
   <section>
     <div class="sec-label">
       <span class="sec-num">&sect; 06</span>
-      <h2 class="sec-title">Verify in <em>LightStanza.</em></h2>
+      <h2 class="sec-title">Build &amp; Verify in <em>LightStanza.</em></h2>
     </div>
 
     <div class="lec">
-      <div class="lec-head"><span class="name">Lecture 3</span><span>The Map Behind the Average &middot; 25 min</span></div>
-      <h3>Your hand-calc gives the <em>average</em>; the simulation shows the <em>map</em>.</h3>
-      <p class="one-liner">The lumen method is fast and defensible, but it reports a single average maintained level for a whole space. Simulation places your real fixtures with their real distributions and shows you where the light actually lands &mdash; including the corners the average hides.</p>
+      <div class="lec-head"><span class="name">Lecture 3</span><span>Model, Place, Calculate &middot; 35 min</span></div>
+      <h3>LightStanza is where the model, the fixtures, and the calc all <em>live.</em></h3>
+      <p class="one-liner">This is the heart of the night. LightStanza is our primary tool: get your geometry in, place the IES fixtures right on the plan, run the calc, and export the false-color maps and renderings. The full click-by-click is in the tutorial &mdash; here is the shape of it.</p>
 
-      <h4>The electric-lighting workflow</h4>
+      <h4>First move &mdash; get your geometry in (three ways)</h4>
       <ul>
-        <li><strong>Import the IES file</strong> for each type from the manufacturer page &mdash; the same file your schedule references. The simulation reads its candela distribution, lumens, and watts.</li>
-        <li><strong>Place &amp; lay out</strong> the fixtures on your plan at the spacing your lumen method implied (the N you solved for).</li>
-        <li><strong>Run the analysis</strong> at the 30-inch workplane and read the <em>false-color illuminance map</em> in footcandles.</li>
-        <li><strong>Check uniformity</strong> &mdash; the ratio of average to minimum. A good average with dark aisle corners is still a failing room.</li>
+        <li><strong>Revit &rarr; LightStanza plugin.</strong> Place <em>Rooms</em> in the spaces you want analyzed, then sync &mdash; grids generate per room automatically. The preferred path if your model is in Revit.</li>
+        <li><strong>Rhino drag-and-drop.</strong> Drop the <code>.3dm</code> / <code>.dae</code> straight into LightStanza; check units and materials on import.</li>
+        <li><strong>No 3D model? Build it from a PDF.</strong> Import a floor-plan PDF, <em>scale</em> it, and draw walls and rooms with LightStanza&rsquo;s own tools &mdash; the floor you draw becomes the illuminance grid. Enough to light a space without a full model.</li>
+      </ul>
+
+      <h4>Second move &mdash; place, calculate, read</h4>
+      <ul>
+        <li><strong>Place fixtures in LightStanza.</strong> Upload each IES in the IES Manager, drop fixtures on the 2D plan, and array them at the spacing your lumen method implied (the N you solved for).</li>
+        <li><strong>Run Grid Illuminance</strong> at the 30-inch workplane; read the <em>false-color map</em> in footcandles and export a <em>rendering</em> for the deliverable.</li>
+        <li><strong>Check uniformity</strong> &mdash; average vs. minimum. A good average with dark corners is still a failing room.</li>
       </ul>
     </div>
 
@@ -542,15 +548,10 @@
     </div>
 
     <div class="tool-callout">
-      <div class="t-label">Tool &middot; LightStanza &mdash; Electric Lighting Module</div>
-      <h4>Same software as Act&nbsp;II, electric mode.</h4>
-      <p>You already ran daylight in <strong>LightStanza</strong> for the sDA/ASE work; the electric-lighting module uses the same model. Confirm the site, building type (performing-arts theater), and grid before you run, then:</p>
-      <ul>
-        <li>Pull the <strong>IES file</strong> from each fixture&rsquo;s manufacturer page (it sits next to the cut sheet).</li>
-        <li>Run your two key spaces tonight &mdash; the <em>house</em> and the <em>prefunction</em> &mdash; and export each false-color map as an image for the deliverable.</li>
-        <li>Annotate the map with your hand-calc <em>E</em> and the IES target, and write one line reconciling them.</li>
-      </ul>
-      <p style="font-size:13.5px;color:var(--paper-dim);font-style:italic;margin-bottom:0;">If the electric module fights you, a Revit lighting analysis with the same IES files is an accepted substitute &mdash; flag it like we did for the daylight tools.</p>
+      <div class="t-label">Tool &middot; LightStanza &mdash; Electric Lighting</div>
+      <h4>Same app as Act&nbsp;II &mdash; now placing fixtures.</h4>
+      <p>You already ran daylight in <strong>LightStanza</strong> for the sDA/ASE work; the electric side uses the same model. Tonight you light <em>three</em> spaces in it &mdash; the <strong>house</strong>, one <strong>prefunction</strong>, and one <strong>back-of-house utility</strong> (a restroom or storage room). For each: place the fixtures, run the calc, export the map + a rendering, and reconcile the average against your hand-calc <em>E</em> and the IES target.</p>
+      <p style="font-size:13.5px;color:var(--paper-dim);font-style:italic;margin-bottom:0;">Full step-by-step &mdash; geometry in (Revit&nbsp;/&nbsp;Rhino&nbsp;/&nbsp;PDF), fixtures, and the calc &mdash; is in the <strong>IES &amp; Photometrics tutorial</strong> on the course hub. Fighting the tool? That is exactly what next week&rsquo;s troubleshooting session is for &mdash; capture the glitch and bring it.</p>
     </div>
   </section>
 
@@ -563,15 +564,14 @@
     </div>
 
     <div class="lec">
-      <div class="lec-head"><span class="name">Lecture 4</span><span>Distribution &amp; Load &middot; 27 min</span></div>
-      <h3>Every lumen has an <em>electrical bill.</em></h3>
-      <p class="one-liner">The schedule you just built draws power. Tonight we follow that power backward from the fixture to the street, then total it into a load &mdash; the first half of the electrical work Week&nbsp;8 finishes with a panel schedule.</p>
+      <div class="lec-head"><span class="name">Lecture 4</span><span>A Brief Bridge &middot; 13 min</span></div>
+      <h3>Every lumen has an <em>electrical bill</em> &mdash; a look ahead.</h3>
+      <p class="one-liner">The schedule you built draws power. Tonight this is only a bridge: see where that power comes from and note the watts. The real electrical work &mdash; circuits, the panel schedule, LPD compliance, and PV &mdash; is Week&nbsp;8.</p>
 
-      <h4>Connected load vs. demand load</h4>
+      <h4>Two numbers to know</h4>
       <ul>
-        <li><strong>Connected load</strong> &mdash; the sum of every fixture&rsquo;s input watts if all were on at once. That&rsquo;s your schedule&rsquo;s watts column, totaled. For lighting, this is what LPD is checked against.</li>
-        <li><strong>Demand load</strong> &mdash; what the building actually draws, after diversity and controls. Because scenes mean layers are rarely all at full, demand is lower &mdash; but you size protection from connected load first.</li>
-        <li><strong>Volt-amps &amp; amps</strong> &mdash; for LED drivers, treat VA &asymp; W for now; amps&nbsp;=&nbsp;VA&nbsp;&divide;&nbsp;voltage. We&rsquo;ll size breakers from this in Week&nbsp;8.</li>
+        <li><strong>Connected load</strong> &mdash; the sum of every fixture&rsquo;s input watts (your schedule&rsquo;s watts column, totaled). This is what LPD gets checked against.</li>
+        <li><strong>Demand load</strong> &mdash; what the building actually draws once scenes and controls dim layers down. Lower than connected &mdash; but you size protection from connected first.</li>
       </ul>
     </div>
 
@@ -624,6 +624,8 @@
       <div class="f-note">Tonight this is a <strong>first pass</strong> &mdash; an honest watts-per-foot number you sanity-check against the allowance. Week&nbsp;8 makes it official with the real space-type allowance and a controls credit if you earn one.</div>
     </div>
 
+    <p class="prose" style="max-width:820px;margin-top:24px;font-style:italic;color:var(--paper-dim);">Optional tonight &mdash; play with how fixture count, wattage, and area drive LPD, and notice how much <em>headroom</em> LED gives you. It is not required for this week&rsquo;s deliverable; we formalize the real compliance check in Week&nbsp;8.</p>
+
     <!-- INTERACTIVE LOAD / LPD CALCULATOR -->
     <div class="calc" id="loadCalc">
       <div class="calc-head">
@@ -657,9 +659,9 @@
     </div>
 
     <div class="concept blue-rule">
-      <div class="c-label">The thread into Week 8 &mdash; Panels &amp; PV</div>
-      <h4>Tonight&rsquo;s watts become next week&rsquo;s <em>panel</em>.</h4>
-      <p>Keep the watts column alive. Next week you&rsquo;ll group it into circuits (by layer, zone, or control scene), size breakers with the 80% rule, organize it into a <strong>panel schedule</strong>, settle the LPD against the real ASHRAE&nbsp;90.1 allowance, and size a <strong>PV array</strong> to offset a slice of it. Every number tonight is a number you reuse &mdash; don&rsquo;t throw away the arithmetic.</p>
+      <div class="c-label">The thread into Week 8 &mdash; Electrical + Troubleshooting</div>
+      <h4>Tonight&rsquo;s watts &amp; models become next week&rsquo;s <em>work session</em>.</h4>
+      <p>Keep the watts column and your LightStanza models alive. Next week is a longer working session: you&rsquo;ll group the watts into circuits (by layer, zone, or scene), size breakers with the 80% rule, build a <strong>panel schedule</strong>, settle the LPD against the real ASHRAE&nbsp;90.1 allowance, and size a <strong>PV array</strong> &mdash; with time set aside to <strong>troubleshoot your models together</strong> before the Act&nbsp;III delivery. Every number and model tonight is one you reuse; don&rsquo;t throw the work away.</p>
     </div>
   </section>
 
@@ -749,65 +751,65 @@
   <section>
     <div class="sec-label">
       <span class="sec-num">&sect; 10</span>
-      <h2 class="sec-title">Lab &mdash; Build the <em>Schedule.</em></h2>
+      <h2 class="sec-title">Lab &mdash; Light Three <em>Spaces.</em></h2>
     </div>
     <div class="prose" style="margin-bottom:6px;">
-      <p>Seventy-five minutes to turn tonight&rsquo;s four lectures into four artifacts on your own hall: a schedule, a controls plan, one verified space, and a load number. Screen-share for live help &mdash; this <em>is</em> your Week&nbsp;7 deliverable, started in the room.</p>
+      <p>About ninety minutes to get comfortable in LightStanza and light three very different rooms &mdash; the <strong>house</strong>, one <strong>prefunction</strong>, and one <strong>back-of-house utility</strong> (restroom or storage). Screen-share for live help; this <em>is</em> your Week&nbsp;7 deliverable, started in the room. Follow the <strong>IES &amp; Photometrics tutorial</strong> as you go.</p>
     </div>
     <div class="lab-sheet">
       <div class="lab-row">
         <div class="g">a</div>
         <div>
-          <span class="tag">Schedule</span>
-          <h5>Expand to <em>all your spaces.</em></h5>
-          <p>Grow last week&rsquo;s single fixture into a real schedule &mdash; at least <strong>three spaces</strong>, one row per type. Pull real products and their IES files.</p>
+          <span class="tag">Model in</span>
+          <h5>Get your geometry <em>into LightStanza.</em></h5>
+          <p>Bring your three spaces in the way that fits your model: <strong>Revit</strong> (place Rooms, then sync), <strong>Rhino</strong> (drag-and-drop), or <strong>build from a scaled PDF</strong> if you have no 3D model.</p>
         </div>
         <div class="tasks">
           <ul>
-            <li>Columns: tag, product, distribution, delivered &Phi;, input W, CCT, CRI, mounting, qty.</li>
-            <li>Use <em>delivered</em> lumens for light, <em>input</em> watts for load.</li>
+            <li>Confirm units and a workplane grid per space (30&Prime; AFF).</li>
+            <li>PDF path: import, scale to a known dimension, draw walls + rooms.</li>
           </ul>
         </div>
       </div>
       <div class="lab-row">
         <div class="g">b</div>
         <div>
-          <span class="tag">Controls</span>
-          <h5>Put the layers <em>on cues.</em></h5>
-          <p>For your primary space, fill in a <strong>scene matrix</strong> &mdash; the four layers across the room&rsquo;s real scenes &mdash; and name the control type for each layer.</p>
+          <span class="tag">Schedule &amp; place</span>
+          <h5>Build the schedule, <em>place the fixtures.</em></h5>
+          <p>Grow last week&rsquo;s single fixture into a real <strong>schedule</strong> (3+ spaces, one row per type), upload each IES in LightStanza, and place fixtures on the plan.</p>
         </div>
         <div class="tasks">
           <ul>
-            <li>Sensor type (occupancy/vacancy), daylight-dimming zones, scene presets.</li>
-            <li>Draw egress as its own always-on layer and circuit.</li>
+            <li>Columns: tag, product, distribution, delivered &Phi;, input W, CCT, CRI, mounting, qty.</li>
+            <li>Also sketch a <strong>scene matrix</strong> for the house (layers &times; scenes).</li>
           </ul>
         </div>
       </div>
       <div class="lab-row">
         <div class="g">c</div>
         <div>
-          <span class="tag">Verify</span>
-          <h5>Run <em>both</em> spaces.</h5>
-          <p>Run a LightStanza electric-lighting pass on the <em>house</em> and the <em>prefunction</em>, export each false-color map, and compare each to its hand-calc <em>E</em> and IES target (the prefunction also ties back to your Act&nbsp;II daylight zone).</p>
+          <span class="tag">Calculate &amp; render</span>
+          <h5>Run <em>all three</em> spaces.</h5>
+          <p>Run Grid Illuminance for the house, the prefunction, and the utility room; export each <strong>false-color map</strong> and a <strong>rendering</strong>, and compare each to its IES target and hand-calc <em>E</em>.</p>
         </div>
         <div class="tasks">
           <ul>
+            <li>Very different targets: ~2&ndash;15 fc house &middot; 20&ndash;30 fc prefunction &middot; 30&ndash;50 fc utility.</li>
             <li>For each: note the average <em>and</em> the worst corner (uniformity).</li>
-            <li>One line per space: why the map and the hand calc agree or differ.</li>
           </ul>
         </div>
       </div>
       <div class="lab-row">
         <div class="g">d</div>
         <div>
-          <span class="tag">Load &amp; Log</span>
-          <h5>Total the <em>watts.</em></h5>
-          <p>Sum Qty&nbsp;&times;&nbsp;input&nbsp;W into a connected load, divide by area for a first LPD, and check it against the allowance with the calculator. Then write Decision Log <strong>Entry&nbsp;10</strong>.</p>
+          <span class="tag">Note watts &amp; log</span>
+          <h5>Total the watts, <em>write the entry.</em></h5>
+          <p>Sum Qty&nbsp;&times;&nbsp;input&nbsp;W into a connected-load number &mdash; a first figure you carry into Week&nbsp;8 (no LPD pass required tonight). Then write Decision Log <strong>Entry&nbsp;10</strong>.</p>
         </div>
         <div class="tasks">
           <ul>
             <li>One control or schedule decision + its trade-off.</li>
-            <li>Flag what you&rsquo;ll circuit and panel in Week&nbsp;8.</li>
+            <li>Flag any tool snags for next week&rsquo;s troubleshooting session.</li>
           </ul>
         </div>
       </div>
@@ -822,17 +824,17 @@
       <h2 class="sec-title">This Week&rsquo;s <em>Work.</em></h2>
     </div>
     <div class="prose" style="margin-bottom:8px;">
-      <p>The Week&nbsp;7 weekly deliverable is due <strong>Tue 07&middot;07 at 11:59&nbsp;PM</strong> via Canvas. Same two halves as every weekly &mdash; a <strong>package</strong> worth 6 and a <strong>Decision Log</strong> worth 4. This is the heart of the Act&nbsp;III lighting set: the schedule, the controls plan, one verified space, and the first load number. Every piece feeds directly into the Week&nbsp;8 electrical work and the Week&nbsp;9 pin-up.</p>
+      <p>The Week&nbsp;7 weekly deliverable is due <strong>Tue 07&middot;07 at 11:59&nbsp;PM</strong> via Canvas. Same two halves as every weekly &mdash; a <strong>package</strong> worth 6 and a <strong>Decision Log</strong> worth 4. This is the heart of the Act&nbsp;III lighting set: the schedule, the controls plan, and <strong>three spaces lit and verified in LightStanza</strong>, with a first connected-watts number. Every piece feeds directly into the Week&nbsp;8 work session and the Week&nbsp;9 delivery.</p>
     </div>
 
     <div class="deliverable">
       <div class="label">Part A &mdash; Package &middot; 6 pts</div>
-      <h4>Luminaire Schedule + Controls Plan + Verification + First Load</h4>
+      <h4>Luminaire Schedule + Controls Plan + Three Verified Spaces</h4>
       <div class="checklist">
         <div class="check"><div class="box"></div><div class="text"><strong>Luminaire schedule, 3+ spaces</strong> &mdash; one row per type with real product, distribution, delivered &Phi;, input W, CCT, CRI, mounting, and qty. IES file noted for each type.</div></div>
         <div class="check"><div class="box"></div><div class="text"><strong>Controls / scene plan</strong> &mdash; the four layers mapped to sensors, daylight zones, and scene presets, with the emergency/egress layer drawn separately. A scene matrix or an annotated plan.</div></div>
-        <div class="check"><div class="box"></div><div class="text"><strong>Two LightStanza verifications &mdash; house + prefunction</strong> &mdash; a false-color illuminance map for each, compared to its hand-calc <em>E</em> and IES target, with the reconciliation noted in one line per space.</div></div>
-        <div class="check"><div class="box"></div><div class="text"><strong>Connected load + first LPD</strong> &mdash; &Sigma;(Qty&times;W) and W/ft² for the lit area, sanity-checked against the ASHRAE&nbsp;90.1 / IECC allowance (approximate pass/fail &mdash; confirmed in Week&nbsp;8).</div></div>
+        <div class="check"><div class="box"></div><div class="text"><strong>Three LightStanza verifications &mdash; house, prefunction, back-of-house utility</strong> &mdash; a false-color map <em>and</em> a rendering for each, compared to its hand-calc <em>E</em> and IES target, with the reconciliation noted in one line per space.</div></div>
+        <div class="check"><div class="box"></div><div class="text"><strong>Connected-watts note (bridge)</strong> &mdash; total your schedule&rsquo;s input watts, &Sigma;(Qty&times;W), as a first load number to carry into Week&nbsp;8. No LPD pass required this week.</div></div>
       </div>
     </div>
 
@@ -840,21 +842,21 @@
       <div class="label">Part B &mdash; Decision Log &middot; 4 pts (Entry 10)</div>
       <h4>One Control or Schedule Decision, With Its Trade-off</h4>
       <div class="checklist">
-        <div class="check"><div class="box"></div><div class="text"><strong>Decision</strong> &mdash; the control or schedule choice you made (e.g., vacancy sensing + a stored performance scene for the house; or raising fixture efficacy to hold target light under the LPD cap).</div></div>
-        <div class="check"><div class="box"></div><div class="text"><strong>Reasoning</strong> &mdash; the number behind it: the target <em>E</em>, the simulation result, or the W/ft² that pushed the decision.</div></div>
-        <div class="check"><div class="box"></div><div class="text"><strong>Trade-off &amp; reconsider</strong> &mdash; what you gave up (warmth vs. CRI, fixture count vs. uniformity, watts vs. light), and what the Week&nbsp;8 panel/LPD work might make you revisit.</div></div>
+        <div class="check"><div class="box"></div><div class="text"><strong>Decision</strong> &mdash; the control or schedule choice you made (e.g., vacancy sensing + a stored performance scene for the house; or a wider distribution to fix a dark corner the map exposed).</div></div>
+        <div class="check"><div class="box"></div><div class="text"><strong>Reasoning</strong> &mdash; the number behind it: the target <em>E</em>, the simulation average, or the uniformity that pushed the decision.</div></div>
+        <div class="check"><div class="box"></div><div class="text"><strong>Trade-off &amp; reconsider</strong> &mdash; what you gave up (warmth vs. CRI, fixture count vs. uniformity, watts vs. light), and what next week&rsquo;s electrical + troubleshooting work might make you revisit.</div></div>
       </div>
     </div>
 
     <div class="concept">
       <div class="c-label">Act III Roadmap &mdash; Weeks 6&ndash;9</div>
       <h4>Where this is going.</h4>
-      <p><strong>Wk 6</strong> &mdash; photometry + lumen method, first general-lighting pass. <strong>Wk 7 (tonight)</strong> &mdash; controls, the full luminaire schedule, simulation verification, and the first load/LPD pass. <strong>Wk 8</strong> &mdash; electrical: circuiting, the panel schedule, LPD compliance, and PV sizing. <strong>Wk 9</strong> &mdash; <em>Act III Review</em> (Lighting + Electrical pin-up). The Act&nbsp;III package is due <strong>Tue 07&middot;21</strong> &mdash; tonight&rsquo;s schedule and watts are the spine of it.</p>
+      <p><strong>Wk 6</strong> &mdash; photometry + lumen method, first general-lighting pass. <strong>Wk 7 (tonight)</strong> &mdash; controls, the full luminaire schedule, and three spaces lit + verified in LightStanza. <strong>Wk 8</strong> &mdash; a longer work session: electrical (circuiting, panel schedule, LPD, PV) plus <em>troubleshooting your models together</em>. <strong>Wk 9</strong> &mdash; <em>Act III delivery</em> (Lighting + Electrical pin-up). The Act&nbsp;III package is due <strong>Tue 07&middot;21</strong> &mdash; tonight&rsquo;s schedule, models, and watts are the spine of it.</p>
     </div>
 
     <div class="bridge">
       <strong>Before you log off tonight</strong>
-      Save the watts column and the IES files in one place &mdash; they are the raw material of next week&rsquo;s panel schedule and the LPD/PV math. The fastest way to fall behind in Act&nbsp;III is to redo the schedule from scratch every week; the fastest way to stay ahead is to keep one living document and add a column to it each session.
+      Save your LightStanza models, the watts column, and the IES files in one place &mdash; they are the raw material of next week&rsquo;s panel/LPD/PV math and the troubleshooting session. The fastest way to fall behind in Act&nbsp;III is to rebuild from scratch each week; the fastest way to stay ahead is one living model and schedule you add to each session.
     </div>
   </section>
 

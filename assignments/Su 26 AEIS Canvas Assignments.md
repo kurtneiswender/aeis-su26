@@ -8,7 +8,7 @@ Canvas settings to configure (points, submission type, availability dates).
 ---
 
 ## UNIVERSAL WEEKLY RUBRIC — 10 Points
-### Apply to all six weekly deliverables (Weeks 1, 2, 4, 6, 7, 9)
+### Apply to all five weekly deliverables (Weeks 1, 2, 4, 6, 7)
 
 **How to add this to Canvas:**
 Assignments → open the weekly assignment → Rubric → Add Rubric → create new.
@@ -263,20 +263,15 @@ This week you build the load summary and begin panel schedule layout. Deliverabl
 ---
 ---
 
-## Week 8 Deliverable — Electrical, Panels & PV
+## Week 8 — No Separate Weekly (folds into Act III)
 
-**Canvas settings:** Points: 10 · Submission: File Upload + Text Entry · Due: Tue 07·14 · 11:59 PM
+**Canvas settings:** Not a graded weekly. Do not post a Week 8 Deliverable — or if the shell already exists, open it and check *"Do not count this assignment toward the final grade."*
 
 ---
 
-[CONTENT TBD — Act III / Electrical. Update when Week 8 materials are finalized.]
+Week 8 is an in-class electrical + PV **work session** — there is no standalone weekly upload. The work students produce (circuits, panel schedule LP-1, the official LPD verdict, and PV sizing) folds directly into the **Act III package (due Tue 07·21)** and is graded there via the Act III rubric.
 
-A work week building toward the Act III pin-up in Week 9. You complete the power plan: panel schedule, circuit groupings, load summary, and PV sizing. Deliverable details will be posted in the Week 8 module before class.
-
-**Placeholder checklist (update before posting):**
-- [ ] Panel schedule + circuit groupings
-- [ ] Load summary + PV sizing calc
-- [ ] Decision Log entries for Week 8
+The graded weekly for the Week 7–8 stretch is the **Week 7 deliverable** (above). This keeps the Weekly Deliverables group at five items (Weeks 1, 2, 4, 6, 7); with Canvas weighted groups the group weight is unchanged.
 
 ---
 ---
@@ -350,9 +345,9 @@ The Encore brings all three acts together into a single submission package. Full
 | Act II Review (Week 6) | 🔲 TBD | 20 | Wed 06·24 |
 | Week 6 Deliverable | ✅ Ready to post | 10 | Tue 06·30 |
 | Week 7 Deliverable | 🔲 TBD | 10 | Tue 07·07 |
-| Week 8 Deliverable | 🔲 TBD | 10 | Tue 07·14 |
+| Week 8 Deliverable | ❌ Dropped — folds into Act III (graded there) | — | — |
 | Act III Review (Week 9) | ✅ Ready to post — assignment + rubric attached | 20 | Tue 07·21 |
 | Encore | 🔲 TBD | 60 | Sun 07·26 |
-| **Total (graded)** | | **180 pts** | |
+| **Total (graded)** | | **170 pts** | |
 
-**Note on course total:** Memory has 6 weekly × 10 + 3 Act Reviews × 20 + Encore 60 = 180 pts graded, plus 20 pts participation = 200 pts. Verify against the posted syllabus before publishing. The Act I Rubric (20 pts = 10%) implies a 200-pt course scale — adjust point values in Canvas if your gradebook uses a different scale.
+**Note on course total:** Five weekly × 10 + 3 Act Reviews × 20 + Encore 60 = **170 pts graded**, plus 20 pts participation = 190 pts. (The Week 8 electrical/PV work is graded inside Act III, not as a separate weekly.) If your Canvas gradebook uses **weighted assignment groups**, the Weekly group keeps its full weight no matter the item count — dropping the Week 8 weekly needs no rescale. If it uses a **straight point scale**, the graded total is now 170 (190 with participation). Verify against the posted syllabus before publishing.

@@ -753,7 +753,7 @@
             <input type="range" id="rE" min="1000" max="40000" step="500" value="9000">
           </div>
           <div class="calc-slider">
-            <label><span>Offset target <span style="color:var(--paper-dim)">%</span> (coverage)</span><b><span id="lO">100</span>%</b></label>
+            <label><span>Offset <span style="color:var(--paper-dim)">%</span> of lighting energy</span><b><span id="lO">100</span>%</b></label>
             <input type="range" id="rO" min="10" max="150" step="5" value="100">
           </div>
           <div class="calc-slider">
@@ -765,6 +765,19 @@
         </div>
       </div>
       <div class="calc-note" id="pvNote"></div>
+    </div>
+
+    <div class="concept">
+      <div class="c-label">Talk it through &mdash; net metering</div>
+      <h4>The array and the lights are on <em>opposite clocks.</em></h4>
+      <p>PV peaks at <strong>midday</strong>; a performance hall draws its lighting <strong>after dark</strong>. So &ldquo;100% offset&rdquo; is never a moment-to-moment match &mdash; it is an <em>annual</em> one, and the thing that makes it real is <strong>net metering</strong>: daytime surplus spins the meter backward (a credit with the utility), evening draw spins it forward, and over a year the credits net against the draws. The building stays fully grid-tied &mdash; net-zero lighting is an <em>accounting</em> result, not an off-grid one.</p>
+      <p><strong>Questions worth arguing tonight:</strong></p>
+      <ul>
+        <li>If the utility pays <em>retail</em> for your exports (true net metering, ~$0.16/kWh) versus <em>avoided cost</em> (net billing, ~$0.03/kWh), what happens to the payback in the calculator above? Which regime is Michigan actually in?</li>
+        <li>Our hall runs almost entirely at night. Without net metering &mdash; or with a battery instead of the grid &mdash; how much of that midday production is genuinely useful to <em>this</em> building?</li>
+        <li>Does chasing 150% offset make sense if exports only earn avoided cost? Where does the smart-money offset target actually land?</li>
+      </ul>
+      <p style="font-size:13.5px;color:var(--paper-dim);font-style:italic;margin-bottom:0;">&rarr; Reading: MEEB Ch.&nbsp;29 &sect;29.5b (grid-connected &amp; net metering) and the &ldquo;avoided cost&rdquo; definition in &sect;29.1.</p>
     </div>
 
     <div class="concept blue-rule">

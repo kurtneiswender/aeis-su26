@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · The Encore · Final Submission</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B; --ink-2:#161412;
+    --paper:#EDE4D3; --paper-2:#D9CFB9; --paper-dim:#8A8273;
+    --amber:#D4A24C; --amber-soft:rgba(212,162,76,.10); --amber-line:rgba(212,162,76,.40);
+    --red:#C8472F; --blue:#9FC8D4;
+    --rule:rgba(237,228,211,.16); --rule-strong:rgba(237,228,211,.38);
+    --green:#7FAF78;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  body{
+    font-family:"Newsreader",Georgia,serif;font-weight:380;font-size:17px;line-height:1.55;
+    font-feature-settings:"ss01","onum";-webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.5;
+  }
+  ::selection{background:var(--amber);color:var(--ink);}
+  .wrap{max-width:1060px;margin:0 auto;padding:48px 56px 120px;position:relative;}
+  @media(max-width:720px){.wrap{padding:32px 22px 80px}}
+
+  /* TOPBAR */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);padding-bottom:18px;
+    border-bottom:1px solid var(--rule);
+  }
+  .topbar .act-tag{
+    background:rgba(212,162,76,.10);border:1px solid rgba(212,162,76,.40);
+    color:var(--amber);padding:3px 10px;font-size:10px;letter-spacing:.22em;
+  }
+
+  /* HERO */
+  .hero{padding:52px 0 36px;}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.32em;
+    text-transform:uppercase;color:var(--amber);margin-bottom:16px;}
+  .kicker .pipe{color:var(--paper-dim);margin:0 10px;}
+  h1.title{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;
+    font-weight:380;font-size:clamp(42px,7vw,96px);line-height:.9;letter-spacing:-.03em;margin:0;
+  }
+  h1.title em{font-style:italic;color:var(--amber);font-weight:300;
+    font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+  .sub{margin-top:24px;max-width:680px;font-family:"Newsreader",serif;
+    font-size:clamp(17px,1.6vw,20px);line-height:1.5;color:var(--paper-2);font-style:italic;}
+
+  /* META STRIP */
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+    border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);margin-top:44px;}
+  .meta>div{padding:16px 16px 16px 0;border-right:1px solid var(--rule);}
+  .meta>div:last-child{border-right:none}
+  .meta dt{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--paper-dim);margin-bottom:5px;}
+  .meta dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:18px;line-height:1.2;
+    font-variation-settings:"opsz" 36;}
+  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:12px;
+    color:var(--paper-dim);margin-top:2px;font-style:italic;}
+  @media(max-width:820px){.meta{grid-template-columns:repeat(2,1fr)}.meta>div:nth-child(2){border-right:none}}
+
+  /* SECTION */
+  section{margin-top:88px;}
+  .sec-label{display:flex;align-items:baseline;gap:20px;margin-bottom:24px;
+    padding-bottom:12px;border-bottom:1px solid var(--rule-strong);}
+  .sec-num{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.18em;color:var(--amber);}
+  .sec-title{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(28px,3.5vw,42px);
+    line-height:1;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 72,"SOFT" 40;}
+  .sec-title em{font-style:italic;color:var(--amber);}
+
+  .prose{max-width:780px;color:var(--paper-2);font-size:16px;line-height:1.62;}
+  .prose p{margin:0 0 1em;}
+  .prose em{color:var(--paper);font-style:italic;}
+  .prose strong{color:var(--paper);}
+  .prose ul,.prose ol{padding-left:20px;}
+  .prose ul li,.prose ol li{margin-bottom:6px;}
+
+  /* MONO LABEL */
+  .mono{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.20em;
+    text-transform:uppercase;color:var(--amber);}
+
+  /* WHAT'S NEW BANNER */
+  .newwork{
+    margin-top:26px;border:1px solid var(--blue);background:rgba(159,200,212,.05);
+    padding:24px 26px;
+  }
+  .newwork h4{
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--blue);margin:0 0 12px;
+  }
+  .newwork p{margin:0 0 10px;color:var(--paper-2);font-size:15.5px;line-height:1.6;}
+  .newwork p:last-child{margin:0;}
+  .newwork strong{color:var(--paper);}
+  .newwork ol{margin:10px 0 0;padding-left:20px;color:var(--paper-2);font-size:15px;line-height:1.6;}
+  .newwork li{margin-bottom:7px;}
+  .newwork li strong{color:var(--blue);}
+
+  /* PACKAGE CHECKLIST */
+  .package{margin-top:20px;border:1px solid var(--rule-strong);}
+  .pkg-row{
+    display:grid;grid-template-columns:36px 1fr;align-items:start;
+    padding:14px 18px;border-bottom:1px solid var(--rule);gap:0;
+  }
+  .pkg-row:last-child{border-bottom:none;}
+  .pkg-row.is-new{background:rgba(159,200,212,.05);}
+  .pkg-check{
+    width:18px;height:18px;border:1.5px solid var(--amber-line);margin-top:2px;flex-shrink:0;
+  }
+  .pkg-row.is-new .pkg-check{border-color:var(--blue);}
+  .pkg-body{padding-left:4px;}
+  .pkg-body strong{color:var(--paper);font-size:15.5px;}
+  .pkg-body p{margin:4px 0 0;font-size:14px;color:var(--paper-dim);line-height:1.45;}
+  .tag-new,.tag-rev{
+    display:inline-block;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.18em;
+    text-transform:uppercase;padding:1px 7px;margin-left:8px;vertical-align:1px;
+  }
+  .tag-new{color:var(--blue);border:1px solid rgba(159,200,212,.5);}
+  .tag-rev{color:var(--paper-dim);border:1px solid var(--rule-strong);}
+
+  /* SUBMISSION BOX */
+  .submit-box{
+    margin-top:20px;border:1px solid var(--amber-line);
+    background:rgba(212,162,76,.05);padding:22px 24px;
+  }
+  .submit-box h4{
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--amber);margin:0 0 12px;
+  }
+  .submit-box p{margin:0 0 8px;color:var(--paper-2);font-size:15px;line-height:1.5;}
+  .submit-box p:last-child{margin:0;}
+  .submit-box .example{
+    margin-top:14px;padding:14px 16px;background:rgba(14,13,11,.5);
+    border-left:2px solid var(--amber-line);
+    font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--paper-2);
+    line-height:1.7;
+  }
+  .submit-box .example span{color:var(--paper-dim);}
+
+  /* EXTRA CREDIT BOX */
+  .xc{
+    margin-top:24px;border:1px dashed rgba(127,175,120,.6);
+    background:rgba(127,175,120,.06);padding:24px 26px;
+  }
+  .xc h4{
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--green);margin:0 0 12px;
+  }
+  .xc p{margin:0 0 10px;color:var(--paper-2);font-size:15.5px;line-height:1.6;}
+  .xc p:last-child{margin:0;}
+  .xc strong{color:var(--paper);}
+  .xc ul{margin:8px 0 12px;padding-left:20px;color:var(--paper-2);font-size:15px;line-height:1.6;}
+  .xc li{margin-bottom:6px;}
+  .xc .pts{
+    display:inline-block;font-family:"JetBrains Mono",monospace;font-size:13px;
+    color:var(--green);border:1px solid rgba(127,175,120,.5);padding:3px 10px;letter-spacing:.08em;
+  }
+
+  /* RUBRIC */
+  .criterion{
+    margin-bottom:28px;border:1px solid var(--rule-strong);
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  .criterion-head{
+    padding:14px 20px;border-bottom:1px solid var(--rule-strong);
+    background:rgba(212,162,76,.06);
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+  }
+  .criterion.core .criterion-head{background:rgba(159,200,212,.10);}
+  .criterion-head .ctitle{
+    font-family:"Fraunces",serif;font-weight:380;font-size:20px;line-height:1.1;
+    font-variation-settings:"opsz" 48,"SOFT" 30;margin:0;
+  }
+  .criterion-head .ctitle em{font-style:italic;color:var(--amber);}
+  .criterion.core .criterion-head .ctitle em{color:var(--blue);}
+  .criterion-head .cmeta{
+    display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  }
+  .naab-tag{
+    font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--amber);
+    border:1px solid var(--amber-line);padding:2px 8px;
+  }
+  .pts-tag{
+    font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.1em;
+    color:var(--paper-dim);
+  }
+
+  .rating-row{
+    display:grid;grid-template-columns:168px 1fr;
+    border-bottom:1px solid var(--rule);
+  }
+  .rating-row:last-child{border-bottom:none;}
+  .rating-label{
+    padding:14px 16px;border-right:1px solid var(--rule);
+    display:flex;flex-direction:column;justify-content:flex-start;gap:4px;
+  }
+  .rating-name{
+    font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.14em;
+    text-transform:uppercase;
+  }
+  .rating-name.exceeds{color:#a8c89a;}
+  .rating-name.mastery{color:var(--blue);}
+  .rating-name.near{color:var(--amber);}
+  .rating-name.below{color:var(--red);}
+  .rating-name.noevidence{color:var(--paper-dim);}
+  .rating-pts{
+    font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:500;
+    color:var(--paper-dim);
+  }
+  .rating-desc{
+    padding:14px 18px;font-size:14.5px;line-height:1.55;color:var(--paper-2);
+  }
+  .rating-desc strong{color:var(--paper);}
+  @media(max-width:680px){
+    .rating-row{grid-template-columns:1fr;}
+    .rating-label{border-right:none;border-bottom:1px solid var(--rule);padding:10px 16px;}
+  }
+
+  /* POINT MAP */
+  .ptmap{margin-top:20px;border:1px solid var(--rule-strong);width:100%;border-collapse:collapse;}
+  .ptmap th{
+    padding:10px 16px;font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);
+    text-align:left;border-bottom:1px solid var(--rule-strong);font-weight:400;
+    background:rgba(14,13,11,.4);
+  }
+  .ptmap td{padding:11px 16px;border-bottom:1px solid var(--rule);font-size:14.5px;color:var(--paper-2);}
+  .ptmap tr:last-child td{border-bottom:none;}
+  .ptmap td:first-child{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--amber);white-space:nowrap;}
+  .ptmap td:last-child{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--paper);text-align:right;white-space:nowrap;}
+  .ptmap tr.total td{background:rgba(212,162,76,.06);color:var(--paper);font-weight:500;border-top:1px solid var(--rule-strong);}
+  .ptmap tr.xcrow td{color:var(--green);}
+  .ptmap tr.xcrow td:first-child,.ptmap tr.xcrow td:last-child{color:var(--green);}
+
+  /* NAAB BLOCK */
+  .naab-block{
+    margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:0;
+    border:1px solid var(--rule-strong);
+  }
+  .naab-item{padding:18px 20px;border-right:1px solid var(--rule);}
+  .naab-item:last-child{border-right:none;}
+  .naab-item .code{
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;
+    color:var(--amber);margin-bottom:6px;
+  }
+  .naab-item .label{font-family:"Fraunces",serif;font-weight:380;font-size:17px;
+    font-variation-settings:"opsz" 36;margin-bottom:6px;}
+  .naab-item p{margin:0;font-size:14px;color:var(--paper-dim);line-height:1.5;}
+  @media(max-width:640px){.naab-block{grid-template-columns:1fr}.naab-item{border-right:none;border-bottom:1px solid var(--rule)}}
+
+  /* SCORE ANCHORS */
+  .anchors{margin-top:20px;border:1px solid var(--rule-strong);width:100%;}
+  .anchors tr{border-bottom:1px solid var(--rule);}
+  .anchors tr:last-child{border-bottom:none;}
+  .anchors th{
+    padding:10px 16px;font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);
+    text-align:left;border-bottom:1px solid var(--rule-strong);font-weight:400;
+    background:rgba(14,13,11,.4);
+  }
+  .anchors td{padding:12px 16px;font-size:14.5px;color:var(--paper-2);vertical-align:top;}
+  .anchors td:first-child{
+    font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--paper);
+    white-space:nowrap;
+  }
+  .anchors td:nth-child(2){
+    font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--paper-dim);
+    white-space:nowrap;
+  }
+  .grade-a{color:#a8c89a !important;}
+  .grade-b{color:var(--blue) !important;}
+  .grade-c{color:var(--amber) !important;}
+  .grade-d{color:rgba(200,71,47,.8) !important;}
+  .grade-f{color:var(--red) !important;}
+
+  /* TIMELINE */
+  .timeline{margin-top:20px;border-left:2px solid var(--amber-line);padding-left:22px;}
+  .tl-item{margin-bottom:20px;}
+  .tl-item:last-child{margin-bottom:0;}
+  .tl-when{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--amber);margin-bottom:4px;}
+  .tl-what{font-size:15px;color:var(--paper-2);line-height:1.55;}
+  .tl-what strong{color:var(--paper);}
+
+  /* PRINT */
+  @media print{
+    html{background:var(--ink);print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+    @page{margin:.55in .6in;}
+    body::before{display:none;}
+    .wrap{padding:0;}
+    section{break-inside:avoid;}
+    .criterion{break-inside:avoid;}
+    .rating-row{break-inside:avoid;}
+  }
+</style>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <span>ARC 5443 &nbsp;&middot;&nbsp; Acoustics, Electrical &amp; Illumination Systems &nbsp;&middot;&nbsp; Summer 2026</span>
+    <span class="act-tag">The Encore &nbsp;&middot;&nbsp; Final Submission</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="kicker">
+      Week 10 <span class="pipe">|</span> Sun 07&middot;26 <span class="pipe">|</span> Final &middot; 60 pts
+    </div>
+    <h1 class="title">The Full<br><em>Hall.</em></h1>
+    <p class="sub">Three acts, three systems, one building. You heard it, you lit it by day, you powered it by night &mdash; each time in isolation, each time with the other two waiting offstage. The Encore is where they finally share it. This is not a fourth act. It is the night the hall performs as one thing.</p>
+    <div style="margin-top:20px;padding:14px 20px;border-left:2px solid var(--amber-line);background:rgba(212,162,76,.05);">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);">The Arc, Complete</span>
+      <div style="margin-top:8px;font-size:14.5px;color:var(--paper-2);line-height:1.5;">
+        <strong style="color:var(--paper);">Act I</strong> &mdash; The Hall, Heard: geometry, RT60, absorption, isolation. &nbsp;<strong style="color:var(--paper);">Act II</strong> &mdash; The Hall, Lit by Day: apertures, sDA/ASE, shading, glare. &nbsp;<strong style="color:var(--paper);">Act III</strong> &mdash; The Hall, Powered: the lumen method, the luminaire schedule, the panel, LPD, PV. &nbsp;<strong style="color:var(--paper);">The Encore</strong> &mdash; all three in one package, plus the two systems that bind them: reinforcement and emergency power.
+      </div>
+    </div>
+  </div>
+
+  <!-- META -->
+  <div class="meta">
+    <div><dt>Due</dt><dd>Sun 07&middot;26<small>11:59 PM &middot; Canvas</small></dd></div>
+    <div><dt>Weight</dt><dd>60 pts<small>the largest single grade</small></dd></div>
+    <div><dt>Submission</dt><dd>PDF + Text<small>video = extra credit</small></dd></div>
+    <div><dt>NAAB</dt><dd>SC.4B<small>+ SC.4E &middot; both primary</small></dd></div>
+  </div>
+
+
+  <!-- § 01 WHAT THIS IS -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 01</span>
+      <h2 class="sec-title">What This <em>Is.</em></h2>
+    </div>
+    <div class="prose">
+      <p>The Encore is worth 60 points &mdash; more than all three Act Reviews combined. That weight should make you nervous for about ten seconds, and then it should reassure you, because <strong>most of the Encore is work you have already done.</strong></p>
+      <p>Act III closes Tuesday 07&middot;21. The Encore is due Sunday 07&middot;26. Five days. You are not being asked to produce a fourth act in five days &mdash; that would be a cruel joke and a bad assignment. You are being asked to do three things: <em>assemble</em> the three acts into one coherent document, <em>revise</em> the parts that reviews and your own analysis showed were wrong, and <em>integrate</em> &mdash; to finally say, on paper and with numbers, where your three systems collided and which one gave way.</p>
+      <p>That third thing is the actual assignment. Anyone can staple three packages together. The 60 points are for the building that emerges when you admit that the acoustic cloud you designed in Week 2 is hanging exactly where your Week 7 house downlights need to be &mdash; and then <em>resolve it.</em></p>
+    </div>
+
+    <div class="newwork">
+      <h4>What is actually new</h4>
+      <p>Everything else in this package is revision. Only these are new writing:</p>
+      <ol>
+        <li><strong>The Cross-System Integration Sheet</strong> &mdash; three documented collisions between systems, each with a resolution and a cost. This is the heart of the Encore and the single biggest scoring opportunity.</li>
+        <li><strong>The Week 9 Systems Addendum</strong> &mdash; the two systems we covered in the last lecture: sound reinforcement and emergency/egress power. One page each. Modest technical depth expected.</li>
+        <li><strong>The Final Retrospective</strong> &mdash; a closing reflection at the end of your Decision Log.</li>
+      </ol>
+      <p style="margin-top:12px;">If you find yourself modeling something new, stop. That is not what this week is for.</p>
+    </div>
+  </section>
+
+
+  <!-- § 02 PDF PACKAGE CONTENTS -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 02</span>
+      <h2 class="sec-title">PDF Package <em>Contents.</em></h2>
+    </div>
+    <div class="prose">
+      <p>One PDF. Everything in it. Items tagged <span class="tag-new">New</span> are written this week; items tagged <span class="tag-rev">Revise</span> already exist in your Act packages and should be corrected, cleaned, and brought forward &mdash; not rebuilt. Page order need not follow this list, but label every section.</p>
+    </div>
+
+    <div class="package">
+
+      <div class="pkg-row">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>Cover + Project Statement</strong><span class="tag-new">New</span>
+          <p>One page. Name the hall, state its program and seat count, and in 200&ndash;300 words describe the building as a <em>single environmental proposition</em>: what kind of room did you make, and what does it ask of the people who use it? This is the only place in the course you are allowed to write like an architect rather than an engineer. Use it.</p>
+        </div>
+      </div>
+
+      <div class="pkg-row">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>Integrated Plan &amp; Section Set</strong><span class="tag-rev">Revise</span>
+          <p>One plan per system layer &mdash; <em>acoustic</em> (materials + isolation), <em>daylight</em> (apertures + shading), <em>lighting/electrical</em> (luminaires, layers, circuits) &mdash; plus at least one section cut through the hall showing all three at once. Same scale, same base plan, stacked so a reader can flip between them. North arrow, scale, legend on each. Minimum 1/8&Prime; = 1&prime;.</p>
+        </div>
+      </div>
+
+      <div class="pkg-row">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>Act I Summary Sheet &mdash; Acoustics</strong><span class="tag-rev">Revise</span>
+          <p>One to two pages. Final RT60 (Sabine + Eyring, 500&nbsp;Hz / 1&nbsp;kHz / 2&nbsp;kHz) against your stated target; the material schedule with NRC values cited; the STC assembly for your critical partition; NC targets by space. <strong>If your Act&nbsp;I RT60 changed because of later work &mdash; because you added a lighting cove, cut a clerestory, or hung a cloud &mdash; the revised number goes here, with the reason.</strong> An unchanged Act&nbsp;I is a red flag, not a badge.</p>
+        </div>
+      </div>
+
+      <div class="pkg-row">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>Act II Summary Sheet &mdash; Daylight</strong><span class="tag-rev">Revise</span>
+          <p>One to two pages. Final sDA and ASE for your analyzed spaces with the LightStanza output shown; the aperture strategy; the shading geometry and the cutoff angle it was sized for; your glare response. State the daylight-harvesting relationship to the Act&nbsp;III electric layers explicitly &mdash; which fixtures dim, on what sensor, in which zone.</p>
+        </div>
+      </div>
+
+      <div class="pkg-row">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>Act III Summary Sheet &mdash; Lighting &amp; Electrical</strong><span class="tag-rev">Revise</span>
+          <p>Two to three pages. Lumen-method calcs for the key spaces (target <em>E</em> with IES category, achieved <em>E</em>); illuminance maps annotated against targets; the luminaire schedule with delivered lumens, watts, CCT, CRI, distribution; panel schedule LP-1 with breakers and connected load; the LPD verdict against the ASHRAE&nbsp;90.1 allowance; the PV array sizing. Corrected for anything the Week&nbsp;9 review surfaced.</p>
+        </div>
+      </div>
+
+      <div class="pkg-row is-new">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>Cross-System Integration Sheet</strong><span class="tag-new">New</span>
+          <p><strong>The core of the Encore.</strong> Document <em>at least three</em> collisions where two systems wanted the same thing &mdash; the same surface, the same ceiling plane, the same watt, the same opening. For each: name the two systems, describe the conflict <em>with the numbers on both sides</em>, state which one gave way, and state the cost of that decision. A drawing or diagram for at least one. See &sect;&nbsp;03 for what counts as a real collision.</p>
+        </div>
+      </div>
+
+      <div class="pkg-row is-new">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>Week 9 Systems Addendum &mdash; Reinforcement &amp; Emergency Power</strong><span class="tag-new">New</span>
+          <p>Two pages, one per system. <em>(a) Sound reinforcement:</em> the system type you'd specify (central cluster / distributed / line array) and why, speaker locations marked on the RCP, a critical-distance sanity check against your RT60, and the AV rack as a load on LP-1. <em>(b) Emergency &amp; egress power:</em> your egress lighting layer identified as the emergency branch, on its own circuit, with the 10-second / 90-minute requirement named and the 1&nbsp;fc average path illumination shown. Modest depth &mdash; one lecture's worth, not a consultant's set.</p>
+        </div>
+      </div>
+
+      <div class="pkg-row">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>Complete Decision Log &mdash; minimum 20 entries</strong><span class="tag-rev">Revise</span>
+          <p>The full running record, Weeks 1&ndash;9, assembled in order. Do not rewrite history &mdash; a log that shows you were wrong in Week 2 and corrected it in Week 6 scores <em>higher</em> than a log that was right all along. If you are short of 20 entries, write the missing ones now and date them honestly as written-in-retrospect.</p>
+        </div>
+      </div>
+
+      <div class="pkg-row is-new">
+        <div class="pkg-check"></div>
+        <div class="pkg-body">
+          <strong>Final Retrospective</strong><span class="tag-new">New</span>
+          <p>The last page of the log. Wins / Struggles / Goals across the whole term, plus one paragraph answering directly: <em>what would you do differently if you started this hall over on Monday?</em> Specificity scores. &ldquo;I would manage my time better&rdquo; scores nothing; &ldquo;I would set the RT60 target before choosing the geometry, because my fan shape locked in a volume that fought my 1.6&nbsp;s target from day one&rdquo; scores everything.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- § 03 WHAT COUNTS AS A COLLISION -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 03</span>
+      <h2 class="sec-title">What Counts as a <em>Collision.</em></h2>
+    </div>
+    <div class="prose">
+      <p>A real collision has <strong>numbers on both sides</strong> and <strong>a loser</strong>. If nothing gave way, it was not a conflict &mdash; it was a coincidence, and it scores as one.</p>
+      <p>These are the fault lines this building actually has. You do not have to use these three; you have to find <em>yours</em>.</p>
+      <ul>
+        <li><strong>The ceiling plane.</strong> Your Act&nbsp;I reflector cloud, your Act&nbsp;III house downlights, and your Act&nbsp;II clerestory all want the same square feet of ceiling. The cloud reflects early energy to the rear seats; the downlights need an unobstructed aim; the clerestory needs the roof. Somebody moves. Who, and what did it cost in RT60, in fc, or in sDA?</li>
+        <li><strong>The absorptive surface vs. the illuminated surface.</strong> The acoustic panels that got your RT60 down to target are dark, porous, and low-reflectance. Your lumen-method CU assumed a room with reflective surfaces. Did you run the CU with the <em>real</em> reflectances of your acoustic treatment? If not, your fixture count is wrong &mdash; say so, and correct it.</li>
+        <li><strong>Daylight vs. LPD vs. glare.</strong> The window that earned your sDA is the window that produces ASE, and the shading that killed the ASE also killed the daylight harvesting that was going to earn your LPD controls credit. Three numbers, one opening. Show the chain.</li>
+        <li><strong>The quiet room vs. the loud equipment.</strong> Your NC target for the house was set in Act&nbsp;I. The AV rack, the drivers, and the electrical room all make noise and heat. Where did you put them, and does the hall still hit its NC?</li>
+      </ul>
+      <p>Format each collision the way you would explain it to a client who is about to pay for the resolution: what fought, what the numbers were, what you chose, what it cost.</p>
+    </div>
+  </section>
+
+
+  <!-- § 04 DECISION LOG TEXT ENTRY -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 04</span>
+      <h2 class="sec-title">Decision Log <em>Text Entry.</em></h2>
+    </div>
+    <div class="prose">
+      <p>As with every Act, the Decision Log is submitted <em>twice</em>: once inside the PDF (as the assembled complete log) and once pasted into the Canvas text-entry box. The paste is the timestamped record. Paste the <strong>full log &mdash; all entries, Weeks 1 through 9 &mdash; plus the Final Retrospective.</strong> Do not summarize.</p>
+    </div>
+
+    <div class="submit-box">
+      <h4>Format for the text paste</h4>
+      <p>Copy every entry from your Google Doc exactly as written, in order, separated by blank lines. End with the Final Retrospective. You do not need to reformat.</p>
+      <div class="example">
+        <span>Entry 14 &middot; Week 9 &middot; Integration</span><br>
+        Decision: Dropped the center reflector cloud from 22&prime; to 19&prime; and moved the house downlights outboard of it...<br>
+        System: Acoustics &times; Lighting<br>
+        Space: Main Hall (house)<br>
+        Reasoning: The cloud at 22&prime; put six downlights behind it &mdash; LightStanza showed a 4 fc shadow band across rows 8&ndash;12 against a 12 fc target. Lowering the cloud shortened the early-reflection path (ITDG improved) but cost me 0.08 s of RT60 as it pulled area off the absorptive ceiling...<br>
+        Trade-off: RT60 rose from 1.62 to 1.70 s &mdash; still inside my 1.4&ndash;1.8 s target, so I took the light...<br>
+        Reconsider: If I had set the cloud height from the section before placing fixtures, I would not have paid for this twice...<br><br>
+        <span>Final Retrospective</span><br>
+        Wins: ...<br>
+        &hellip;
+      </div>
+    </div>
+  </section>
+
+
+  <!-- § 05 EXTRA CREDIT -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 05</span>
+      <h2 class="sec-title">Extra Credit &mdash; <em>The Walkthrough.</em></h2>
+    </div>
+
+    <div class="xc">
+      <h4>Optional &middot; 5-Minute Walkthrough Video &middot; <span class="pts">+ up to 5 pts</span></h4>
+      <p>Record a <strong>five-minute screen-share</strong> walking me through your hall. Not a formal presentation &mdash; no slides required, no polish expected. Open your drawings and <em>talk</em>: this is the room, this is what I was trying to make it do, here is where it fought me, here is what I chose.</p>
+      <p>What earns the points:</p>
+      <ul>
+        <li>You <strong>narrate a decision</strong>, not a drawing. &ldquo;Here is my RCP&rdquo; earns nothing. &ldquo;Here is where the cloud and the downlights collided, and here is the number that made me move the cloud&rdquo; earns everything.</li>
+        <li>You are <strong>honest about a failure.</strong> The single most valuable thing you can say on this video is &ldquo;this part is wrong, and here is how I know.&rdquo;</li>
+        <li>It is <strong>five minutes.</strong> Not twelve. Editing is a design skill.</li>
+      </ul>
+      <p>Submit as a file upload alongside the PDF, or paste an unlisted YouTube / Google Drive link (set to &ldquo;anyone with the link can view&rdquo;) at the top of your text entry. Scored 0&ndash;5 and added to your Encore total; it cannot push you above 60. <strong>It cannot hurt you</strong> &mdash; a weak video simply earns fewer bonus points. There is no reason not to try it.</p>
+    </div>
+  </section>
+
+
+  <!-- § 06 RUBRIC -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 06</span>
+      <h2 class="sec-title">Rubric &mdash; <em>60 Points.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>Six criteria, ten points each, on the same five-level scale used all term: <em>Exceeds</em> (10) &middot; <em>Mastery</em> (8) &middot; <em>Near</em> (6) &middot; <em>Below</em> (3) &middot; <em>No Evidence</em> (0). <em>Mastery</em> is full graduate competency &mdash; it is the expected outcome, and six Masteries earns 48/60, a solid B. <em>Exceeds</em> is reserved for work that would survive a real design review.</p>
+      <p>Note the weighting: <strong>Criterion 4 (Integration) is worth exactly as much as any single act.</strong> That is deliberate. The three acts are the evidence; the integration is the argument.</p>
+    </div>
+
+    <table class="ptmap">
+      <thead>
+        <tr><th>Criterion</th><th>What it measures</th><th>Pts</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01</td><td>Acoustic Performance &mdash; the hall, heard</td><td>10</td></tr>
+        <tr><td>02</td><td>Daylight Performance &mdash; the hall, lit by day</td><td>10</td></tr>
+        <tr><td>03</td><td>Lighting, Electrical &amp; Energy &mdash; the hall, powered</td><td>10</td></tr>
+        <tr><td>04</td><td>Cross-System Integration &mdash; the argument</td><td>10</td></tr>
+        <tr><td>05</td><td>Decision Log &mdash; the complete record</td><td>10</td></tr>
+        <tr><td>06</td><td>Package Craft &amp; Communication</td><td>10</td></tr>
+        <tr class="total"><td>&mdash;</td><td>Encore total</td><td>60</td></tr>
+        <tr class="xcrow"><td>XC</td><td>5-minute walkthrough video (optional)</td><td>+5</td></tr>
+      </tbody>
+    </table>
+
+    <!-- CRITERION 1 -->
+    <div class="criterion" style="margin-top:36px;">
+      <div class="criterion-head">
+        <h3 class="ctitle">01 &nbsp; Acoustic <em>Performance</em></h3>
+        <div class="cmeta">
+          <span class="naab-tag">SC.4B</span>
+          <span class="pts-tag">10 pts</span>
+        </div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name exceeds">Exceeds</span><span class="rating-pts">10</span></div>
+        <div class="rating-desc">Final RT60 (Sabine + Eyring, three octave bands) is reported against a cited target and the room lands in range &mdash; or lands out of range with an explicit, defended reason. The material schedule cites NRC by source; the critical partition has a real STC assembly; NC targets are set per space. <strong>The acoustic model has been updated to reflect the building as actually designed</strong> &mdash; lighting coves, clouds, apertures, and equipment rooms added in later acts appear in the surface tally. The revision is shown, not hidden.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name mastery">Mastery</span><span class="rating-pts">8</span></div>
+        <div class="rating-desc">RT60, NRC schedule, STC assembly, and NC targets are all present and correct, carried forward from Act&nbsp;I with corrections applied. The acoustic model may not fully reflect Act&nbsp;II/III geometry changes, but the student acknowledges the gap.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name near">Near</span><span class="rating-pts">6</span></div>
+        <div class="rating-desc">Act&nbsp;I material is reproduced unchanged, including errors flagged in the Act&nbsp;I review. One of the four elements (RT60 / NRC / STC / NC) is missing or unsupported by a number.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name below">Below</span><span class="rating-pts">3</span></div>
+        <div class="rating-desc">Acoustics appears as an assertion &mdash; a mention of &ldquo;absorptive panels&rdquo; with no RT60, no coefficients, and no isolation work.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name noevidence">No Evidence</span><span class="rating-pts">0</span></div>
+        <div class="rating-desc">No acoustic content in the package.</div>
+      </div>
+    </div>
+
+    <!-- CRITERION 2 -->
+    <div class="criterion">
+      <div class="criterion-head">
+        <h3 class="ctitle">02 &nbsp; Daylight <em>Performance</em></h3>
+        <div class="cmeta">
+          <span class="naab-tag">SC.4B</span>
+          <span class="pts-tag">10 pts</span>
+        </div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name exceeds">Exceeds</span><span class="rating-pts">10</span></div>
+        <div class="rating-desc">sDA and ASE are reported from LightStanza output for the analyzed spaces, against stated thresholds, with the false-color maps shown. The aperture strategy is drawn and the shading geometry is <em>sized</em> &mdash; a cutoff angle derived from solar altitude, not a guessed depth. Glare is addressed with a specific response. The daylight-harvesting link to the electric layers is named down to the zone and the sensor.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name mastery">Mastery</span><span class="rating-pts">8</span></div>
+        <div class="rating-desc">sDA/ASE results and maps are present with an aperture and shading strategy. Shading may be dimensioned without a full derivation. The daylight/electric-light relationship is stated but not zoned in detail.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name near">Near</span><span class="rating-pts">6</span></div>
+        <div class="rating-desc">A daylight simulation is shown but not compared to a threshold, or shading is drawn without a solar-geometry justification. ASE/glare is not addressed.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name below">Below</span><span class="rating-pts">3</span></div>
+        <div class="rating-desc">Windows appear on the plan with no analysis behind them. No sDA, no ASE, no shading logic.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name noevidence">No Evidence</span><span class="rating-pts">0</span></div>
+        <div class="rating-desc">No daylighting content in the package.</div>
+      </div>
+    </div>
+
+    <!-- CRITERION 3 -->
+    <div class="criterion">
+      <div class="criterion-head">
+        <h3 class="ctitle">03 &nbsp; Lighting, Electrical &amp; <em>Energy</em></h3>
+        <div class="cmeta">
+          <span class="naab-tag">SC.4E</span>
+          <span class="naab-tag">SC.4B</span>
+          <span class="pts-tag">10 pts</span>
+        </div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name exceeds">Exceeds</span><span class="rating-pts">10</span></div>
+        <div class="rating-desc">Lumen-method calcs and simulated illuminance agree (or the discrepancy is explained) for the key spaces against cited IES targets. The luminaire schedule is real, photometric, and task-matched. Panel LP-1 is consistent with the fixtures actually specified, breakers respect the 80% rule, and the LPD verdict is settled against the real ASHRAE&nbsp;90.1 allowance. PV is sized with stated assumptions. <strong>The Week&nbsp;9 addendum is complete:</strong> a reinforcement system with a critical-distance check, and the egress layer identified as the emergency branch with the 10&nbsp;s / 90&nbsp;min / 1&nbsp;fc criteria named.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name mastery">Mastery</span><span class="rating-pts">8</span></div>
+        <div class="rating-desc">All Act&nbsp;III elements present and internally consistent &mdash; calcs, schedule, panel, LPD, PV. The Week&nbsp;9 addendum is present but thin on one of the two systems (a reinforcement type named without a distance check, or an emergency branch identified without the code criteria).</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name near">Near</span><span class="rating-pts">6</span></div>
+        <div class="rating-desc">Act&nbsp;III material carried forward with a known inconsistency uncorrected (panel does not match the schedule; LPD does not match the fixture count). The Week&nbsp;9 addendum is missing or is a single sentence.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name below">Below</span><span class="rating-pts">3</span></div>
+        <div class="rating-desc">Fixtures without photometrics, or no panel/LPD/PV work. Light levels asserted rather than calculated.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name noevidence">No Evidence</span><span class="rating-pts">0</span></div>
+        <div class="rating-desc">No lighting or electrical content in the package.</div>
+      </div>
+    </div>
+
+    <!-- CRITERION 4 — THE CORE -->
+    <div class="criterion core">
+      <div class="criterion-head">
+        <h3 class="ctitle">04 &nbsp; Cross-System <em>Integration</em></h3>
+        <div class="cmeta">
+          <span class="naab-tag">SC.4B</span>
+          <span class="naab-tag">SC.4E</span>
+          <span class="pts-tag">10 pts</span>
+        </div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name exceeds">Exceeds</span><span class="rating-pts">10</span></div>
+        <div class="rating-desc">Three or more genuine collisions are documented, each with <strong>numbers on both sides</strong>, a named winner, and a stated cost. At least one is drawn. The resolutions are traceable into the drawings and calculations &mdash; if the student says the cloud moved, the cloud has moved in the section and the RT60 has changed accordingly. At least one collision reveals something the student did <em>not</em> see coming, and they say so. The building reads as one designed system with acknowledged compromises, not three systems in a shared folder.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name mastery">Mastery</span><span class="rating-pts">8</span></div>
+        <div class="rating-desc">Three collisions are documented with real conflicts and resolutions. Numbers appear on at least two of the three. The resolutions are consistent with the drawings. The analysis is competent but stays on the expected fault lines rather than finding a surprising one.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name near">Near</span><span class="rating-pts">6</span></div>
+        <div class="rating-desc">Fewer than three collisions, or the &ldquo;collisions&rdquo; are coincidences &mdash; two systems described side by side with no conflict, no loser, and no cost. Integration is asserted (&ldquo;the systems work together&rdquo;) rather than demonstrated. No numbers.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name below">Below</span><span class="rating-pts">3</span></div>
+        <div class="rating-desc">The integration sheet is a summary of the three acts with no conflict identified anywhere. The package is a staple, not a synthesis.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name noevidence">No Evidence</span><span class="rating-pts">0</span></div>
+        <div class="rating-desc">No integration sheet submitted.</div>
+      </div>
+    </div>
+
+    <!-- CRITERION 5 -->
+    <div class="criterion">
+      <div class="criterion-head">
+        <h3 class="ctitle">05 &nbsp; Decision Log &mdash; <em>Complete Record</em></h3>
+        <div class="cmeta">
+          <span class="naab-tag">SC.4B</span>
+          <span class="pts-tag">10 pts</span>
+        </div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name exceeds">Exceeds</span><span class="rating-pts">10</span></div>
+        <div class="rating-desc">Twenty or more entries spanning all three systems and all ten weeks. Entries reference specific numbers and results throughout. <strong>The log shows a mind changing:</strong> at least one decision is visibly revisited and reversed with the evidence that forced it. The Final Retrospective is specific and honest &mdash; it names a real error and what the student would do differently, in terms a peer could act on. Trade-off fields are completed and substantive.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name mastery">Mastery</span><span class="rating-pts">8</span></div>
+        <div class="rating-desc">Twenty entries covering all three systems. Most connect a decision to a calculation. The Final Retrospective is present and reflective. Revision is visible in at least one place.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name near">Near</span><span class="rating-pts">6</span></div>
+        <div class="rating-desc">Fewer than 20 entries, or entries are descriptive rather than analytical &mdash; documenting what was done without the number that drove it. Retrospective is generic (&ldquo;I learned a lot about lighting&rdquo;). No decision is ever shown to be wrong.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name below">Below</span><span class="rating-pts">3</span></div>
+        <div class="rating-desc">A handful of entries, or a log clearly written in one sitting at the end of term with no connection to the weekly work. No retrospective.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name noevidence">No Evidence</span><span class="rating-pts">0</span></div>
+        <div class="rating-desc">No Decision Log submitted, in the PDF or in the text entry.</div>
+      </div>
+    </div>
+
+    <!-- CRITERION 6 -->
+    <div class="criterion">
+      <div class="criterion-head">
+        <h3 class="ctitle">06 &nbsp; Package Craft &amp; <em>Communication</em></h3>
+        <div class="cmeta">
+          <span class="naab-tag">SC.4E</span>
+          <span class="pts-tag">10 pts</span>
+        </div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name exceeds">Exceeds</span><span class="rating-pts">10</span></div>
+        <div class="rating-desc">A single, ordered, navigable PDF. Drawings are to scale with north arrows, legends, and titles; the three system plans share a base and a scale so they can be read against each other. Tables are legible; screenshots are annotated, not raw. The project statement frames the building as an argument. Nothing is unlabeled and nothing is a mystery. This is a document you could hand to a client.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name mastery">Mastery</span><span class="rating-pts">8</span></div>
+        <div class="rating-desc">One organized PDF, everything present and labeled, drawings scaled and legible. Minor craft gaps &mdash; an unannotated screenshot, an inconsistent scale between plans, a missing legend.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name near">Near</span><span class="rating-pts">6</span></div>
+        <div class="rating-desc">Content is present but the package is hard to read &mdash; unlabeled screenshots, drawings at illegible scale, no order, or multiple loose files instead of one PDF. The reader has to work to find things.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name below">Below</span><span class="rating-pts">3</span></div>
+        <div class="rating-desc">Disorganized, illegible, or incomplete assembly. Raw exports with no titles. Per the syllabus, sloppy work is not acceptable regardless of the analysis behind it.</div>
+      </div>
+      <div class="rating-row">
+        <div class="rating-label"><span class="rating-name noevidence">No Evidence</span><span class="rating-pts">0</span></div>
+        <div class="rating-desc">No package submitted.</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- § 07 SCORE ANCHORS -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 07</span>
+      <h2 class="sec-title">Score <em>Anchors.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>Calibration guides, not guarantees. Six Masteries earns 48/60 &mdash; a B &mdash; and that is the honest expected outcome for a graduate student who did the work, assembled it well, and found real conflicts. The A range requires the integration to actually bite.</p>
+    </div>
+    <table class="anchors">
+      <thead>
+        <tr>
+          <th>Score</th>
+          <th>Grade equiv.</th>
+          <th>What the work shows</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="grade-a">54 &ndash; 60</td>
+          <td class="grade-a">A</td>
+          <td>Three systems, each technically sound and each <em>changed</em> by the others. The integration sheet names real conflicts with numbers on both sides, and the resolutions are traceable into the drawings &mdash; the cloud actually moved, and the RT60 actually changed. The log shows a mind that revised itself. The package could be handed to a client.</td>
+        </tr>
+        <tr>
+          <td class="grade-b">48 &ndash; 53</td>
+          <td class="grade-b">B</td>
+          <td>All three acts are present, correct, and cleanly assembled; the integration sheet finds genuine conflicts on the expected fault lines and resolves them. The log is complete and reflective. A minor gap in one criterion &mdash; a thin Week&nbsp;9 addendum, an unrevised acoustic model, a collision without numbers.</td>
+        </tr>
+        <tr>
+          <td class="grade-c">40 &ndash; 47</td>
+          <td class="grade-c">C</td>
+          <td>The three acts are stapled together rather than integrated. Content is present but uncorrected &mdash; errors flagged at Act review reappear unchanged. The integration sheet describes systems side by side without a real conflict, a loser, or a cost. The log documents what was done, not why the numbers changed the approach.</td>
+        </tr>
+        <tr>
+          <td class="grade-d">30 &ndash; 39</td>
+          <td class="grade-d">D</td>
+          <td>An act is missing or substantially incomplete. No integration sheet, or a page of generalities. Log short of 20 entries. The package does not demonstrate that any calculation drove any decision.</td>
+        </tr>
+        <tr>
+          <td class="grade-f">&le; 29</td>
+          <td class="grade-f">F</td>
+          <td>Did not meaningfully engage with the final submission. <strong>This is 60 points &mdash; more than all three Acts combined. If you are anywhere near this range, contact me before the deadline, not after.</strong> A late Encore is always better than an absent one.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+
+  <!-- § 08 TIMELINE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 08</span>
+      <h2 class="sec-title">The Last <em>Two Weeks.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Five days between Act&nbsp;III and the Encore. Here is how they should go.</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-when">Wed 07&middot;15 &middot; Week 9 class</div>
+        <div class="tl-what"><strong>Act III whiteboard review + the last two systems.</strong> Your Act&nbsp;III work goes up on the board and gets reviewed live. Take notes &mdash; the corrections you hear are the revision list for Criterion 3. Lecture covers reinforcement and emergency power for the addendum.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-when">Tue 07&middot;21 &middot; 11:59 PM</div>
+        <div class="tl-what"><strong>Act III package due.</strong> 20 pts, graded on its own rubric. Submit it clean &mdash; whatever you fix now is one less thing to fix in the Encore.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-when">Wed 07&middot;22 &middot; Week 10 class &mdash; final session</div>
+        <div class="tl-what"><strong>Encore work session.</strong> Bring your three acts. We build the integration sheet together in class &mdash; you will leave with the hardest part of this assignment already drafted. Come with your drawings open.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-when">Sun 07&middot;26 &middot; 11:59 PM</div>
+        <div class="tl-what"><strong>The Encore is due.</strong> One PDF, one text paste, optional video. The hall performs as one thing.</div>
+      </div>
+    </div>
+
+    <div class="submit-box" style="margin-top:32px;">
+      <h4>Late Work</h4>
+      <p>The standard course policy applies: a 48-hour grace period at no penalty, then &ndash;20% per week. But understand what &ndash;20% means on a 60-point assignment &mdash; it is 12 points, which is more than half an Act Review. <strong>Submit something on time.</strong> An incomplete Encore submitted Sunday outscores a perfect one submitted the following weekend.</p>
+    </div>
+  </section>
+
+
+  <!-- § 09 NAAB ALIGNMENT -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 09</span>
+      <h2 class="sec-title">NAAB <em>Alignment.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:20px;">
+      <p>The Encore is the course's culminating evidence for both Student Performance Criteria. Unlike the individual Acts, where one criterion led and the other supported, here <strong>both are primary</strong> &mdash; the integration requirement is precisely the demonstration that the student can reason across environmental and service systems at once.</p>
+    </div>
+    <div class="naab-block">
+      <div class="naab-item">
+        <div class="code">SC.4B</div>
+        <div class="label">Environmental Systems</div>
+        <p>Principles of environmental systems design based on qualitative and quantitative reasoning; application to problems involving solar geometry, daylight, lighting systems, and acoustics; use of performance-assessment tools; analysis across geographic regions.</p>
+      </div>
+      <div class="naab-item">
+        <div class="code">SC.4E</div>
+        <div class="label">Building Service Systems</div>
+        <p>Principles and appropriate application of building service systems &mdash; electrical distribution, lighting, life safety, and communication/AV; performance analysis through quantitative reasoning; application to practical problems using advanced technologies.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

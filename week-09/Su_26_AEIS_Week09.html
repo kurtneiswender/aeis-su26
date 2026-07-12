@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · Week 09 · Reinforcement, Emergency Power &amp; the Act III Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B;--ink-2:#161412;
+    --paper:#EDE4D3;--paper-2:#D9CFB9;--paper-dim:#8A8273;
+    --amber:#D4A24C;--amber-soft:rgba(212,162,76,.10);--amber-line:rgba(212,162,76,.45);
+    --red:#C8472F;--blue:#9FC8D4;--green:#7FAF78;
+    --rule:rgba(237,228,211,.18);--rule-strong:rgba(237,228,211,.42);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  body{
+    font-family:"Newsreader",Georgia,serif;font-weight:380;font-size:20px;line-height:1.6;
+    font-feature-settings:"ss01","onum";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.55;
+  }
+  ::selection{background:var(--amber);color:var(--ink);}
+  .wrap{max-width:1180px;margin:0 auto;padding:48px 56px 120px;position:relative;}
+  @media (max-width:720px){.wrap{padding:32px 22px 80px}}
+
+  /* TOPBAR */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);padding-bottom:18px;border-bottom:1px solid var(--rule);
+    margin-bottom:20px;
+  }
+  .topbar .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-right:8px;vertical-align:middle;animation:pulse 2.4s ease-in-out infinite;}
+  .topbar .act-tag{background:rgba(212,162,76,.10);border:1px solid rgba(212,162,76,.40);color:var(--amber);padding:3px 10px;font-size:10px;letter-spacing:.22em;}
+  @keyframes pulse{50%{opacity:.35}}
+
+  /* HERO */
+  .hero{padding:60px 0 40px;display:grid;grid-template-columns:1fr 220px;gap:48px;align-items:end;}
+  @media (max-width:820px){.hero{grid-template-columns:1fr}.hero .ornament{display:none}}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-bottom:18px;}
+  .kicker .pipe{color:var(--paper-dim);margin:0 10px;}
+  h1.title{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;
+    font-weight:380;font-size:clamp(48px,8vw,110px);line-height:.88;letter-spacing:-.03em;margin:0;
+  }
+  h1.title em{font-style:italic;color:var(--amber);font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+  .sub{margin-top:28px;max-width:760px;font-family:"Newsreader",serif;font-size:clamp(18px,1.8vw,22px);line-height:1.45;color:var(--paper-2);font-style:italic;}
+
+  /* META */
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);margin-top:48px;}
+  .meta > div{padding:18px 18px 18px 0;border-right:1px solid var(--rule);}
+  .meta > div:last-child{border-right:none}
+  .meta dt{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:6px;}
+  .meta dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:19px;line-height:1.2;font-variation-settings:"opsz" 36;}
+  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:12.5px;color:var(--paper-dim);margin-top:3px;font-style:italic;}
+  @media (max-width:820px){.meta{grid-template-columns:repeat(2,1fr)}.meta > div:nth-child(2){border-right:none}}
+
+  /* SECTION */
+  section{margin-top:96px;}
+  .sec-label{display:flex;align-items:baseline;gap:22px;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--rule-strong);}
+  .sec-num{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.18em;color:var(--amber);}
+  .sec-title{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(30px,4vw,46px);line-height:1;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 72,"SOFT" 40;}
+  .sec-title em{font-style:italic;color:var(--amber);}
+
+  .prose{max-width:820px;color:var(--paper-2);font-size:18px;line-height:1.65;}
+  .prose p{margin:0 0 1em;}
+  .prose em{color:var(--paper);font-style:italic;}
+  .prose strong{color:var(--paper);}
+  .prose ul{padding-left:20px;}
+  .prose ul li{margin-bottom:10px;}
+  .prose h5{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin:24px 0 10px;font-weight:500;}
+
+  /* TIMETABLE */
+  .timetable{margin-top:8px;border-top:1px solid var(--rule-strong);}
+  .timetable .row{display:grid;grid-template-columns:160px 70px 1fr;gap:20px;padding:14px 0;border-bottom:1px solid var(--rule);align-items:baseline;}
+  .timetable .row .when{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--amber);letter-spacing:.06em;}
+  .timetable .row .dur{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--paper-dim);letter-spacing:.14em;}
+  .timetable .row .what{font-size:15.5px;color:var(--paper);}
+  .timetable .row .what em{font-style:italic;color:var(--amber);}
+  .timetable .row.break{color:var(--paper-dim);}
+  .timetable .row.review{background:rgba(159,200,212,.06);padding-left:14px;padding-right:14px;}
+  .timetable .row.review .what{color:var(--blue);}
+  .timetable .row.pinup{background:rgba(159,200,212,.12);padding-left:14px;padding-right:14px;border-bottom:1px solid var(--rule-strong);border-top:1px solid var(--rule-strong);}
+  .timetable .row.pinup .what{color:var(--blue);font-weight:500;}
+  .timetable .row.pinup .when{color:var(--blue);}
+  .timetable .row.enc{background:var(--amber-soft);padding-left:14px;padding-right:14px;}
+  .timetable .row.enc .what{font-weight:500;}
+
+  /* LECTURE BLOCK */
+  .lec{border:1px solid var(--rule-strong);padding:28px 30px;margin-top:24px;background:rgba(237,228,211,.02);}
+  .lec .lec-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:1px solid var(--rule);padding-bottom:14px;margin-bottom:18px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);flex-wrap:wrap;gap:8px;
+  }
+  .lec .lec-head .name{color:var(--amber);}
+  .lec h3{font-family:"Fraunces",serif;font-weight:380;font-size:28px;line-height:1.1;margin:0 0 6px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .lec h3 em{font-style:italic;color:var(--amber);}
+  .lec .one-liner{margin:0 0 18px;color:var(--paper-2);font-style:italic;font-size:15.5px;}
+  .lec h4{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin:20px 0 8px;font-weight:500;}
+  .lec ul{margin:0;padding-left:18px;color:var(--paper-2);font-size:17px;line-height:1.6;}
+  .lec li{margin-bottom:8px;}
+  .lec li strong{color:var(--paper);}
+
+  /* CONCEPT CALLOUT */
+  .concept{margin-top:28px;padding:22px 28px;border-left:3px solid var(--amber);background:var(--amber-soft);}
+  .concept .c-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-weight:500;}
+  .concept h4{font-family:"Fraunces",serif;font-weight:380;font-size:24px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .concept h4 em{font-style:italic;color:var(--amber);}
+  .concept p{margin:0 0 8px;color:var(--paper-2);font-size:15.5px;line-height:1.6;}
+  .concept p strong{color:var(--paper);}
+  .concept p:last-child{margin-bottom:0;}
+  .concept.blue-rule{border-left-color:var(--blue);background:rgba(159,200,212,.07);}
+  .concept.blue-rule .c-label{color:var(--blue);}
+  .concept.blue-rule h4{color:var(--paper);}
+  .concept.red-rule{border-left-color:var(--red);background:rgba(200,71,47,.07);}
+  .concept.red-rule .c-label{color:var(--red);}
+  .concept.red-rule h4{color:var(--paper);}
+
+  /* DIAGRAM */
+  .diagram{margin:28px 0 20px;padding:26px 22px 18px;background:rgba(237,228,211,.03);border:1px solid var(--rule);text-align:center;break-inside:avoid;}
+  .diagram svg{display:block;margin:0 auto;max-width:100%;height:auto;}
+  .diagram figcaption{margin-top:16px;font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-2);text-align:left;line-height:1.65;}
+  .diagram figcaption b{color:var(--amber);font-weight:600;margin-right:10px;letter-spacing:.18em;}
+
+  /* TWO-COL CONCEPT GRID */
+  .concept-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:24px;border:1px solid var(--rule-strong);}
+  .concept-cell{padding:26px 28px;border-right:1px solid var(--rule);}
+  .concept-cell:last-child{border-right:none;}
+  .concept-cell .cc-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:10px;}
+  .concept-cell h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .concept-cell h4 em{font-style:italic;color:var(--blue);}
+  .concept-cell p{margin:0 0 8px;color:var(--paper-2);font-size:15px;line-height:1.55;}
+  .concept-cell p strong{color:var(--paper);}
+  .concept-cell ul{padding-left:18px;color:var(--paper-2);font-size:14.5px;line-height:1.6;margin:6px 0 0;}
+  .concept-cell li{margin-bottom:6px;}
+  @media (max-width:680px){.concept-grid{grid-template-columns:1fr}.concept-cell{border-right:none;border-bottom:1px solid var(--rule)}.concept-cell:last-child{border-bottom:none}}
+
+  /* METRICS TABLE */
+  .stc-table{width:100%;border-collapse:collapse;margin-top:20px;font-size:14.5px;}
+  .stc-table th{padding:9px 14px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);text-align:left;border-bottom:1px solid var(--rule-strong);font-weight:400;background:rgba(14,13,11,.4);}
+  .stc-table td{padding:10px 14px;border-bottom:1px solid var(--rule);color:var(--paper-2);vertical-align:top;}
+  .stc-table tr:last-child td{border-bottom:none;}
+  .stc-table td:first-child{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--amber);letter-spacing:.06em;white-space:nowrap;}
+  .stc-table td:nth-child(2){color:var(--paper);}
+  .stc-table tbody tr:hover{background:rgba(212,162,76,.04);}
+
+  /* FORMULA BLOCK */
+  .formula-block{border:1px solid var(--rule-strong);padding:24px 28px;margin-top:24px;background:rgba(14,13,11,.35);}
+  .formula-block .f-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:12px;}
+  .formula-block .f-eq{font-family:"JetBrains Mono",monospace;font-size:19px;color:var(--amber);letter-spacing:.04em;margin-bottom:14px;line-height:1.4;}
+  .formula-block .f-vars{display:grid;grid-template-columns:110px 1fr;gap:6px 14px;font-size:14px;color:var(--paper-2);}
+  .formula-block .f-vars dt{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--amber);}
+  .formula-block .f-vars dd{margin:0;}
+  .formula-block .f-note{margin-top:14px;font-size:14px;color:var(--paper-2);font-style:italic;border-top:1px solid var(--rule);padding-top:12px;}
+
+  /* PRECEDENT CARDS */
+  .precedent-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:24px;border:1px solid var(--rule-strong);}
+  .prec-card{padding:24px 26px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+  .prec-card:nth-child(2n){border-right:none;}
+  .prec-card:nth-last-child(-n+2){border-bottom:none;}
+  .prec-card .p-label{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:6px;}
+  .prec-card h4{font-family:"Fraunces",serif;font-weight:380;font-size:20px;margin:0 0 4px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .prec-card h4 em{font-style:italic;color:var(--amber);}
+  .prec-card .p-meta{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--paper-dim);margin-bottom:12px;letter-spacing:.06em;}
+  .prec-card p{margin:0 0 8px;color:var(--paper-2);font-size:14px;line-height:1.55;}
+  .prec-card p strong{color:var(--paper);}
+  @media (max-width:680px){.precedent-grid{grid-template-columns:1fr}.prec-card{border-right:none;}}
+
+  /* TOOL CALLOUT */
+  .tool-callout{margin-top:28px;padding:22px 28px;border:1px solid var(--blue);background:rgba(159,200,212,.05);}
+  .tool-callout .t-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;font-weight:500;}
+  .tool-callout h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .tool-callout p{margin:0 0 8px;color:var(--paper-2);font-size:15.5px;line-height:1.6;}
+  .tool-callout a{color:var(--blue);text-underline-offset:3px;}
+  .tool-callout strong{color:var(--paper);}
+  .tool-callout ul{margin:6px 0 0;padding-left:18px;color:var(--paper-2);font-size:15px;line-height:1.6;}
+  .tool-callout li{margin-bottom:6px;}
+
+  /* REVIEW / PIN-UP TABLE */
+  .clinic-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14.5px;}
+  .clinic-table th{padding:10px 14px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);text-align:left;border-bottom:1px solid var(--rule-strong);font-weight:400;background:rgba(159,200,212,.06);}
+  .clinic-table td{padding:12px 14px;border-bottom:1px solid var(--rule);color:var(--paper-2);vertical-align:top;line-height:1.5;}
+  .clinic-table tr:last-child td{border-bottom:none;}
+  .clinic-table td:first-child{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--amber);letter-spacing:.02em;white-space:nowrap;font-weight:500;}
+  .clinic-table td strong{color:var(--paper);}
+  .clinic-table tbody tr:hover{background:rgba(159,200,212,.04);}
+
+  /* LAB SHEET */
+  .lab-sheet{margin-top:24px;}
+  .lab-row{display:grid;grid-template-columns:60px 1fr 1.2fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule);align-items:start;}
+  .lab-row:last-child{border-bottom:1px solid var(--rule);}
+  .lab-row .g{font-family:"Fraunces",serif;font-style:italic;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-size:42px;color:var(--blue);line-height:.9;font-weight:300;}
+  .lab-row h5{font-family:"Fraunces",serif;font-weight:380;font-size:22px;line-height:1.1;margin:0 0 6px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .lab-row h5 em{font-style:italic;color:var(--amber);}
+  .lab-row .tag{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:2px 8px;border:1px solid var(--rule-strong);color:var(--paper-dim);margin-bottom:6px;}
+  .lab-row p{margin:0 0 8px;color:var(--paper-2);font-size:16px;line-height:1.55;}
+  .lab-row ul{margin:6px 0 0;padding-left:18px;color:var(--paper-2);font-size:16px;}
+  .lab-row li{margin-bottom:6px;}
+  @media (max-width:680px){.lab-row{grid-template-columns:50px 1fr}.lab-row .tasks{grid-column:1/-1;border-top:1px dashed var(--rule);padding-top:10px;}}
+
+  /* DELIVERABLE */
+  .deliverable{border-left:3px solid var(--amber);background:var(--amber-soft);padding:22px 28px;margin-top:24px;}
+  .deliverable .label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-weight:500;}
+  .deliverable h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 12px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .deliverable ul{margin:8px 0;padding-left:20px;color:var(--paper);font-size:15px;line-height:1.6;}
+  .deliverable li{margin-bottom:6px;}
+
+  .checklist{margin-top:18px;}
+  .check{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--rule);align-items:flex-start;}
+  .check:last-child{border-bottom:none}
+  .check .box{flex:0 0 auto;width:18px;height:18px;border:1.5px solid var(--paper-dim);margin-top:2px;}
+  .check .text{font-size:15px;color:var(--paper-2);line-height:1.5;}
+  .check .text strong{color:var(--paper);}
+
+  /* TRANSITION BRIDGE */
+  .bridge{margin-top:56px;padding:18px 24px;border-left:2px solid var(--amber-line);background:rgba(212,162,76,.04);font-size:16px;color:var(--paper-2);font-style:italic;line-height:1.6;}
+  .bridge strong{color:var(--amber);font-style:normal;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;display:block;margin-bottom:6px;}
+
+  /* ENCORE CARD */
+  .encore-card{margin-top:28px;border:1px solid var(--amber);background:rgba(212,162,76,.06);padding:30px 32px;}
+  .encore-card .e-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:12px;font-weight:500;}
+  .encore-card h3{font-family:"Fraunces",serif;font-weight:380;font-size:30px;margin:0 0 8px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .encore-card h3 em{font-style:italic;color:var(--amber);}
+  .encore-card p{margin:0 0 10px;color:var(--paper-2);font-size:16px;line-height:1.6;}
+  .encore-card strong{color:var(--paper);}
+  .encore-card .e-link{display:inline-block;margin-top:12px;font-family:"Fraunces",serif;font-size:20px;font-variation-settings:"opsz" 48,"SOFT" 30;color:var(--amber);text-decoration:none;border-bottom:1px solid var(--amber-line);padding-bottom:2px;}
+  .encore-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:20px 0 4px;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);}
+  .encore-stats > div{padding:14px 14px 14px 0;border-right:1px solid var(--rule);}
+  .encore-stats > div:last-child{border-right:none;}
+  .encore-stats dt{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:5px;}
+  .encore-stats dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:20px;font-variation-settings:"opsz" 36;}
+  @media(max-width:680px){.encore-stats{grid-template-columns:1fr}.encore-stats > div{border-right:none;border-bottom:1px solid var(--rule);}}
+
+  /* FOOT */
+  footer{margin-top:120px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .hero, section{animation:rise .9s ease both;}
+
+  @media print{
+    html{background:var(--ink) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    body{background:var(--ink) !important;margin:0;padding:0;font-size:14.5px;}
+    body::before{display:none !important;}
+    .wrap{max-width:none;padding:0;}
+    .hero, section{animation:none !important;}
+    section{break-inside:avoid;}
+    .prec-card,.diagram,.lec{break-inside:avoid;}
+  }
+</style>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span><span class="dot"></span>Week 09 &middot; Class Plan &middot; v1 &middot; 2026.07.15</span>
+    <span class="act-tag">Act III &middot; Review + Last Systems</span>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div>
+      <div class="kicker">Week 09 <span class="pipe">/</span> Act III Review <span class="pipe">/</span> Reinforcement &middot; Emergency Power</div>
+      <h1 class="title">The Hall<br><em>Speaks.</em></h1>
+      <p class="sub">Tonight is mostly <em>yours</em> &mdash; your Act&nbsp;III designs go up on the whiteboard and get reviewed live, and that review is the revision list for your final. But first, the two systems we never wired: the reinforcement that gives the hall a <em>voice</em>, and the service that feeds it &mdash; including what stays lit when the street goes dark.</p>
+    </div>
+    <svg class="ornament" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- loudspeaker cabinet -->
+      <rect x="34" y="62" width="52" height="96" rx="3" fill="rgba(212,162,76,.06)" stroke="#D4A24C" stroke-width="1.3"/>
+      <circle cx="60" cy="92" r="14" fill="none" stroke="#D4A24C" stroke-width="1.1"/>
+      <circle cx="60" cy="92" r="5" fill="rgba(212,162,76,.45)" stroke="#D4A24C" stroke-width=".8"/>
+      <circle cx="60" cy="132" r="8" fill="none" stroke="rgba(212,162,76,.6)" stroke-width="1"/>
+      <circle cx="60" cy="132" r="3" fill="rgba(212,162,76,.3)"/>
+      <!-- radiating wavefronts -->
+      <g fill="none" stroke="#D4A24C" stroke-width="1.1" opacity=".85">
+        <path d="M100 78 A 46 46 0 0 1 100 142"/>
+      </g>
+      <g fill="none" stroke="rgba(212,162,76,.55)" stroke-width="1">
+        <path d="M118 66 A 66 66 0 0 1 118 154"/>
+      </g>
+      <g fill="none" stroke="rgba(212,162,76,.3)" stroke-width="1">
+        <path d="M136 54 A 86 86 0 0 1 136 166"/>
+      </g>
+      <!-- emergency/exit spark: a small bolt in blue -->
+      <path d="M176 26 L166 52 L175 52 L168 76 L188 46 L178 46 L186 26 Z"
+            fill="rgba(159,200,212,.45)" stroke="#9FC8D4" stroke-width="1"/>
+      <text x="110" y="196" text-anchor="middle" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="2">VOICE + POWER</text>
+    </svg>
+  </header>
+
+  <!-- META -->
+  <dl class="meta">
+    <div><dt>Date</dt><dd>Wed 07&middot;15<small>19:30 &ndash; 23:35</small></dd></div>
+    <div><dt>Format</dt><dd>Online &middot; Zoom<small>lecture + live review</small></dd></div>
+    <div><dt>Reading</dt><dd>MEEB Ch 19&middot;20<small>+ Ch 27 &middot; emergency power</small></dd></div>
+    <div><dt>Due Next</dt><dd>Act III &middot; Tue 07&middot;21<small>Encore &middot; Sun 07&middot;26</small></dd></div>
+  </dl>
+
+  <!-- WHITEBOARD LINK -->
+  <div style="margin-top:32px;display:flex;align-items:center;gap:20px;padding:16px 22px;border:1px solid var(--blue);background:rgba(159,200,212,.06);">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="flex-shrink:0;">
+      <rect x="1" y="1" width="26" height="26" rx="2" stroke="rgba(159,200,212,.6)" stroke-width="1.5" fill="rgba(159,200,212,.08)"/>
+      <line x1="5" y1="10" x2="23" y2="10" stroke="rgba(159,200,212,.5)" stroke-width="1"/>
+      <line x1="5" y1="14" x2="18" y2="14" stroke="rgba(159,200,212,.5)" stroke-width="1"/>
+      <line x1="5" y1="18" x2="20" y2="18" stroke="rgba(159,200,212,.5)" stroke-width="1"/>
+      <circle cx="22" cy="18" r="3" fill="rgba(212,162,76,.8)"/>
+    </svg>
+    <div style="flex:1;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--blue);margin-bottom:5px;">Tonight&rsquo;s Review Happens Here &middot; Lucidspark</div>
+      <a href="https://lucid.app/lucidspark/53cea859-ab48-4e2a-b5c3-b883766730c2/edit?viewport_loc=-759%2C162%2C2512%2C1297%2C0_0&invitationId=inv_f380e33e-1dcf-4f06-ae5c-5cad3a909dd7" target="_blank" rel="noopener" style="font-family:'Fraunces',serif;font-size:20px;font-variation-settings:'opsz' 48,'SOFT' 30;color:var(--amber);text-decoration:none;font-weight:380;">Open the Whiteboard &rarr;</a>
+    </div>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(159,200,212,.4);padding:6px 12px;white-space:nowrap;flex-shrink:0;">Post before 19:30</span>
+  </div>
+
+
+  <!-- § 01 SESSION OBJECTIVES -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 01</span>
+      <h2 class="sec-title">Session <em>Objectives.</em></h2>
+    </div>
+    <div class="prose">
+      <p>The last full teaching night of the term, and it is deliberately lopsided: <strong>about ninety minutes of lecture, then two hours of review.</strong> The teaching closes the two remaining holes in the course &mdash; the systems named in the catalog that the three Acts never touched. The review is where your Act&nbsp;III work meets a room full of critics, four days before it is due. You should leave able to:</p>
+      <ul>
+        <li><strong>Explain why a hall you tuned still needs a sound system.</strong> Natural acoustics serve an unamplified orchestra. Speech, amplified music, and the fire alarm&rsquo;s voice message all need <em>reinforcement</em> &mdash; and the RT60 you designed in Act&nbsp;I decides how hard that job is.</li>
+        <li><strong>Size the reinforcement problem with one number.</strong> The <em>critical distance</em> &mdash; where the reverberant field overtakes the direct sound &mdash; falls out of your room constant. Past it, intelligibility collapses no matter how many watts you spend.</li>
+        <li><strong>Choose a system type and place it.</strong> Central cluster, distributed ceiling, or line array &mdash; and where the speakers, the rack, and the mix position land in <em>your</em> plan. They take floor area, structure, and conduit.</li>
+        <li><strong>Trace the power upstream.</strong> Week 8 started at the branch circuit. Tonight we go the other way: utility &rarr; transformer &rarr; service entrance &rarr; meter &rarr; main distribution &rarr; the feeder that lands on your LP-1. And the electrical room that has to fit inside your plan.</li>
+        <li><strong>Keep the hall alive when the power dies.</strong> Emergency and standby systems: what must stay lit in an assembly occupancy, the <em>10-second / 90-minute / 1 fc</em> rule, and why your Week&nbsp;7 egress layer must never share a breaker with the house dimmer.</li>
+        <li><strong>Take your review notes.</strong> Everything said to you at the whiteboard tonight is a line item on your Act&nbsp;III revision list &mdash; and then on your Encore.</li>
+      </ul>
+    </div>
+  </section>
+
+
+  <!-- § 02 RUN OF SHOW -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 02</span>
+      <h2 class="sec-title">Run of <em>Show.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:14px;">
+      <p>Two lectures, the Encore brief, then the night belongs to the review. <strong>Post your Act&nbsp;III work to the whiteboard <em>before</em> class starts</strong> &mdash; we are not spending review time watching people upload files. Whatever you have at 19:30 is what gets reviewed; a half-finished panel schedule reviewed tonight is worth more than a perfect one reviewed by nobody.</p>
+    </div>
+    <div class="timetable">
+      <div class="row review"><div class="when">19:30 &middot; 19:42</div><div class="dur">12 min</div><div class="what"><em>Open &amp; Framing.</em> Where we are, what is left, and the two systems the Acts never covered. (&sect;&nbsp;03)</div></div>
+      <div class="row"><div class="when">19:42 &middot; 20:15</div><div class="dur">33 min</div><div class="what"><em>Lecture 1 &mdash; Sound Reinforcement.</em> Why a tuned hall still needs a system; direct vs. reverberant field and critical distance; system types; the Haas delay; the rack as a load. (&sect;&nbsp;04)</div></div>
+      <div class="row break"><div class="when">20:15 &middot; 20:25</div><div class="dur">10 min</div><div class="what">Break.</div></div>
+      <div class="row"><div class="when">20:25 &middot; 20:55</div><div class="dur">30 min</div><div class="what"><em>Lecture 2 &mdash; Service &amp; Emergency Power.</em> Upstream from LP-1 to the street; the electrical room you forgot to draw; emergency vs. standby; the 10&nbsp;s / 90&nbsp;min / 1&nbsp;fc rule. (&sect;&nbsp;05)</div></div>
+      <div class="row enc"><div class="when">20:55 &middot; 21:15</div><div class="dur">20 min</div><div class="what"><em>The Encore &mdash; Final Assignment Brief.</em> 60 points, due Sun 07&middot;26. What is new, what is revision, and why the integration sheet is the whole thing. (&sect;&nbsp;06)</div></div>
+      <div class="row pinup"><div class="when">21:15 &middot; 23:15</div><div class="dur">120 min</div><div class="what"><em>Act III Whiteboard Review.</em> The main event. Every student walks their lighting, electrical, LPD and PV work at the board; peers and instructor respond. ~8 min each. (&sect;&nbsp;07)</div></div>
+      <div class="row"><div class="when">23:15 &middot; 23:35</div><div class="dur">20 min</div><div class="what"><em>Wrap.</em> The revision list, Act&nbsp;III due Tue 07&middot;21, and what to bring to the final session. (&sect;&nbsp;08)</div></div>
+    </div>
+  </section>
+
+
+  <!-- § 03 FRAMING -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 03</span>
+      <h2 class="sec-title">Two Systems We <em>Never Wired.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Look at what you have built. In Act&nbsp;I you gave the hall a <em>shape</em> and tuned it until the reverberation flattered the program. In Act&nbsp;II you cut it open to the sun and then defended it against glare. In Act&nbsp;III you lit it after dark, counted the watts, drew the panel, and put an array on the roof to pay for them.</p>
+      <p>Three acts, and the hall still cannot do two things a real hall must do. <strong>It cannot speak</strong> &mdash; there is no way to put a voice into that room and have it arrive at the back row intelligible. And <strong>it cannot fail safely</strong> &mdash; cut the utility feed mid-performance and every light you designed goes out at once, in a dark room, with four hundred people in it.</p>
+      <p>Those two gaps are not oversights in the assignment. They are the two systems the course catalog names and the Acts had no room for: <em>electronic sound reinforcement</em>, and <em>utility connection, emergency backup, and safety</em>. Tonight we close them &mdash; not to consultant depth, but far enough that you know what the consultant is asking you for, and far enough to put both into the Encore.</p>
+    </div>
+
+    <div class="bridge">
+      <strong>The symmetry</strong>
+      Notice what both of tonight&rsquo;s systems have in common: each one reaches back and taxes something you already designed. The sound system taxes your <em>RT60</em> &mdash; the reverberation that makes the music bloom is the reverberation that smears the speech. The emergency system taxes your <em>panel</em> &mdash; the egress layer you drew as one more lighting zone turns out to be a legally separate branch with its own source. Every system in this building is paid for by another one. That is the entire thesis of the Encore.
+    </div>
+  </section>
+
+
+  <!-- § 04 LECTURE 1 — SOUND REINFORCEMENT -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 04</span>
+      <h2 class="sec-title">Sound <em>Reinforcement.</em></h2>
+    </div>
+
+    <div class="lec">
+      <div class="lec-head"><span class="name">Lecture 1</span><span>Giving the Hall a Voice &middot; 33 min</span></div>
+      <h3>Your RT60 was designed for <em>music.</em> Now put a microphone in the room.</h3>
+      <p class="one-liner">Room acoustics and sound reinforcement are not the same discipline, and they are frequently at war. The room that makes a cello bloom is the room that turns a spoken sentence into mush &mdash; and the sound system is what you buy to fix the room you deliberately built.</p>
+
+      <h4>Why reinforce at all</h4>
+      <ul>
+        <li><strong>The unamplified case is the exception, not the rule.</strong> A symphony in a 1.8&nbsp;s hall needs no help. But your hall will also host a lecture, a graduation, a panel discussion, an amplified band, and a fire alarm with a voice-evacuation message. Every one of those needs a system.</li>
+        <li><strong>Reverberation is intelligibility&rsquo;s enemy.</strong> Speech runs at roughly 4&ndash;5 syllables per second. If the tail of one syllable is still bouncing around the room when the next one arrives, the consonants &mdash; which carry nearly all the meaning &mdash; are buried under the vowels. A hall tuned to 1.8&nbsp;s for music will be <em>hostile</em> to unreinforced speech.</li>
+        <li><strong>The metrics.</strong> <em>STI</em> (Speech Transmission Index, 0&ndash;1; above 0.60 is good, below 0.45 is poor) and <em>C50</em> (clarity &mdash; early-to-late energy ratio at 50&nbsp;ms, the speech version of the C80 you may have met for music). You will not compute these by hand. You need to know they exist and what pushes them the wrong way: reverberation and distance.</li>
+      </ul>
+    </div>
+
+    <div class="concept">
+      <div class="c-label">The One Number That Matters</div>
+      <h4>Critical distance &mdash; where the <em>room</em> starts winning.</h4>
+      <p>Stand near a talker in any room and you hear mostly <strong>direct sound</strong> &mdash; it arrives first, it is clean, and it falls off predictably with distance (6&nbsp;dB per doubling, inverse-square). Walk away and the direct sound keeps dropping, but the <strong>reverberant field</strong> &mdash; the diffuse wash of reflections filling the room &mdash; stays roughly constant everywhere.</p>
+      <p>Somewhere between those two, they cross. That crossing point is the <strong>critical distance</strong>, D<sub>c</sub>. Closer than D<sub>c</sub>, you hear the talker. Farther than D<sub>c</sub>, you hear the <em>room</em>, and intelligibility falls off a cliff that no amount of amplifier power can climb &mdash; because turning it up raises the direct <em>and</em> the reverberant field together. <strong>You cannot out-power a reverberant room. You can only out-<em>aim</em> it.</strong></p>
+      <p>That is the whole intellectual content of loudspeaker design in one sentence: get more direct sound onto the listener without adding energy to the room. Directivity, not wattage.</p>
+    </div>
+
+    <div class="formula-block">
+      <div class="f-label">Critical Distance &mdash; from your own Act I numbers</div>
+      <div class="f-eq">R = S&#257; / (1 &minus; &#257;) &nbsp;&nbsp;&rarr;&nbsp;&nbsp; D<sub>c</sub> &asymp; 0.141 &radic;( R &middot; Q )</div>
+      <dl class="f-vars">
+        <dt>R</dt><dd>Room constant (ft&sup2;) &mdash; a measure of how absorptive the room is overall</dd>
+        <dt>S</dt><dd>Total surface area (ft&sup2;) &mdash; <em>you already have this from your RT60 worksheet</em></dd>
+        <dt>&#257;</dt><dd>Mean absorption coefficient &mdash; <em>also already on your RT60 worksheet</em></dd>
+        <dt>Q</dt><dd>Directivity factor of the source (Q&nbsp;=&nbsp;1 omni; a talker facing you &asymp; 2&ndash;2.5; a directional loudspeaker 5&ndash;25+)</dd>
+        <dt>D<sub>c</sub></dt><dd>Critical distance (ft) &mdash; the radius inside which direct sound dominates</dd>
+      </dl>
+      <div class="f-note">Run this on your own hall tonight &mdash; every input is already sitting in your Act&nbsp;I worksheet. If your D<sub>c</sub> for an unaided talker (Q&nbsp;&asymp;&nbsp;2) comes out at 12&nbsp;feet and your back row is 70&nbsp;feet from the stage, you have just proven, numerically, that <strong>your hall requires a sound system</strong>. That single sentence, with your two numbers in it, is the core of the reinforcement page in your Encore.</div>
+    </div>
+
+    <div class="prose" style="margin-top:28px;">
+      <h5>The three system archetypes</h5>
+      <p>Pick one and defend it. The choice follows from room shape, ceiling height, and reverberation &mdash; not from a catalog.</p>
+    </div>
+
+    <div class="precedent-grid">
+      <div class="prec-card">
+        <div class="p-label">Archetype 01</div>
+        <h4>Central <em>Cluster</em></h4>
+        <div class="p-meta">One point source, hung over the proscenium</div>
+        <p>A single cluster of directional loudspeakers above and slightly forward of the stage, aimed to cover the seating and <em>miss</em> the walls and ceiling. Sound arrives from roughly where the performer is, so the ear localizes correctly.</p>
+        <p><strong>Use when:</strong> the hall has height, a defined stage, and one dominant source. The default for a proscenium hall.</p>
+        <p><strong>Costs you:</strong> a structural hang point and a sightline. That cluster is <em>visible</em>, it is heavy, and it needs to be in the section you draw.</p>
+      </div>
+      <div class="prec-card">
+        <div class="p-label">Archetype 02</div>
+        <h4>Distributed <em>Ceiling</em></h4>
+        <div class="p-meta">Many small sources, close to every listener</div>
+        <p>A grid of ceiling loudspeakers, each covering a small patch of floor. Every listener is <em>inside</em> the critical distance of the nearest speaker, so intelligibility holds even in a reverberant, low room.</p>
+        <p><strong>Use when:</strong> the ceiling is low, the room is long and flat, or there is no single stage &mdash; lobbies, prefunction, corridors, back-of-house. <strong>This is almost certainly the right answer for your prefunction space.</strong></p>
+        <p><strong>Costs you:</strong> localization. The voice comes from the ceiling, not the person. Fine for paging, wrong for performance.</p>
+      </div>
+      <div class="prec-card">
+        <div class="p-label">Archetype 03</div>
+        <h4>Line <em>Array</em></h4>
+        <div class="p-meta">Vertical column, tight vertical control</div>
+        <p>A column of drivers whose combined output narrows vertically &mdash; it throws far and level, and can be curved to place energy on the seats and nowhere else. The long-throw solution for a big, reverberant volume.</p>
+        <p><strong>Use when:</strong> the hall is deep, the RT60 is high, and you need to hit row 30 without exciting the room.</p>
+        <p><strong>Costs you:</strong> size, weight, and money. The most visible option in the room.</p>
+      </div>
+      <div class="prec-card">
+        <div class="p-label">Not Optional</div>
+        <h4>Assistive <em>Listening</em></h4>
+        <div class="p-meta">ADA / IBC requirement &mdash; assembly occupancy</div>
+        <p>An assembly space with amplified sound must provide an assistive listening system: a <strong>hearing loop</strong> (induction loop, works directly with a hearing aid&rsquo;s T-coil &mdash; the best experience by far), or an IR / RF receiver system.</p>
+        <p><strong>This is a code requirement, not a courtesy.</strong> Receiver counts scale with seat count. A hearing loop is a wire buried in your floor &mdash; which means <em>you</em> have to coordinate it, in the floor assembly you already detailed for acoustics.</p>
+      </div>
+    </div>
+
+    <div class="concept blue-rule">
+      <div class="c-label">Precedence / Haas Effect</div>
+      <h4>Delay the loudspeaker so the audience hears the <em>person.</em></h4>
+      <p>If two copies of the same sound reach your ear within about <strong>5&ndash;35&nbsp;milliseconds</strong>, you do not hear an echo. You hear <em>one</em> sound, and you localize it to whichever copy arrived <strong>first</strong> &mdash; even if the second one is up to ~10&nbsp;dB louder. That is the precedence (Haas) effect, and it is the single most elegant trick in audio.</p>
+      <p>The application: sound travels at roughly <strong>1,130&nbsp;ft/s</strong>, while the signal in the wire is effectively instantaneous. So the loudspeaker <em>beats</em> the performer's own voice to the back of the room, and the audience localizes the sound to the ceiling &mdash; an unnerving, disembodied effect. The fix is to <strong>delay the loudspeaker electronically</strong> so the performer&rsquo;s natural sound arrives first, and the reinforcement follows 10&ndash;20&nbsp;ms behind. The room is louder; the voice still comes from the human being.</p>
+      <p><strong>Rule of thumb:</strong> delay (ms) &asymp; (distance from source to speaker, in feet) &divide; 1.13, then add ~10&ndash;15&nbsp;ms of &ldquo;Haas cushion.&rdquo; Every DSP does this in software. You do not have to compute it &mdash; you have to know it is why the system needs a DSP at all.</p>
+    </div>
+
+    <div class="prose" style="margin-top:32px;">
+      <h5>The signal chain &mdash; and where it hits your drawings</h5>
+      <p>Microphone &rarr; mixer &rarr; <strong>DSP</strong> (equalization, delay, limiting) &rarr; amplifiers &rarr; loudspeakers. As an architect you will never spec the DSP. You <em>will</em> be held responsible for the four places that chain lands in your building:</p>
+      <ul>
+        <li><strong>The rack room.</strong> Amplifiers and DSP live in an equipment rack. That rack is 6&ndash;10&nbsp;ft&sup2; of floor you have not drawn, it dissipates real heat, and its cooling fans <em>make noise</em> &mdash; which means it cannot share a wall with the hall you just spent Act&nbsp;I getting down to NC-25. Your quietest room and your noisiest closet are now negotiating.</li>
+        <li><strong>The mix position.</strong> A front-of-house mix console needs to be <em>in the room</em>, in the audience, roughly two-thirds back and on axis. It occupies 6&ndash;10 seats you were selling. Every hall designer forgets this and every touring engineer curses them for it.</li>
+        <li><strong>The load on LP-1.</strong> The AV rack is an electrical load like any other &mdash; call it 3&ndash;6&nbsp;kVA for a hall your size, on its own dedicated circuit with a clean ground, never shared with dimmers. <strong>Add it to your panel schedule.</strong> That is your Week&nbsp;8 work, revised.</li>
+        <li><strong>The penetrations.</strong> Speaker cable, mic boxes, and conduit have to cross the acoustically-isolated envelope you detailed in Act&nbsp;I. Every penetration is a hole in your STC assembly.</li>
+      </ul>
+    </div>
+
+    <div class="concept red-rule">
+      <div class="c-label">The Trap</div>
+      <h4>Gain before feedback &mdash; the microphone is in the <em>same room</em> as the loudspeaker.</h4>
+      <p>Everything the loudspeaker emits, the microphone can hear. Turn the system up far enough and the loop goes unstable and screams. The maximum usable gain depends on the distances between talker, mic, speaker, and listener &mdash; which is why a lavalier mic (2&nbsp;inches from the mouth) delivers far more usable level than a podium mic (18&nbsp;inches), and why aiming the loudspeakers <em>away</em> from the microphones is not fussiness but physics.</p>
+      <p>The architectural consequence: <strong>where you let the designer hang the speakers, and where you put the podium, determines how loud the system can ever be.</strong> Decide it in the plan, not in the field.</p>
+    </div>
+  </section>
+
+
+  <!-- § 05 LECTURE 2 — SERVICE & EMERGENCY POWER -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 05</span>
+      <h2 class="sec-title">Service &amp; <em>Emergency Power.</em></h2>
+    </div>
+
+    <div class="lec">
+      <div class="lec-head"><span class="name">Lecture 2</span><span>Upstream from LP-1 &middot; 30 min</span></div>
+      <h3>Week 8 started at the breaker. Tonight we walk the wire back out to the <em>street.</em></h3>
+      <p class="one-liner">Your panel schedule ends at a feeder that goes somewhere. Tonight we find out where &mdash; and we find out what happens to your hall the moment that feeder dies.</p>
+
+      <h4>The path, in order</h4>
+      <ul>
+        <li><strong>Utility &rarr; transformer.</strong> Power arrives at medium voltage and is stepped down by a transformer, usually on a <em>pad</em> outside your building. That pad has code-mandated clearances and it is ugly. It goes in your site plan whether you like it or not.</li>
+        <li><strong>Service entrance &amp; main disconnect.</strong> Where the conductors enter the building and where the whole building can be switched <em>off</em> &mdash; the switch the fire department reaches for. Must be accessible.</li>
+        <li><strong>Meter &rarr; main distribution panel (MDP).</strong> The utility&rsquo;s cash register, then the building&rsquo;s trunk.</li>
+        <li><strong>Feeders &rarr; branch panels.</strong> A feeder from the MDP lands on <strong>your LP-1</strong>. That is the handshake &mdash; the point where Week&nbsp;8 connected to a system it never saw.</li>
+        <li><strong>Branch circuits &rarr; fixtures.</strong> Where you started. The 80% rule. Done.</li>
+      </ul>
+
+      <h4>The voltage decision</h4>
+      <ul>
+        <li><strong>120/208&nbsp;V, 3-phase.</strong> Small commercial. Simple, and everything plugs in.</li>
+        <li><strong>277/480&nbsp;V, 3-phase.</strong> The grown-up choice for a building your size. <em>Lighting runs at 277&nbsp;V</em> &mdash; higher voltage means lower current for the same watts, which means <strong>smaller conductors and cheaper feeders</strong>. A step-down transformer then feeds the 120&nbsp;V receptacles. For a hall with a big connected lighting load, this is almost certainly your answer &mdash; and it is why commercial lighting fixtures are ordered with a voltage specified.</li>
+      </ul>
+    </div>
+
+    <div class="concept">
+      <div class="c-label">The Room Nobody Draws</div>
+      <h4>Your electrical room is <em>architecture.</em> It has a plan, and it is not optional.</h4>
+      <p>Every panel in this course has been a table on a page. In a real building it is a steel box on a wall, in a room, that a human being has to stand in front of with the cover off and the power live.</p>
+      <p>The NEC requires <strong>working clearance</strong> in front of electrical equipment &mdash; a minimum of <strong>3&nbsp;ft&nbsp;0&nbsp;in of clear depth</strong> (more at higher voltages), a <strong>30&nbsp;in minimum width</strong>, and <strong>6&nbsp;ft&nbsp;6&nbsp;in of headroom</strong> &mdash; and that zone may not be used for storage, ductwork, piping, or your mechanical contractor's ambitions. It is dedicated space.</p>
+      <p><strong>So: where is it in your plan?</strong> Not a rhetorical question &mdash; it is a review question, and I will ask it tonight. The electrical room needs a door, it needs to be reachable from the service entrance without crossing the house, and it should not share a wall with your NC-25 auditorium, because gear hums. If you have not drawn it, you have a hall that cannot be built.</p>
+    </div>
+
+    <div class="prose" style="margin-top:32px;">
+      <h5>When the power fails</h5>
+      <p>Now the important half. It is Saturday night, the house is full, the show is running &mdash; and the utility feed drops. Every light you designed in Act&nbsp;III is on that feed. What, exactly, is still on?</p>
+      <p>The answer is defined by code, not by taste. <strong>NFPA&nbsp;101 and NEC Article 700</strong> govern the <em>emergency system</em>: the legally-required, life-safety-critical loads that must continue. For an assembly occupancy &mdash; which is exactly what you designed &mdash; this is not a nice-to-have. It is the difference between an evacuation and a crush.</p>
+    </div>
+
+    <table class="stc-table">
+      <thead>
+        <tr><th>Requirement</th><th>The rule</th><th>What it means for your drawings</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>10 seconds</td>
+          <td>Emergency illumination must energize within <strong>10&nbsp;s</strong> of normal power loss</td>
+          <td>Rules out a generator that needs 30&nbsp;s to come up as the <em>only</em> source. Battery or inverter carries the first interval.</td>
+        </tr>
+        <tr>
+          <td>90 minutes</td>
+          <td>It must stay lit for at least <strong>90&nbsp;min</strong></td>
+          <td>Sizes the battery, the inverter, or the generator&rsquo;s fuel. A real number with a real closet behind it.</td>
+        </tr>
+        <tr>
+          <td>1 fc average</td>
+          <td>Egress path: <strong>1&nbsp;fc average</strong>, <strong>0.1&nbsp;fc minimum</strong> at any point, along the floor</td>
+          <td>You already know how to do this &mdash; it is the lumen method with a very low target. Run it on your egress layer.</td>
+        </tr>
+        <tr>
+          <td>40 : 1</td>
+          <td>Maximum-to-minimum uniformity ratio along the path</td>
+          <td>Forbids one bright pool and a dark corridor. Spacing matters, not just quantity.</td>
+        </tr>
+        <tr>
+          <td>Exit signs</td>
+          <td>Illuminated, on the emergency branch, visible from the egress path</td>
+          <td>They go on your RCP. They are fixtures with watts. They belong on the schedule.</td>
+        </tr>
+        <tr>
+          <td>Separate branch</td>
+          <td>Emergency circuits kept <strong>independent</strong> of normal wiring &mdash; separate raceways and panel</td>
+          <td><strong>Your egress lighting layer cannot share a circuit with the house dimmer.</strong> If your Week&nbsp;8 panel does that, fix it before Tuesday.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="concept-grid">
+      <div class="concept-cell">
+        <div class="cc-label">Article 700</div>
+        <h4>Emergency <em>Systems</em></h4>
+        <p><strong>Legally required. Life safety.</strong> Egress illumination, exit signs, fire alarm, voice evacuation. Failure endangers people directly.</p>
+        <p>Sources: a <strong>generator</strong>, a <strong>central inverter</strong>, <strong>unit equipment</strong> (the battery pack inside each fixture &mdash; the cheap, common answer for a building your size), or a second independent utility service.</p>
+        <p><em>Your hall must have this.</em></p>
+      </div>
+      <div class="concept-cell">
+        <div class="cc-label">Articles 701 / 702</div>
+        <h4>Standby <em>Systems</em></h4>
+        <p><strong>Legally required standby (701):</strong> loads whose failure creates hazards or hampers rescue &mdash; smoke control, some elevators, critical ventilation.</p>
+        <p><strong>Optional standby (702):</strong> loads <em>you</em> decide are worth protecting &mdash; the box office server, the freezer, the data closet, the show control system. A business decision, not a code one.</p>
+        <p><em>Name one optional standby load in your hall and defend it.</em></p>
+      </div>
+    </div>
+
+    <div class="concept red-rule">
+      <div class="c-label">The Cross-System Trap</div>
+      <h4>A dimmer that can fail dark cannot be an <em>egress</em> fixture.</h4>
+      <p>In Week&nbsp;7 you drew four lighting layers &mdash; house, egress, work, accent &mdash; and put each on a control zone. It was a clean, elegant diagram. But the egress layer is not just another zone with a different schedule: it is a <strong>legally separate branch, fed from a different source, on its own raceway, that must come on <em>at full output</em> when everything else goes dark.</strong></p>
+      <p>Which means: if your egress fixtures are on the house dimming system, a failed dimmer takes your life-safety lighting with it. Emergency fixtures either bypass the dimming entirely, or use a <strong>UL&nbsp;924 emergency bypass relay</strong> that forces them to full on loss of normal power &mdash; a real product, with a real cost, that goes in your schedule.</p>
+      <p><strong>Go look at your Week&nbsp;8 panel schedule right now.</strong> If your egress circuits are mixed in with the house lighting circuits, you have found your first Encore integration conflict, and I did not even have to point at it.</p>
+    </div>
+  </section>
+
+
+  <!-- § 06 THE ENCORE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 06</span>
+      <h2 class="sec-title">The <em>Encore.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Twenty minutes tonight on the final assignment, because it is worth <strong>60 points &mdash; more than all three Act Reviews combined</strong> &mdash; and because the most common way to lose those points is to misunderstand what is being asked for.</p>
+      <p><strong>It is not a fourth act.</strong> Act&nbsp;III closes Tuesday 07&middot;21; the Encore is due Sunday 07&middot;26. Five days. Nobody is producing a new building in five days, and I am not asking you to. Almost everything in the Encore package is work you have already done, assembled and <em>corrected</em>.</p>
+      <p>What is genuinely new is one sheet &mdash; and that sheet is the entire point of the course.</p>
+    </div>
+
+    <div class="encore-card">
+      <div class="e-label">Final Submission &middot; Due Sun 07&middot;26 &middot; 11:59 PM</div>
+      <h3>The Full <em>Hall.</em></h3>
+      <p>Three acts, three systems, one building &mdash; assembled, revised, and finally forced to account for each other.</p>
+
+      <dl class="encore-stats">
+        <div><dt>Points</dt><dd>60<small></small></dd></div>
+        <div><dt>New writing</dt><dd>3 pieces</dd></div>
+        <div><dt>Video</dt><dd>Extra credit &middot; +5</dd></div>
+      </dl>
+
+      <p style="margin-top:16px;"><strong>The three new pieces:</strong></p>
+      <p><strong>1 &middot; The Cross-System Integration Sheet.</strong> At least three documented <em>collisions</em> &mdash; places where two systems wanted the same surface, the same watt, the same opening &mdash; each with the numbers on both sides, a named winner, and a stated cost. A real collision has a loser. If nothing gave way, it was a coincidence, not an integration. <strong>This is worth as much as an entire act.</strong></p>
+      <p><strong>2 &middot; The Week 9 Systems Addendum.</strong> One page each on tonight&rsquo;s two lectures, applied to your hall: a reinforcement system with a critical-distance check against your own RT60, and your egress layer identified as the emergency branch with the 10&nbsp;s / 90&nbsp;min / 1&nbsp;fc criteria named. Everything you need is in &sect;&nbsp;04 and &sect;&nbsp;05 above.</p>
+      <p><strong>3 &middot; The Final Retrospective.</strong> What would you do differently if you started this hall over on Monday? Be specific enough that a peer could act on it.</p>
+
+      <p style="margin-top:16px;">Everything else &mdash; the plans, the three act summary sheets, the Decision Log &mdash; is revision. <strong>The video is extra credit</strong> (up to +5 pts, cannot hurt you, cannot push you past 60). Five minutes, screen-share, talk me through one real decision and one honest failure.</p>
+
+      <a class="e-link" href="../assignments/encore/Su_26_AEIS_Encore_Assignment.html">Read the full Encore brief &amp; rubric &rarr;</a>
+    </div>
+
+    <div class="bridge">
+      <strong>Why the collisions are the grade</strong>
+      For nine weeks you have designed three systems in three sealed rooms, and each time I have told you the other two were waiting. This is the week they meet. Anyone can staple three packages together and call it a set. The 60 points are for the student who admits that the acoustic cloud from Week&nbsp;2 is hanging exactly where the Week&nbsp;7 downlights need to be &mdash; and then <em>resolves it</em>, with numbers, and lets the resolution change the drawings. That is not an assignment requirement. That is the job.
+    </div>
+  </section>
+
+
+  <!-- § 07 THE REVIEW -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 07</span>
+      <h2 class="sec-title">Act III <em>Whiteboard Review.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Two hours. Everyone presents. This is the last time your work is seen by the group before it is graded, and everything said to you here is a line item on your revision list &mdash; first for Act&nbsp;III (due Tue 07&middot;21), then for the Encore.</p>
+      <p><strong>Post to the whiteboard before 19:30.</strong> We are not spending review time watching uploads. Claim your frame on the board, drop your work in, and be ready.</p>
+    </div>
+
+    <div class="tool-callout">
+      <div class="t-label">Before Class &middot; What to Post</div>
+      <h4>Your frame on the board</h4>
+      <p>Six to eight images is plenty. These are also, not coincidentally, your <strong>Act&nbsp;III pin-up slides</strong> &mdash; the deliverable is exported straight from the board, so this is not extra work.</p>
+      <ul>
+        <li>The <strong>lighting plan / RCP</strong> with your four layers and control zones legible.</li>
+        <li>One <strong>illuminance map</strong> (LightStanza or Revit) with the target and achieved level annotated on it.</li>
+        <li>The <strong>luminaire schedule</strong> &mdash; real fixtures, delivered lumens, watts, CCT, CRI.</li>
+        <li>The <strong>panel schedule LP-1</strong> and your connected load.</li>
+        <li>The <strong>LPD verdict</strong> &mdash; your W/ft&sup2; against the allowance, pass or fail.</li>
+        <li>The <strong>PV array</strong> &mdash; kW, module count, roof area, offset fraction.</li>
+        <li><em>Optional but valuable:</em> the one thing that is broken and you know it. Put it up. That is what a review is <em>for</em>.</li>
+      </ul>
+    </div>
+
+    <div class="prose" style="margin-top:32px;">
+      <h5>How each review runs &mdash; 8 minutes</h5>
+    </div>
+
+    <table class="clinic-table">
+      <thead>
+        <tr><th>Time</th><th>What happens</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>0:00 &ndash; 3:00</td>
+          <td><strong>You walk it.</strong> Three minutes, and only three. Not a tour of your drawings &mdash; an argument. <em>&ldquo;The house targets 12&nbsp;fc, I got 11.4 with fourteen fixtures, my LPD came in at 0.78 against a 0.90 allowance, and here is the one thing that is still wrong.&rdquo;</em> Lead with the numbers and the problem.</td>
+        </tr>
+        <tr>
+          <td>3:00 &ndash; 5:30</td>
+          <td><strong>Peer response.</strong> Two or three classmates. Not compliments &mdash; questions. Rotating assignment; if it is your turn to respond, you are expected to have <em>looked</em> at the board before class.</td>
+        </tr>
+        <tr>
+          <td>5:30 &ndash; 8:00</td>
+          <td><strong>Instructor response.</strong> I will be checking the same five things on every project (below), plus whatever is specific to your hall. Write down what I say &mdash; it is your revision list.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="prose" style="margin-top:32px;">
+      <h5>The five questions I will ask every single one of you</h5>
+      <p>No surprises. Have an answer ready and the review is easy.</p>
+    </div>
+
+    <table class="clinic-table">
+      <thead>
+        <tr><th>#</th><th>The question</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01</td><td><strong>Does the simulation agree with the hand calc?</strong> You solved <em>N</em> with the lumen method and you ran LightStanza. Do they match? If they disagree by more than a little, <em>which one is wrong and why?</em> &ldquo;I did not compare them&rdquo; is the wrong answer to give on the 15th.</td></tr>
+        <tr><td>02</td><td><strong>Is your CU honest about your acoustic surfaces?</strong> Your Act&nbsp;I treatment is dark and porous. The Coefficient of Utilization you assumed was probably for a bright room. Did you use the <em>real</em> reflectances? If not, your fixture count is wrong &mdash; and this is a free Encore collision, handed to you.</td></tr>
+        <tr><td>03</td><td><strong>Does the panel match the schedule?</strong> The connected load on LP-1 must equal the sum of the fixtures you actually specified. These two numbers disagree in about half of all student sets. Check yours before you present it.</td></tr>
+        <tr><td>04</td><td><strong>Is the egress layer electrically separate?</strong> As of tonight (&sect;&nbsp;05) you know it has to be. If your egress circuits are sitting on the house dimmer, say so &mdash; finding it is worth more than hiding it.</td></tr>
+        <tr><td>05</td><td><strong>Where is the electrical room?</strong> And the AV rack. Point at them on the plan. If they are not there, that is fine tonight &mdash; it is not fine in the Encore.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="concept blue-rule">
+      <div class="c-label">How to Be Reviewed</div>
+      <h4>Bring the broken thing. That is the <em>whole point.</em></h4>
+      <p>The strongest thing you can do in a review is open with what is wrong. It is not a confession &mdash; it is a demonstration that you can evaluate your own work, which is the single most valuable skill this course is trying to build, and it is <em>literally</em> what the Decision Log rubric rewards.</p>
+      <p>A polished presentation that hides a broken LPD number buys you eight comfortable minutes tonight and costs you real points on Tuesday. A student who says &ldquo;my aisles are at 3&nbsp;fc and I do not know why&rdquo; leaves with an answer. Use the room.</p>
+    </div>
+  </section>
+
+
+  <!-- § 08 THIS WEEK'S WORK -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 08</span>
+      <h2 class="sec-title">This Week&rsquo;s <em>Work.</em></h2>
+    </div>
+    <div class="prose">
+      <p>No weekly deliverable this week &mdash; the Week&nbsp;7 upload was the last one. Everything from here flows into the two submissions that close the course.</p>
+    </div>
+
+    <div class="deliverable">
+      <div class="label">Due Tue 07&middot;21 &middot; 11:59 PM &middot; 20 pts</div>
+      <h4>Act III &mdash; The Hall, Powered &amp; Illuminated</h4>
+      <ul>
+        <li>The full PDF package &mdash; lighting plan/RCP, lumen-method calcs, illuminance maps, luminaire schedule, load summary + panel LP-1, LPD verdict, PV sizing, and tonight&rsquo;s pin-up slides exported from the whiteboard.</li>
+        <li>Decision Log text paste &mdash; entries from Weeks 6&ndash;8, pasted into the Canvas text box.</li>
+        <li><strong>Apply tonight&rsquo;s review notes.</strong> The corrections you heard at the board are the difference between Mastery and Exceeds on Tuesday.</li>
+      </ul>
+    </div>
+
+    <div class="deliverable" style="border-left-color:var(--blue);background:rgba(159,200,212,.06);">
+      <div class="label" style="color:var(--blue);">Due Sun 07&middot;26 &middot; 11:59 PM &middot; 60 pts</div>
+      <h4>The Encore &mdash; The Full Hall</h4>
+      <ul>
+        <li>The integrated package: all three acts, revised and assembled into one PDF.</li>
+        <li><strong>The Cross-System Integration Sheet</strong> &mdash; three collisions, with numbers, winners, and costs.</li>
+        <li><strong>The Week 9 Systems Addendum</strong> &mdash; reinforcement + emergency power, from tonight.</li>
+        <li>Complete Decision Log (min. 20 entries) + Final Retrospective.</li>
+        <li><em>Optional:</em> 5-minute walkthrough video, worth up to +5 extra-credit points.</li>
+      </ul>
+    </div>
+
+    <div class="prose" style="margin-top:36px;">
+      <h5>Before the final session (Wed 07&middot;22)</h5>
+    </div>
+    <div class="checklist">
+      <div class="check"><div class="box"></div><div class="text"><strong>Run your critical distance.</strong> Every input is already on your Act&nbsp;I RT60 worksheet &mdash; S, &#257;, and a Q of about 2 for a talker. It takes five minutes and it writes the first paragraph of your reinforcement page.</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>Open your Week 8 panel schedule and find the egress circuits.</strong> Are they separate? If not, you have your first documented collision and you got it for free.</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>Draw the electrical room and the AV rack.</strong> On the plan. With clearances. They are architecture now.</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>Read the Encore brief.</strong> All of it, including the rubric. It is 60 points and the criteria are not a mystery &mdash; they are published.</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>Bring your three acts to the final session.</strong> We build the integration sheet together in class. You will leave with the hardest part of the Encore already drafted &mdash; but only if your drawings are open in front of you.</div></div>
+    </div>
+
+    <div class="bridge">
+      <strong>Next week &mdash; the last one</strong>
+      Week 10 is a work session, not a lecture. We build the Cross-System Integration Sheet together, live, on your own halls &mdash; and then the course is over and the hall is yours. Come with everything open.
+    </div>
+  </section>
+
+  <footer>
+    <span>ARC 5443 &middot; Acoustics, Electrical &amp; Illumination Systems</span>
+    <span>Week 09 &middot; Kurt Neiswender, AIA &middot; Summer 2026</span>
+  </footer>
+
+</div>
+</body>
+</html>

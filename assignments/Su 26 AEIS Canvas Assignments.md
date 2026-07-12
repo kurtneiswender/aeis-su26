@@ -319,17 +319,52 @@ The cross-system integration/tightening work — including any revision of the A
 ## Encore — The Full Hall
 
 **Canvas settings:** Points: 60 · Submission: File Upload + Text Entry · Due: Sun 07·26 · 11:59 PM
+**Rubric:** Encore rubric — 6 criteria × 10 pts. Ratings: Exceeds (10) · Mastery (8) · Near (6) · Below (3) · No Evidence (0).
 
 ---
 
-[CONTENT TBD — Encore / Final. Update when Week 10 materials and final rubric are finalized.]
+Three acts, three systems, one building. You heard it, you lit it by day, you powered it by night — each time in isolation. The Encore is where they finally share it.
 
-The Encore brings all three acts together into a single submission package. Full brief and rubric will be posted in the Week 10 module.
+The full assignment brief, rubric, and submission instructions are in the **Encore Assignment document** posted in this module. Read it before you submit — the criteria are published and there are no surprises in them.
 
-**Placeholder checklist (update before posting):**
-- [ ] Encore assignment document built
-- [ ] Final rubric posted (60 pts total)
-- [ ] Submission instructions added here
+**This is not a fourth act.** Act III closes Tue 07·21; the Encore is due Sun 07·26. Five days. Most of this package is work you have already done, assembled and *corrected*. Only three pieces are new writing:
+
+1. **The Cross-System Integration Sheet** — at least three documented *collisions* where two systems wanted the same surface, the same watt, or the same opening. Each with the numbers on both sides, a named winner, and a stated cost. A real collision has a loser; if nothing gave way it was a coincidence. This is the heart of the assignment and it is worth as much as an entire act.
+2. **The Week 9 Systems Addendum** — one page each on sound reinforcement (system type, speaker locations, a critical-distance check against your own RT60, the AV rack as a load on LP-1) and emergency/egress power (your egress layer as the emergency branch, the 10 s / 90 min / 1 fc criteria).
+3. **The Final Retrospective** — Wins/Struggles/Goals across the term, plus: what would you do differently if you started this hall over on Monday?
+
+**Part 1 — PDF Package (file upload)**
+One PDF. All items present and labeled:
+- Cover + project statement (200–300 words) — *new*
+- Integrated plan & section set: one plan per system layer (acoustic / daylight / lighting-electrical) on a shared base and scale, plus a section through all three
+- Act I summary sheet — acoustics (final RT60 Sabine + Eyring, NRC schedule, STC assembly, NC targets), **updated to reflect the building as actually designed**
+- Act II summary sheet — daylight (sDA/ASE with LightStanza output, apertures, shading geometry, glare response, daylight-harvesting link to the electric layers)
+- Act III summary sheet — lighting & electrical (lumen method, illuminance maps, luminaire schedule, panel LP-1, LPD verdict, PV sizing)
+- **Cross-System Integration Sheet** — *new*
+- **Week 9 Systems Addendum** — *new*
+- Complete Decision Log, minimum 20 entries
+- **Final Retrospective** — *new*
+
+**Part 2 — Decision Log Text Paste (text entry)**
+Paste the full log — all entries, Weeks 1 through 9 — plus the Final Retrospective. Do not summarize.
+
+**Extra Credit — 5-Minute Walkthrough Video (optional, up to +5 pts)**
+Screen-share, five minutes, no slides needed. Narrate a *decision*, not a drawing, and be honest about one failure. Upload the file alongside the PDF or paste an unlisted link at the top of your text entry. It cannot hurt you and it cannot push you above 60.
+
+**Rubric (60 points total — see Encore Assignment document for full criteria):**
+- Criterion 1: Acoustic Performance — 10 pts
+- Criterion 2: Daylight Performance — 10 pts
+- Criterion 3: Lighting, Electrical & Energy — 10 pts
+- Criterion 4: **Cross-System Integration** — 10 pts
+- Criterion 5: Decision Log — Complete Record — 10 pts
+- Criterion 6: Package Craft & Communication — 10 pts
+- *Extra credit: walkthrough video — up to +5 pts*
+
+**Grading note:** Six Masteries = 48/60 (B) — the honest expected outcome for a student who did the work and found real conflicts. The A range requires the integration to actually bite.
+
+NAAB alignment: SC.4B **and** SC.4E — both primary. The integration requirement is precisely the demonstration that the student can reason across environmental and service systems at once.
+
+**Late work:** Standard policy — 48-hour grace, then –20% per week. On a 60-point assignment that is 12 points, more than half an Act Review. Submit something on time.
 
 ---
 
@@ -347,7 +382,7 @@ The Encore brings all three acts together into a single submission package. Full
 | Week 7 Deliverable | 🔲 TBD | 10 | Tue 07·07 |
 | Week 8 Deliverable | ❌ Dropped — folds into Act III (graded there) | — | — |
 | Act III Review (Week 9) | ✅ Ready to post — assignment + rubric attached | 20 | Tue 07·21 |
-| Encore | 🔲 TBD | 60 | Sun 07·26 |
+| Encore | ✅ Ready to post — assignment + rubric attached | 60 (+5 XC) | Sun 07·26 |
 | **Total (graded)** | | **170 pts** | |
 
 **Note on course total:** Five weekly × 10 + 3 Act Reviews × 20 + Encore 60 = **170 pts graded**, plus 20 pts participation = 190 pts. (The Week 8 electrical/PV work is graded inside Act III, not as a separate weekly.) If your Canvas gradebook uses **weighted assignment groups**, the Weekly group keeps its full weight no matter the item count — dropping the Week 8 weekly needs no rescale. If it uses a **straight point scale**, the graded total is now 170 (190 with participation). Verify against the posted syllabus before publishing.

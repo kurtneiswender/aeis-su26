@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARC 5443 · Rhino → LightStanza Best Practices</title>
+<style>
+  :root{
+    --bg:#FBF8F2;
+    --panel:#FFFFFF;
+    --panel-2:#F4EFE5;
+    --ink:#22201A;
+    --ink-soft:#6E6656;
+    --line:#E5DECF;
+    --sun:#E8940F;        /* daylight accent */
+    --sun-soft:#FBEBCF;
+    --volt:#2F5BD6;       /* electric accent */
+    --volt-soft:#E0E7FB;
+    --good:#2C8A46;
+    --good-soft:#DCEFE0;
+    --bad:#D23B36;
+    --bad-soft:#F8DEDC;
+    --shadow:0 1px 0 rgba(0,0,0,.02), 0 8px 24px -18px rgba(60,50,20,.45);
+    --radius:16px;
+    --maxw:820px;
+    --mono:'SF Mono',ui-monospace,'JetBrains Mono',Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#17140F;--panel:#211D16;--panel-2:#2A251C;--ink:#F3EEE2;--ink-soft:#A99E88;
+      --line:#3A342A;--sun:#F5AE3C;--sun-soft:#3A2D14;--volt:#7C98F0;--volt-soft:#1B2340;
+      --good:#5EC077;--good-soft:#16321F;--bad:#F0736E;--bad-soft:#3A1917;
+      --shadow:0 8px 30px -20px rgba(0,0,0,.9);
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#FBF8F2;--panel:#FFFFFF;--panel-2:#F4EFE5;--ink:#22201A;--ink-soft:#6E6656;
+    --line:#E5DECF;--sun:#E8940F;--sun-soft:#FBEBCF;--volt:#2F5BD6;--volt-soft:#E0E7FB;
+    --good:#2C8A46;--good-soft:#DCEFE0;--bad:#D23B36;--bad-soft:#F8DEDC;
+  }
+  :root[data-theme="dark"]{
+    --bg:#17140F;--panel:#211D16;--panel-2:#2A251C;--ink:#F3EEE2;--ink-soft:#A99E88;
+    --line:#3A342A;--sun:#F5AE3C;--sun-soft:#3A2D14;--volt:#7C98F0;--volt-soft:#1B2340;
+    --good:#5EC077;--good-soft:#16321F;--bad:#F0736E;--bad-soft:#3A1917;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;
+    margin:0;padding:0 20px 100px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto}
+
+  /* back to hub */
+  .topbar{max-width:var(--maxw);margin:0 auto;padding:22px 0 0}
+  .back{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;
+    color:var(--ink-soft);text-decoration:none;background:var(--panel);border:1px solid var(--line);
+    padding:7px 13px;border-radius:99px;box-shadow:var(--shadow);transition:color .15s,border-color .15s}
+  .back:hover{color:var(--sun);border-color:color-mix(in srgb,var(--sun) 45%,var(--line))}
+
+  /* ---- hero ---- */
+  header{padding:30px 0 28px;text-align:left}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
+    background:var(--panel-2);border:1px solid var(--line);padding:6px 12px;border-radius:99px}
+  h1{font-size:clamp(30px,6vw,46px);line-height:1.05;margin:18px 0 10px;font-weight:800;
+    letter-spacing:-.02em;text-wrap:balance}
+  h1 .a{color:var(--sun)} h1 .b{color:var(--volt)}
+  .lede{font-size:18px;color:var(--ink-soft);max-width:60ch;margin:0}
+
+  /* ---- flow map ---- */
+  .flow{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px;align-items:center}
+  .flow .node{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:8px 12px;font-size:13px;font-weight:700;box-shadow:var(--shadow)}
+  .flow .arw{color:var(--ink-soft);font-weight:800}
+  .flow .split{display:flex;gap:8px;flex-wrap:wrap}
+  .flow .sun{color:var(--sun);border-color:color-mix(in srgb,var(--sun) 40%,var(--line))}
+  .flow .volt{color:var(--volt);border-color:color-mix(in srgb,var(--volt) 40%,var(--line))}
+
+  /* ---- section ---- */
+  section{margin-top:40px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+  .num{font-size:13px;font-weight:800;color:#fff;background:var(--ink);
+    min-width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;
+    justify-content:center;flex:none;transform:translateY(3px)}
+  .num.sun{background:var(--sun)} .num.volt{background:var(--volt)}
+  h2{font-size:23px;font-weight:800;margin:0;letter-spacing:-.01em;text-wrap:balance}
+  .sub{color:var(--ink-soft);margin:2px 0 0 44px;font-size:15px}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 22px;margin:16px 0 0 44px;box-shadow:var(--shadow)}
+  @media(max-width:600px){.card,.sub{margin-left:0}}
+
+  /* ---- big callout ---- */
+  .rule{margin:24px 0 0;background:var(--sun-soft);border:1px solid color-mix(in srgb,var(--sun) 45%,var(--line));
+    border-radius:var(--radius);padding:20px 22px}
+  .rule .tag{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--sun)}
+  .rule p{margin:6px 0 0;font-size:17px;font-weight:600}
+  .rule small{display:block;margin-top:8px;color:var(--ink-soft);font-weight:400;font-size:14px}
+
+  /* ---- checklist ---- */
+  ul.check{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px}
+  ul.check li{display:flex;gap:12px;align-items:flex-start}
+  ul.check .box{width:22px;height:22px;border:2px solid var(--sun);border-radius:6px;flex:none;
+    display:flex;align-items:center;justify-content:center;color:var(--sun);font-weight:800;font-size:13px;margin-top:1px}
+  ul.check.volt .box{border-color:var(--volt);color:var(--volt)}
+  ul.check .txt{font-size:15.5px}
+  ul.check .txt b{font-weight:700}
+
+  /* ---- do / dont ---- */
+  .dd{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  @media(max-width:520px){.dd{grid-template-columns:1fr}}
+  .dd div{border-radius:12px;padding:12px 14px;font-size:14.5px;font-weight:600;border:1px solid}
+  .dd .no{background:var(--bad-soft);border-color:color-mix(in srgb,var(--bad) 35%,transparent);color:var(--ink)}
+  .dd .yes{background:var(--good-soft);border-color:color-mix(in srgb,var(--good) 35%,transparent);color:var(--ink)}
+  .dd .lab{display:block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+  .dd .no .lab{color:var(--bad)} .dd .yes .lab{color:var(--good)}
+
+  code,.cmd{font-family:var(--mono);font-size:.9em;background:var(--panel-2);
+    border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-weight:600;white-space:nowrap}
+  .cmd{color:var(--ink)}
+
+  /* ---- path banner ---- */
+  .path{display:flex;align-items:center;gap:14px;padding:16px 20px;border-radius:var(--radius);
+    margin-top:44px;border:1px solid var(--line)}
+  .path.sun{background:var(--sun-soft);border-color:color-mix(in srgb,var(--sun) 45%,var(--line))}
+  .path.volt{background:var(--volt-soft);border-color:color-mix(in srgb,var(--volt) 45%,var(--line))}
+  .path .ic{font-size:28px;line-height:1}
+  .path h3{margin:0;font-size:20px;font-weight:800}
+  .path p{margin:2px 0 0;font-size:14px;color:var(--ink-soft)}
+
+  .tip{margin-top:12px;font-size:14px;color:var(--ink-soft);display:flex;gap:8px}
+  .tip b{color:var(--ink)}
+
+  footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--ink-soft)}
+  footer a{color:var(--volt);text-decoration:none}
+  footer a:hover{text-decoration:underline}
+  footer .srcs{margin-top:8px;line-height:1.9}
+  a:focus-visible,li:focus-visible{outline:2px solid var(--volt);outline-offset:3px;border-radius:4px}
+</style>
+</head>
+<body>
+
+  <div class="topbar"><a class="back" href="../index.html">← Course Hub</a></div>
+
+<div class="wrap">
+
+  <header>
+    <span class="kicker">☀ LightStanza · Rhino Setup</span>
+    <h1>Clean your model.<br>Then test <span class="a">daylight</span> and <span class="b">electric light</span>.</h1>
+    <p class="lede">Your model has too much stuff. Extra layers and copies make bugs.
+       Fix it once, then run both light tests. Do the steps in order. That's it.</p>
+
+    <div class="flow" aria-label="Workflow map">
+      <span class="node">1 · Clean up</span><span class="arw">→</span>
+      <span class="node">2 · Windows</span><span class="arw">→</span>
+      <span class="node">3 · Light grid</span><span class="arw">→</span>
+      <span class="node">4 · Save .dae</span><span class="arw">→</span>
+      <span class="node">5 · Upload</span><span class="arw">→</span>
+      <span class="split">
+        <span class="node sun">☀ Daylight</span>
+        <span class="node volt">⚡ Electric</span>
+      </span>
+    </div>
+  </header>
+
+  <div class="rule">
+    <span class="tag">⚠ Read this first — the #1 mistake</span>
+    <p>LightStanza <b>throws away your Rhino layers.</b></p>
+    <small>So layers alone do nothing. LightStanza reads <b>materials</b> and <b>display colors</b> instead.
+      Give each thing (walls, floor, glass) its own material or color. That is how the app knows what is what.</small>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <div class="sec-head"><span class="num">1</span><h2>Clean the model</h2></div>
+    <p class="sub">Delete the junk. A clean box of surfaces = fewer bugs and faster runs.</p>
+    <div class="card">
+      <ul class="check">
+        <li><span class="box">✓</span><span class="txt"><b>Delete copies.</b> Type <span class="cmd">SelDup</span> → it finds objects sitting on top of each other → press Delete. Double surfaces confuse the light.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Keep only what blocks light:</b> walls, floors, ceilings, roof, glass. Delete furniture detail, plants, tiny parts, and far-away site stuff.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Close the room.</b> No gaps between walls, floor, and ceiling. Light leaks through holes and ruins the result.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Fix surface directions.</b> Type <span class="cmd">Dir</span> to see the arrows (normals). They should point <b>into the room / to the outside face</b>. Flip any that point the wrong way. This matters most for glass.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Check your units.</b> Type <span class="cmd">Units</span>. Make sure it is <b>Feet</b> or <b>Meters</b> — whatever you really modeled in. Wrong units = wrong light.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Clean the file.</b> Type <span class="cmd">Purge</span> to throw out unused layers, blocks, and materials.</span></li>
+      </ul>
+      <div class="dd">
+        <div class="no"><span class="lab">✗ Don't</span>50 layers, hidden copies, messy blocks, thick fancy furniture.</div>
+        <div class="yes"><span class="lab">✓ Do</span>Simple flat surfaces. One wall = one surface. Clean and closed.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="sec-head"><span class="num">2</span><h2>Make the windows right</h2></div>
+    <p class="sub">This is the most important part for daylight. Do it carefully.</p>
+    <div class="card">
+      <ul class="check">
+        <li><span class="box">✓</span><span class="txt"><b>A window = one flat surface</b> filling the opening in the wall. Just the glass. Do <b>not</b> model thick frames or glass with depth.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Make LightStanza see it as glass.</b> Pick <b>one</b> of these two ways:</span></li>
+      </ul>
+      <div class="dd">
+        <div class="yes"><span class="lab">Way A — name it</span>Give the glass a material named <code>glass</code>, <code>window</code>, or <code>glazing</code>. The word just needs to be in the name.</div>
+        <div class="yes"><span class="lab">Way B — color it blue</span>Set the object's <b>display color</b> to pure blue: Red&nbsp;0, Green&nbsp;0, Blue&nbsp;any number. LightStanza reads that as glass.</div>
+      </div>
+      <div class="tip"><span>💡</span><span><b>Also:</b> make sure the glass surface's arrow (<span class="cmd">Dir</span>) faces <b>outside</b>. Backwards glass blocks the sun.</span></div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="sec-head"><span class="num">3</span><h2>Add a light grid</h2></div>
+    <p class="sub">The grid is the invisible table where light gets measured. No grid = no numbers.</p>
+    <div class="card">
+      <ul class="check">
+        <li><span class="box">✓</span><span class="txt"><b>Copy the floor surface</b> of the room you want to test.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Move it up</b> to desk height: <b>30 inches (760 mm)</b> above the floor. That is where people work.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Name its material with <code>lsgrid</code></b>. Example: a material named <code>lsgrid Office 1</code> becomes a grid called <b>“Office 1”</b> in the app.</span></li>
+      </ul>
+      <div class="tip"><span>💡</span><span>Make one grid surface per room you care about. Keep them flat and inside the room.</span></div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="sec-head"><span class="num">4</span><h2>Save as .dae (Collada)</h2></div>
+    <div class="card">
+      <ul class="check">
+        <li><span class="box">✓</span><span class="txt"><b>File → Save As.</b> Change “Save as type” to <b>Collada (*.dae)</b>. LightStanza cannot read <code>.3dm</code> — it needs <code>.dae</code>.</span></li>
+        <li><span class="box">✓</span><span class="txt">Give it a clear name. Done.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="sec-head"><span class="num">5</span><h2>Upload &amp; check</h2></div>
+    <div class="card">
+      <ul class="check">
+        <li><span class="box">✓</span><span class="txt">Go to <b>app.lightstanza.com</b>. Drag your <code>.dae</code> file in (or New Design → Import File).</span></li>
+        <li><span class="box">✓</span><span class="txt">Spin the 3D view. Do the walls look solid? Is the glass see-through? Are the arrows/normals okay? Fix in the viewer if needed.</span></li>
+        <li><span class="box">✓</span><span class="txt">Assign materials to walls, floor, and ceiling (their reflectance). Then pick your path below. 👇</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PATH A -->
+  <div class="path sun">
+    <span class="ic">☀</span>
+    <div><h3>Path A — Daylight test</h3><p>How much sun gets in. For LEED / sDA / ASE.</p></div>
+  </div>
+  <section style="margin-top:16px">
+    <div class="sec-head"><span class="num sun">A</span><h2>Run daylight</h2></div>
+    <div class="card">
+      <ul class="check">
+        <li><span class="box">✓</span><span class="txt"><b>Set your location</b> (city / weather file). The sun depends on where the building is.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Confirm your grids</b> show up (the <code>lsgrid</code> surfaces from Step 3).</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Pick the study:</b> Daylight Factor for a quick check, or sDA + ASE for LEED.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Run it.</b> Read the colored map: blue = dark, red = too bright. Aim for even, comfy daylight.</span></li>
+      </ul>
+      <div class="tip"><span>💡</span><span>Not enough light? Bigger windows or lighter wall colors. Too much glare (lots of red)? Add shading.</span></div>
+    </div>
+  </section>
+
+  <!-- PATH B -->
+  <div class="path volt">
+    <span class="ic">⚡</span>
+    <div><h3>Path B — Electric light test</h3><p>Your light fixtures at night. Same clean model.</p></div>
+  </div>
+  <section style="margin-top:16px">
+    <div class="sec-head"><span class="num volt">B</span><h2>Run electric light</h2></div>
+    <div class="card">
+      <ul class="check volt">
+        <li><span class="box">✓</span><span class="txt"><b>Add a fixture (luminaire).</b> Make a new one in LightStanza or pick from the library.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Give it an IES file.</b> That file holds the real light shape. A <b style="color:var(--bad)">red warning</b> in the 3D view means a fixture has no IES yet — fix those.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Place fixtures in the 2D plan view</b> (easier than 3D). Hold <span class="cmd">Ctrl</span> to move up/down, <span class="cmd">Shift</span> to turn off snapping. Use the grid for even spacing.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Set the height and LLF</b> (light loss factor) for each fixture in the Instance Manager.</span></li>
+        <li><span class="box">✓</span><span class="txt"><b>Run the illuminance calc.</b> Choose Lux or Footcandles. Compare to the target for that room type.</span></li>
+      </ul>
+      <div class="tip"><span>💡</span><span><b>Same grid rule:</b> you still need a floor/desk-height grid (Step 3) to get numbers.</span></div>
+    </div>
+  </section>
+
+  <!-- recap -->
+  <section>
+    <div class="sec-head"><span class="num">✓</span><h2>Quick recap</h2></div>
+    <div class="card">
+      <ul class="check">
+        <li><span class="box">✓</span><span class="txt">Clean model — delete copies &amp; junk, close the room, fix normals, check units.</span></li>
+        <li><span class="box">✓</span><span class="txt">Materials &amp; colors, <b>not</b> layers (layers get deleted on import).</span></li>
+        <li><span class="box">✓</span><span class="txt">Windows = flat surface + <code>glass</code> name <b>or</b> blue display color.</span></li>
+        <li><span class="box">✓</span><span class="txt">Grid = floor copy, 30″ up, <code>lsgrid</code> in the name.</span></li>
+        <li><span class="box">✓</span><span class="txt">Save as <code>.dae</code> → upload → check the 3D view → run.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    Made for ARC 5443 · AEIS. Based on the official LightStanza help guides.
+    <div class="srcs">
+      Sources:
+      <a href="https://lightstanza.com/general-workflow-help-guides/">General Workflow Help Guides</a> ·
+      <a href="https://www.lightstanza.com/support/reference-guides/creating-windows/">Creating Windows</a> ·
+      <a href="https://lightstanza.com/support/reference-guides/illuminance-grids-in-rhino/">Illuminance Grids in Rhino</a> ·
+      <a href="https://lightstanza.com/electric-lighting-help-guides/">Electric Lighting Help Guides</a>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

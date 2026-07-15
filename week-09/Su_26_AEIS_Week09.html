@@ -497,8 +497,47 @@
         <dt>Q</dt><dd>Directivity factor of the source (Q&nbsp;=&nbsp;1 omni; a talker facing you &asymp; 2&ndash;2.5; a directional loudspeaker 5&ndash;25+)</dd>
         <dt>D<sub>c</sub></dt><dd>Critical distance (ft) &mdash; the radius inside which direct sound dominates</dd>
       </dl>
-      <div class="f-note">Run this on your own hall tonight &mdash; every input is already sitting in your Act&nbsp;I worksheet. If your D<sub>c</sub> for an unaided talker (Q&nbsp;&asymp;&nbsp;2) comes out at 12&nbsp;feet and your back row is 70&nbsp;feet from the stage, you have just proven, numerically, that <strong>your hall requires a sound system</strong>. That single sentence, with your two numbers in it, is the core of the reinforcement page in your Encore.</div>
+      <div class="f-note">Run this on your own hall tonight &mdash; every input is already sitting in your Act&nbsp;I worksheet. If your D<sub>c</sub> for an unaided talker (Q&nbsp;&asymp;&nbsp;2) comes out at 16&nbsp;feet and your back row is 70&nbsp;feet from the stage, you have just proven, numerically, that <strong>your hall requires a sound system</strong>. That single sentence, with your two numbers in it, is the core of the reinforcement page in your Encore.</div>
     </div>
+
+    <figure class="diagram">
+      <svg viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Graph of direct sound and reverberant field versus distance, crossing at the critical distance.">
+        <!-- zones -->
+        <rect x="95" y="45" width="322" height="260" fill="rgba(127,175,120,.08)"/>
+        <rect x="417" y="45" width="213" height="260" fill="rgba(200,71,47,.10)"/>
+        <!-- axes -->
+        <line x1="95" y1="45" x2="95" y2="305" stroke="#8A8273" stroke-width="1"/>
+        <line x1="95" y1="305" x2="630" y2="305" stroke="#8A8273" stroke-width="1"/>
+        <!-- reverberant field: flat -->
+        <line x1="95" y1="202" x2="630" y2="202" stroke="#9FC8D4" stroke-width="2.2"/>
+        <!-- direct sound: falls 6 dB / doubling -->
+        <line x1="95" y1="45" x2="630" y2="305" stroke="#D4A24C" stroke-width="2.2"/>
+        <!-- Dc marker -->
+        <line x1="417" y1="45" x2="417" y2="332" stroke="#EDE4D3" stroke-width="1.1" stroke-dasharray="4 4"/>
+        <circle cx="417" cy="202" r="5" fill="#EDE4D3"/>
+        <!-- back row marker -->
+        <line x1="589" y1="60" x2="589" y2="305" stroke="rgba(200,71,47,.7)" stroke-width="1" stroke-dasharray="2 4"/>
+        <!-- x ticks -->
+        <g fill="#8A8273" font-family="'JetBrains Mono', monospace" font-size="10" text-anchor="middle">
+          <text x="95" y="320">1</text>
+          <text x="362" y="320">10</text>
+          <text x="630" y="320">100</text>
+        </g>
+        <!-- line labels -->
+        <text x="150" y="83" fill="#D4A24C" font-family="'JetBrains Mono', monospace" font-size="11" transform="rotate(25.9 150 83)">DIRECT SOUND &#8722;6 dB / doubling</text>
+        <text x="470" y="192" fill="#9FC8D4" font-family="'JetBrains Mono', monospace" font-size="11" text-anchor="middle">REVERBERANT FIELD &#8776; constant</text>
+        <!-- zone captions -->
+        <text x="150" y="292" fill="#7FAF78" font-family="'JetBrains Mono', monospace" font-size="10.5">you hear the TALKER</text>
+        <text x="425" y="292" fill="#C8472F" font-family="'JetBrains Mono', monospace" font-size="10.5">you hear the ROOM</text>
+        <!-- Dc + back row labels -->
+        <text x="417" y="348" fill="#EDE4D3" font-family="'JetBrains Mono', monospace" font-size="12" text-anchor="middle">Dc &#8776; 16 ft</text>
+        <text x="589" y="52" fill="#C8472F" font-family="'JetBrains Mono', monospace" font-size="10" text-anchor="middle">back row &#8776;70 ft</text>
+        <!-- axis titles -->
+        <text x="362" y="378" fill="#8A8273" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.5" text-anchor="middle">DISTANCE FROM SOURCE &nbsp;(ft, log scale)</text>
+        <text x="40" y="175" fill="#8A8273" font-family="'JetBrains Mono', monospace" font-size="10" letter-spacing="1.5" text-anchor="middle" transform="rotate(-90 40 175)">SOUND LEVEL (dB)</text>
+      </svg>
+      <figcaption><b>Critical Distance</b> Direct sound falls 6&nbsp;dB every time the distance from the source doubles; the reverberant field &mdash; the diffuse wash of reflections &mdash; stays roughly constant everywhere in the room. Where the two cross is D<sub>c</sub>. Inside it the talker wins and speech stays intelligible; past it the room wins, and turning up the amplifier only raises both curves together. The one lever that pushes D<sub>c</sub> outward is directivity: D<sub>c</sub> grows with &radic;Q, so a loudspeaker aimed at the seats (Q&nbsp;=&nbsp;10&ndash;25) reaches far past a bare talker (Q&nbsp;&asymp;&nbsp;2).</figcaption>
+    </figure>
 
     <div class="prose" style="margin-top:28px;">
       <h5>The three system archetypes</h5>

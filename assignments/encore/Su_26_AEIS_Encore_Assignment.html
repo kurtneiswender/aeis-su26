@@ -284,6 +284,32 @@
   .grade-d{color:rgba(200,71,47,.8) !important;}
   .grade-f{color:var(--red) !important;}
 
+  /* GRADE CONVERSION TABLES */
+  .conv-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px;}
+  @media(max-width:760px){.conv-wrap{grid-template-columns:1fr}}
+  .conv-card{border:1px solid var(--rule-strong);break-inside:avoid;}
+  .conv-head{
+    padding:12px 16px;border-bottom:1px solid var(--rule-strong);
+    background:rgba(212,162,76,.06);display:flex;justify-content:space-between;
+    align-items:baseline;gap:8px;flex-wrap:wrap;
+  }
+  .conv-head .cname{font-family:"Fraunces",serif;font-weight:380;font-size:18px;
+    font-variation-settings:"opsz" 36,"SOFT" 30;color:var(--paper);}
+  .conv-head .cnote{font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--paper-dim);}
+  .conv{width:100%;border-collapse:collapse;}
+  .conv td{padding:8px 16px;border-bottom:1px solid var(--rule);
+    font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--paper-2);}
+  .conv tr:last-child td{border-bottom:none;}
+  .conv td:first-child{font-weight:500;white-space:nowrap;}
+  .conv td:nth-child(2){color:var(--paper);text-align:right;
+    font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .conv td:last-child{color:var(--paper-dim);text-align:right;
+    font-variant-numeric:tabular-nums;white-space:nowrap;font-size:11.5px;}
+  .conv tr.floor-row td{background:rgba(212,162,76,.07);}
+  .conv tr.floor-row td:first-child{color:var(--amber);}
+  .conv tr.fail-row td:first-child{color:var(--red);}
+
   /* TIMELINE */
   .timeline{margin-top:20px;border-left:2px solid var(--amber-line);padding-left:22px;}
   .tl-item{margin-bottom:20px;}
@@ -529,7 +555,7 @@
       <h2 class="sec-title">Rubric &mdash; <em>60 Points.</em></h2>
     </div>
     <div class="prose" style="margin-bottom:20px;">
-      <p>Six criteria, ten points each, on the same five-level scale used all term: <em>Exceeds</em> (10) &middot; <em>Mastery</em> (8) &middot; <em>Near</em> (6) &middot; <em>Below</em> (3) &middot; <em>No Evidence</em> (0). <em>Mastery</em> is full graduate competency &mdash; it is the expected outcome, and six Masteries earns 48/60, a solid B. <em>Exceeds</em> is reserved for work that would survive a real design review.</p>
+      <p>Six criteria, ten points each, on the same five-level scale used all term: <em>Exceeds</em> (10) &middot; <em>Mastery</em> (8) &middot; <em>Near</em> (6) &middot; <em>Below</em> (3) &middot; <em>No Evidence</em> (0). <em>Mastery</em> is full graduate competency &mdash; it is the expected outcome, and six Masteries earns 48/60, which is 80% &mdash; a <strong>B&minus;</strong> on the syllabus scale. <em>Exceeds</em> is reserved for work that would survive a real design review. To climb into the A range, the integration has to bite (see &sect;&nbsp;07).</p>
       <p>Note the weighting: <strong>Criterion 4 (Integration) is worth exactly as much as any single act.</strong> That is deliberate. The three acts are the evidence; the integration is the argument.</p>
     </div>
 
@@ -743,44 +769,97 @@
   <section>
     <div class="sec-label">
       <span class="sec-num">&sect; 07</span>
-      <h2 class="sec-title">Score <em>Anchors.</em></h2>
+      <h2 class="sec-title">Grade <em>Conversion &amp; Anchors.</em></h2>
     </div>
-    <div class="prose" style="margin-bottom:20px;">
-      <p>Calibration guides, not guarantees. Six Masteries earns 48/60 &mdash; a B &mdash; and that is the honest expected outcome for a graduate student who did the work, assembled it well, and found real conflicts. The A range requires the integration to actually bite.</p>
+    <div class="prose" style="margin-bottom:8px;">
+      <p>The rubric produces a raw score out of 60. This section turns that score into a letter grade using the <strong>official LTU / CoAD scale from the syllabus</strong> &mdash; the same cutoffs the registrar uses &mdash; and then describes, in words, what the work at each band actually looks like.</p>
+      <p>Two tables, because the course is co-listed. <strong>Graduate students bottom out at C&minus;</strong> (CoAD policy: C&minus; is the lowest passing graduate mark; anything below 70% is recorded as F and the course must be retaken). <strong>Undergraduates follow the full letter ladder to F.</strong> Grade each student against their own table &mdash; I will confirm who belongs to which category before we sit down to grade.</p>
     </div>
+
+    <div class="conv-wrap">
+
+      <div class="conv-card">
+        <div class="conv-head">
+          <span class="cname">Graduate</span>
+          <span class="cnote">C&minus; floor &middot; CoAD policy</span>
+        </div>
+        <table class="conv">
+          <tbody>
+            <tr><td class="grade-a">A</td><td>57&ndash;60</td><td>94&ndash;100%</td></tr>
+            <tr><td class="grade-a">A&minus;</td><td>54&ndash;56</td><td>90&ndash;&lt;94%</td></tr>
+            <tr><td class="grade-b">B+</td><td>53</td><td>87&ndash;&lt;90%</td></tr>
+            <tr><td class="grade-b">B</td><td>51&ndash;52</td><td>84&ndash;&lt;87%</td></tr>
+            <tr><td class="grade-b">B&minus;</td><td>48&ndash;50</td><td>80&ndash;&lt;84%</td></tr>
+            <tr><td class="grade-c">C+</td><td>47</td><td>77&ndash;&lt;80%</td></tr>
+            <tr><td class="grade-c">C</td><td>45&ndash;46</td><td>74&ndash;&lt;77%</td></tr>
+            <tr class="floor-row"><td class="grade-c">C&minus;</td><td>42&ndash;44</td><td>70&ndash;&lt;74%</td></tr>
+            <tr class="fail-row"><td class="grade-f">F</td><td>0&ndash;41</td><td>&lt;70% &middot; retake</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="conv-card">
+        <div class="conv-head">
+          <span class="cname">Undergraduate</span>
+          <span class="cnote">Full ladder to F</span>
+        </div>
+        <table class="conv">
+          <tbody>
+            <tr><td class="grade-a">A</td><td>57&ndash;60</td><td>94&ndash;100%</td></tr>
+            <tr><td class="grade-a">A&minus;</td><td>54&ndash;56</td><td>90&ndash;&lt;94%</td></tr>
+            <tr><td class="grade-b">B+</td><td>53</td><td>87&ndash;&lt;90%</td></tr>
+            <tr><td class="grade-b">B</td><td>51&ndash;52</td><td>84&ndash;&lt;87%</td></tr>
+            <tr><td class="grade-b">B&minus;</td><td>48&ndash;50</td><td>80&ndash;&lt;84%</td></tr>
+            <tr><td class="grade-c">C+</td><td>47</td><td>77&ndash;&lt;80%</td></tr>
+            <tr><td class="grade-c">C</td><td>45&ndash;46</td><td>74&ndash;&lt;77%</td></tr>
+            <tr><td class="grade-c">C&minus;</td><td>42&ndash;44</td><td>70&ndash;&lt;74%</td></tr>
+            <tr><td class="grade-d">D+</td><td>41</td><td>67&ndash;&lt;70%</td></tr>
+            <tr><td class="grade-d">D</td><td>39&ndash;40</td><td>64&ndash;&lt;67%</td></tr>
+            <tr><td class="grade-d">D&minus;</td><td>37&ndash;38</td><td>61&ndash;&lt;64%</td></tr>
+            <tr class="fail-row"><td class="grade-f">F</td><td>0&ndash;36</td><td>&lt;61%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <p class="prose" style="margin-top:14px;font-size:13.5px;color:var(--paper-dim);font-style:italic;max-width:780px;">
+      Point bands are the syllabus percentage cutoffs applied to 60 points and rounded to whole scores, so the boundaries land where the registrar&rsquo;s do &mdash; 48/60 is 80.0%, a B&minus;, not a B; the graduate passing line sits at 42/60 (70%). Where a criterion score falls between two anchors, round to the nearer whole point before converting.
+    </p>
+
+    <div class="prose" style="margin:36px 0 16px;">
+      <h5 style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin:0 0 4px;">Calibration &mdash; what the work shows</h5>
+      <p style="font-size:14.5px;">These describe the <em>shape</em> of the work in each band; the tables above set the letter. They are guides for the grader, not guarantees for the student.</p>
+    </div>
+
     <table class="anchors">
       <thead>
         <tr>
+          <th>Band</th>
           <th>Score</th>
-          <th>Grade equiv.</th>
           <th>What the work shows</th>
         </tr>
       </thead>
       <tbody>
         <tr>
+          <td class="grade-a">A range</td>
           <td class="grade-a">54 &ndash; 60</td>
-          <td class="grade-a">A</td>
           <td>Three systems, each technically sound and each <em>changed</em> by the others. The integration sheet names real conflicts with numbers on both sides, and the resolutions are traceable into the drawings &mdash; the cloud actually moved, and the RT60 actually changed. The log shows a mind that revised itself. The package could be handed to a client.</td>
         </tr>
         <tr>
+          <td class="grade-b">B range</td>
           <td class="grade-b">48 &ndash; 53</td>
-          <td class="grade-b">B</td>
-          <td>All three acts are present, correct, and cleanly assembled; the integration sheet finds genuine conflicts on the expected fault lines and resolves them. The log is complete and reflective. A minor gap in one criterion &mdash; a thin Week&nbsp;9 addendum, an unrevised acoustic model, a collision without numbers.</td>
+          <td>All three acts are present, correct, and cleanly assembled; the integration sheet finds genuine conflicts on the expected fault lines and resolves them. The log is complete and reflective. A gap or two &mdash; a thin Week&nbsp;9 addendum, an unrevised acoustic model, a collision missing numbers on one side. <strong>Six Masteries land here, at 48 (B&minus;)</strong> &mdash; the honest expected outcome for a student who did the work.</td>
         </tr>
         <tr>
-          <td class="grade-c">40 &ndash; 47</td>
-          <td class="grade-c">C</td>
-          <td>The three acts are stapled together rather than integrated. Content is present but uncorrected &mdash; errors flagged at Act review reappear unchanged. The integration sheet describes systems side by side without a real conflict, a loser, or a cost. The log documents what was done, not why the numbers changed the approach.</td>
+          <td class="grade-c">C range</td>
+          <td class="grade-c">42 &ndash; 47</td>
+          <td>The three acts are stapled together rather than integrated. Content is present but uncorrected &mdash; errors flagged at Act review reappear unchanged. The integration sheet describes systems side by side without a real conflict, a loser, or a cost. The log documents what was done, not why the numbers changed the approach. <strong>For a graduate this is the passing floor, not a safe landing</strong> &mdash; treat a score here as a warning.</td>
         </tr>
         <tr>
-          <td class="grade-d">30 &ndash; 39</td>
-          <td class="grade-d">D</td>
-          <td>An act is missing or substantially incomplete. No integration sheet, or a page of generalities. Log short of 20 entries. The package does not demonstrate that any calculation drove any decision.</td>
-        </tr>
-        <tr>
-          <td class="grade-f">&le; 29</td>
-          <td class="grade-f">F</td>
-          <td>Did not meaningfully engage with the final submission. <strong>This is 60 points &mdash; more than all three Acts combined. If you are anywhere near this range, contact me before the deadline, not after.</strong> A late Encore is always better than an absent one.</td>
+          <td class="grade-f">Below passing</td>
+          <td class="grade-f">&le; 41</td>
+          <td>An act is missing or substantially incomplete; no integration sheet, or a page of generalities; the log is short of 20 entries; nothing shows a calculation driving a decision. <strong>For an undergraduate this steps down D+ &rarr; F on the ladder above; for a graduate it is an F and the course must be retaken.</strong> This is 60 points &mdash; more than all three Acts combined. If you are anywhere near this range, contact me <em>before</em> the deadline, not after. A late Encore is always better than an absent one.</td>
         </tr>
       </tbody>
     </table>

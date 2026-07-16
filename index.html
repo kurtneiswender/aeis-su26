@@ -40,6 +40,25 @@
   .topbar .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:8px;vertical-align:middle;animation:pulse 2.4s ease-in-out infinite;}
   @keyframes pulse{50%{opacity:.35}}
 
+  /* EVAL BANNER */
+  .banner{
+    margin-top:24px;padding:20px 26px;
+    background:var(--amber-soft);border:1px solid var(--amber-line);
+    display:flex;align-items:flex-start;gap:18px;
+  }
+  .banner-face{
+    font-family:"JetBrains Mono",monospace;font-size:22px;line-height:1.2;
+    color:var(--amber);flex-shrink:0;
+  }
+  .banner-body{min-width:0;}
+  .banner-tag{
+    font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--amber);margin-bottom:8px;
+  }
+  .banner-text{margin:0;font-size:16px;line-height:1.55;color:var(--paper-2);}
+  .banner-text strong{font-weight:600;color:var(--paper);}
+  @media(max-width:680px){.banner{padding:18px 20px;gap:14px}.banner-text{font-size:15px}}
+
   /* HERO */
   .hero{padding:72px 0 56px;}
   .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-bottom:24px;}
@@ -132,6 +151,14 @@
   <div class="topbar">
     <span><span class="dot"></span>ARC 5443 · Lawrence Technological University</span>
     <span>Summer 2026</span>
+  </div>
+
+  <div class="banner">
+    <span class="banner-face" aria-hidden="true">:)</span>
+    <div class="banner-body">
+      <div class="banner-tag">Course Evaluations Are Open</div>
+      <p class="banner-text">Please take a few minutes to fill out the <strong>LTU course evaluation</strong> — look for the email from the university, or find the link in Canvas. Your comments and responses are <strong>completely anonymous, as always</strong>. Tell me what worked, what didn't, and what you'd change; it genuinely shapes how this course gets taught next time. Thank you — it means a lot.</p>
+    </div>
   </div>
 
   <div class="hero">

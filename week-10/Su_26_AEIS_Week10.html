@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · Week 10 · The Final Session — Curtain Call, the Integration Sheet &amp; the Encore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B;--ink-2:#161412;
+    --paper:#EDE4D3;--paper-2:#D9CFB9;--paper-dim:#8A8273;
+    --amber:#D4A24C;--amber-soft:rgba(212,162,76,.10);--amber-line:rgba(212,162,76,.45);
+    --red:#C8472F;--blue:#9FC8D4;--green:#7FAF78;
+    --rule:rgba(237,228,211,.18);--rule-strong:rgba(237,228,211,.42);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);}
+  body{
+    font-family:"Newsreader",Georgia,serif;font-weight:380;font-size:20px;line-height:1.6;
+    font-feature-settings:"ss01","onum";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.55;
+  }
+  ::selection{background:var(--amber);color:var(--ink);}
+  .wrap{max-width:1180px;margin:0 auto;padding:48px 56px 120px;position:relative;}
+  @media (max-width:720px){.wrap{padding:32px 22px 80px}}
+
+  /* TOPBAR */
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--paper-dim);padding-bottom:18px;border-bottom:1px solid var(--rule);
+    margin-bottom:20px;
+  }
+  .topbar .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-right:8px;vertical-align:middle;animation:pulse 2.4s ease-in-out infinite;}
+  .topbar .act-tag{background:rgba(212,162,76,.10);border:1px solid rgba(212,162,76,.40);color:var(--amber);padding:3px 10px;font-size:10px;letter-spacing:.22em;}
+  @keyframes pulse{50%{opacity:.35}}
+
+  /* HERO */
+  .hero{padding:60px 0 40px;display:grid;grid-template-columns:1fr 220px;gap:48px;align-items:end;}
+  @media (max-width:820px){.hero{grid-template-columns:1fr}.hero .ornament{display:none}}
+  .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-bottom:18px;}
+  .kicker .pipe{color:var(--paper-dim);margin:0 10px;}
+  h1.title{
+    font-family:"Fraunces",serif;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;
+    font-weight:380;font-size:clamp(48px,8vw,110px);line-height:.88;letter-spacing:-.03em;margin:0;
+  }
+  h1.title em{font-style:italic;color:var(--amber);font-weight:300;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+  .sub{margin-top:28px;max-width:760px;font-family:"Newsreader",serif;font-size:clamp(18px,1.8vw,22px);line-height:1.45;color:var(--paper-2);font-style:italic;}
+
+  /* META */
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);margin-top:48px;}
+  .meta > div{padding:18px 18px 18px 0;border-right:1px solid var(--rule);}
+  .meta > div:last-child{border-right:none}
+  .meta dt{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:6px;}
+  .meta dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:19px;line-height:1.2;font-variation-settings:"opsz" 36;}
+  .meta dd small{display:block;font-family:"Newsreader",serif;font-size:12.5px;color:var(--paper-dim);margin-top:3px;font-style:italic;}
+  @media (max-width:820px){.meta{grid-template-columns:repeat(2,1fr)}.meta > div:nth-child(2){border-right:none}}
+
+  /* EVAL / ASK BANNERS */
+  .banner{margin-top:32px;padding:20px 26px;display:flex;align-items:flex-start;gap:18px;}
+  .banner.eval{background:var(--amber-soft);border:1px solid var(--amber-line);}
+  .banner.plugin{background:rgba(159,200,212,.06);border:1px solid var(--blue);margin-top:16px;}
+  .banner-face{font-family:"JetBrains Mono",monospace;font-size:22px;line-height:1.2;color:var(--amber);flex-shrink:0;}
+  .banner.plugin .banner-face{color:var(--blue);}
+  .banner-body{min-width:0;}
+  .banner-tag{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;}
+  .banner.plugin .banner-tag{color:var(--blue);}
+  .banner-text{margin:0;font-size:16px;line-height:1.55;color:var(--paper-2);}
+  .banner-text strong{font-weight:600;color:var(--paper);}
+  .banner-text + .banner-text{margin-top:8px;}
+
+  /* SECTION */
+  section{margin-top:96px;}
+  .sec-label{display:flex;align-items:baseline;gap:22px;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--rule-strong);}
+  .sec-num{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.18em;color:var(--amber);}
+  .sec-title{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(30px,4vw,46px);line-height:1;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 72,"SOFT" 40;}
+  .sec-title em{font-style:italic;color:var(--amber);}
+
+  .prose{max-width:820px;color:var(--paper-2);font-size:18px;line-height:1.65;}
+  .prose p{margin:0 0 1em;}
+  .prose em{color:var(--paper);font-style:italic;}
+  .prose strong{color:var(--paper);}
+  .prose ul{padding-left:20px;}
+  .prose ul li{margin-bottom:10px;}
+  .prose h5{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin:24px 0 10px;font-weight:500;}
+
+  /* TIMETABLE */
+  .timetable{margin-top:8px;border-top:1px solid var(--rule-strong);}
+  .timetable .row{display:grid;grid-template-columns:160px 70px 1fr;gap:20px;padding:14px 0;border-bottom:1px solid var(--rule);align-items:baseline;}
+  .timetable .row .when{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--amber);letter-spacing:.06em;}
+  .timetable .row .dur{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--paper-dim);letter-spacing:.14em;}
+  .timetable .row .what{font-size:15.5px;color:var(--paper);}
+  .timetable .row .what em{font-style:italic;color:var(--amber);}
+  .timetable .row.break{color:var(--paper-dim);}
+  .timetable .row.review{background:rgba(159,200,212,.06);padding-left:14px;padding-right:14px;}
+  .timetable .row.review .what{color:var(--blue);}
+  .timetable .row.pinup{background:rgba(159,200,212,.12);padding-left:14px;padding-right:14px;border-bottom:1px solid var(--rule-strong);border-top:1px solid var(--rule-strong);}
+  .timetable .row.pinup .what{color:var(--blue);font-weight:500;}
+  .timetable .row.pinup .when{color:var(--blue);}
+  .timetable .row.enc{background:var(--amber-soft);padding-left:14px;padding-right:14px;}
+  .timetable .row.enc .what{font-weight:500;}
+
+  /* CONCEPT CALLOUT */
+  .concept{margin-top:28px;padding:22px 28px;border-left:3px solid var(--amber);background:var(--amber-soft);}
+  .concept .c-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-weight:500;}
+  .concept h4{font-family:"Fraunces",serif;font-weight:380;font-size:24px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .concept h4 em{font-style:italic;color:var(--amber);}
+  .concept p{margin:0 0 8px;color:var(--paper-2);font-size:15.5px;line-height:1.6;}
+  .concept p strong{color:var(--paper);}
+  .concept p:last-child{margin-bottom:0;}
+  .concept.blue-rule{border-left-color:var(--blue);background:rgba(159,200,212,.07);}
+  .concept.blue-rule .c-label{color:var(--blue);}
+  .concept.blue-rule h4{color:var(--paper);}
+  .concept.red-rule{border-left-color:var(--red);background:rgba(200,71,47,.07);}
+  .concept.red-rule .c-label{color:var(--red);}
+  .concept.red-rule h4{color:var(--paper);}
+
+  /* DIAGRAM */
+  .diagram{margin:28px 0 20px;padding:26px 22px 18px;background:rgba(237,228,211,.03);border:1px solid var(--rule);text-align:center;break-inside:avoid;}
+  .diagram svg{display:block;margin:0 auto;max-width:100%;height:auto;}
+  .diagram figcaption{margin-top:16px;font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-2);text-align:left;line-height:1.65;}
+  .diagram figcaption b{color:var(--amber);font-weight:600;margin-right:10px;letter-spacing:.18em;}
+
+  /* WORKED EXAMPLE TABLE */
+  .stc-table{width:100%;border-collapse:collapse;margin-top:20px;font-size:14.5px;}
+  .stc-table th{padding:9px 14px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);text-align:left;border-bottom:1px solid var(--rule-strong);font-weight:400;background:rgba(14,13,11,.4);}
+  .stc-table td{padding:10px 14px;border-bottom:1px solid var(--rule);color:var(--paper-2);vertical-align:top;}
+  .stc-table tr:last-child td{border-bottom:none;}
+  .stc-table td:first-child{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--amber);letter-spacing:.06em;white-space:nowrap;}
+  .stc-table td:nth-child(2){color:var(--paper);}
+  .stc-table tbody tr:hover{background:rgba(212,162,76,.04);}
+
+  /* DESK-CRIT TABLE */
+  .clinic-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14.5px;}
+  .clinic-table th{padding:10px 14px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);text-align:left;border-bottom:1px solid var(--rule-strong);font-weight:400;background:rgba(159,200,212,.06);}
+  .clinic-table td{padding:12px 14px;border-bottom:1px solid var(--rule);color:var(--paper-2);vertical-align:top;line-height:1.5;}
+  .clinic-table tr:last-child td{border-bottom:none;}
+  .clinic-table td:first-child{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--amber);letter-spacing:.02em;white-space:nowrap;font-weight:500;}
+  .clinic-table td strong{color:var(--paper);}
+  .clinic-table tbody tr:hover{background:rgba(159,200,212,.04);}
+
+  /* LAB SHEET */
+  .lab-sheet{margin-top:24px;}
+  .lab-row{display:grid;grid-template-columns:60px 1fr 1.2fr;gap:20px;padding:20px 0;border-top:1px solid var(--rule);align-items:start;}
+  .lab-row:last-child{border-bottom:1px solid var(--rule);}
+  .lab-row .g{font-family:"Fraunces",serif;font-style:italic;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-size:42px;color:var(--blue);line-height:.9;font-weight:300;}
+  .lab-row h5{font-family:"Fraunces",serif;font-weight:380;font-size:22px;line-height:1.1;margin:0 0 6px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .lab-row h5 em{font-style:italic;color:var(--amber);}
+  .lab-row .tag{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:2px 8px;border:1px solid var(--rule-strong);color:var(--paper-dim);margin-bottom:6px;}
+  .lab-row p{margin:0 0 8px;color:var(--paper-2);font-size:16px;line-height:1.55;}
+  .lab-row ul{margin:6px 0 0;padding-left:18px;color:var(--paper-2);font-size:16px;}
+  .lab-row li{margin-bottom:6px;}
+  @media (max-width:680px){.lab-row{grid-template-columns:50px 1fr}.lab-row .tasks{grid-column:1/-1;border-top:1px dashed var(--rule);padding-top:10px;}}
+
+  /* DELIVERABLE */
+  .deliverable{border-left:3px solid var(--amber);background:var(--amber-soft);padding:22px 28px;margin-top:24px;}
+  .deliverable .label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-weight:500;}
+  .deliverable h4{font-family:"Fraunces",serif;font-weight:380;font-size:22px;margin:0 0 12px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .deliverable ul{margin:8px 0;padding-left:20px;color:var(--paper);font-size:15px;line-height:1.6;}
+  .deliverable li{margin-bottom:6px;}
+
+  .checklist{margin-top:18px;}
+  .check{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--rule);align-items:flex-start;}
+  .check:last-child{border-bottom:none}
+  .check .box{flex:0 0 auto;width:18px;height:18px;border:1.5px solid var(--paper-dim);margin-top:2px;}
+  .check .text{font-size:15px;color:var(--paper-2);line-height:1.5;}
+  .check .text strong{color:var(--paper);}
+
+  /* TRANSITION BRIDGE */
+  .bridge{margin-top:56px;padding:18px 24px;border-left:2px solid var(--amber-line);background:rgba(212,162,76,.04);font-size:16px;color:var(--paper-2);font-style:italic;line-height:1.6;}
+  .bridge strong{color:var(--amber);font-style:normal;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;display:block;margin-bottom:6px;}
+
+  /* ENCORE CARD */
+  .encore-card{margin-top:28px;border:1px solid var(--amber);background:rgba(212,162,76,.06);padding:30px 32px;}
+  .encore-card .e-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:12px;font-weight:500;}
+  .encore-card h3{font-family:"Fraunces",serif;font-weight:380;font-size:30px;margin:0 0 8px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .encore-card h3 em{font-style:italic;color:var(--amber);}
+  .encore-card p{margin:0 0 10px;color:var(--paper-2);font-size:16px;line-height:1.6;}
+  .encore-card strong{color:var(--paper);}
+  .encore-card .e-link{display:inline-block;margin-top:12px;font-family:"Fraunces",serif;font-size:20px;font-variation-settings:"opsz" 48,"SOFT" 30;color:var(--amber);text-decoration:none;border-bottom:1px solid var(--amber-line);padding-bottom:2px;}
+  .encore-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:20px 0 4px;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);}
+  .encore-stats > div{padding:14px 14px 14px 0;border-right:1px solid var(--rule);}
+  .encore-stats > div:last-child{border-right:none;}
+  .encore-stats dt{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:5px;}
+  .encore-stats dd{margin:0;font-family:"Fraunces",serif;font-weight:380;font-size:20px;font-variation-settings:"opsz" 36;}
+  @media(max-width:680px){.encore-stats{grid-template-columns:1fr}.encore-stats > div{border-right:none;border-bottom:1px solid var(--rule);}}
+
+  /* GAME CARD */
+  .game-card{margin-top:24px;border:1px solid var(--green);background:rgba(127,175,120,.06);padding:28px 32px;}
+  .game-card .g-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:12px;font-weight:500;}
+  .game-card h3{font-family:"Fraunces",serif;font-weight:380;font-size:28px;margin:0 0 10px;font-variation-settings:"opsz" 48,"SOFT" 30;}
+  .game-card h3 em{font-style:italic;color:var(--green);}
+  .game-card p{margin:0 0 10px;color:var(--paper-2);font-size:16px;line-height:1.6;}
+  .game-card strong{color:var(--paper);}
+  .game-card .g-link{display:inline-block;margin-top:12px;font-family:"Fraunces",serif;font-size:20px;font-variation-settings:"opsz" 48,"SOFT" 30;color:var(--green);text-decoration:none;border-bottom:1px solid rgba(127,175,120,.5);padding-bottom:2px;}
+  .game-embed{margin-top:20px;border:1px solid var(--green);background:var(--ink);position:relative;overflow:hidden;}
+  .game-embed iframe{display:block;width:100%;height:760px;border:0;background:var(--ink);}
+  .game-embed .ge-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid rgba(127,175,120,.4);background:rgba(127,175,120,.06);}
+  .game-embed .ge-bar span{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);}
+  .game-embed .ge-bar a{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);text-decoration:none;border:1px solid rgba(127,175,120,.5);padding:6px 12px;white-space:nowrap;}
+  .game-embed .ge-bar a:hover{background:rgba(127,175,120,.12);}
+  @media print{.game-embed{display:none;}}
+  @media (max-width:680px){.game-embed iframe{height:560px;}}
+
+  /* FIELD PHOTO GALLERY */
+  .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;}
+  .field-item{border:1px solid var(--rule-strong);background:rgba(237,228,211,.02);break-inside:avoid;}
+  .field-item img{display:block;width:100%;height:300px;object-fit:cover;border-bottom:1px solid var(--rule);}
+  .field-item figcaption{padding:16px 18px;font-size:14.5px;color:var(--paper-2);line-height:1.55;}
+  .field-item figcaption b{display:block;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;}
+  .field-item figcaption em{color:var(--paper);font-style:italic;}
+  @media (max-width:680px){.field-grid{grid-template-columns:1fr}.field-item img{height:240px;}}
+
+  /* SEND-OFF */
+  .sendoff{margin-top:40px;padding:34px 36px;border:1px solid var(--rule-strong);background:rgba(237,228,211,.02);text-align:center;}
+  .sendoff .s-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--amber);margin-bottom:16px;}
+  .sendoff p{max-width:640px;margin:0 auto 12px;color:var(--paper-2);font-size:18px;line-height:1.6;font-style:italic;}
+  .sendoff p em{color:var(--paper);}
+  .sendoff .sig{margin-top:20px;font-family:"Fraunces",serif;font-size:22px;font-variation-settings:"opsz" 48,"SOFT" 30;color:var(--amber);}
+
+  /* FOOT */
+  footer{margin-top:120px;padding-top:28px;border-top:1px solid var(--rule);font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .hero, section{animation:rise .9s ease both;}
+
+  @media print{
+    html{background:var(--ink) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    body{background:var(--ink) !important;margin:0;padding:0;font-size:14.5px;}
+    body::before{display:none !important;}
+    .wrap{max-width:none;padding:0;}
+    .hero, section{animation:none !important;}
+    section{break-inside:avoid;}
+    .diagram,.lab-row,.encore-card{break-inside:avoid;}
+  }
+</style>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span><span class="dot"></span>Week 10 &middot; Class Plan &middot; v2 &middot; 2026.07.22</span>
+    <span class="act-tag">Final Session &middot; Game, Sheet &amp; Send-off</span>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div>
+      <div class="kicker">Week 10 <span class="pipe">/</span> The Last Night <span class="pipe">/</span> Curtain Call</div>
+      <h1 class="title">Everything<br><em>Meets.</em></h1>
+      <p class="sub">The last night, and a short one. We open with a <em>game</em> &mdash; the whole course on one board &mdash; then I explain the one page left in the Encore, the <em>Cross-System Integration Sheet</em>, and show you what those collisions actually look like on a real job site. Then I let you go early to build it on your own time. Two hours, then the hall is yours.</p>
+    </div>
+    <svg class="ornament" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- three overlapping systems: acoustic (amber), light (blue), power (green) -->
+      <circle cx="90" cy="86" r="58" fill="rgba(212,162,76,.10)" stroke="#D4A24C" stroke-width="1.3"/>
+      <circle cx="130" cy="86" r="58" fill="rgba(159,200,212,.10)" stroke="#9FC8D4" stroke-width="1.3"/>
+      <circle cx="110" cy="128" r="58" fill="rgba(127,175,120,.10)" stroke="#7FAF78" stroke-width="1.3"/>
+      <!-- the collision zone at the center -->
+      <circle cx="110" cy="100" r="7" fill="rgba(200,71,47,.5)" stroke="#C8472F" stroke-width="1.1"/>
+      <text x="66" y="70" fill="#D4A24C" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="1">SOUND</text>
+      <text x="140" y="70" fill="#9FC8D4" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="1">LIGHT</text>
+      <text x="92" y="168" fill="#7FAF78" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="1">POWER</text>
+      <text x="110" y="208" text-anchor="middle" fill="#C8472F" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="2">ONE BUILDING</text>
+    </svg>
+  </header>
+
+  <!-- META -->
+  <dl class="meta">
+    <div><dt>Date</dt><dd>Wed 07&middot;22<small>19:30 &ndash; 21:30 &middot; out early</small></dd></div>
+    <div><dt>Format</dt><dd>Online &middot; Zoom<small>Game + brief + release</small></dd></div>
+    <div><dt>Then</dt><dd>Work on your own<small>build the sheet offline</small></dd></div>
+    <div><dt>Due Next</dt><dd>Encore &middot; Sun 07&middot;26<small>11:59 PM &middot; 60 pts</small></dd></div>
+  </dl>
+
+  <!-- COURSE EVAL BANNER -->
+  <div class="banner eval">
+    <div class="banner-face">&#9998;</div>
+    <div class="banner-body">
+      <div class="banner-tag">First Thing Tonight &middot; Course Evaluations Are Open</div>
+      <p class="banner-text">Before we start &mdash; please take a few minutes to fill out the <strong>LTU course evaluation</strong>. Look for the email from the university, or find the link in Canvas. Your responses are <strong>completely anonymous, as always</strong>. Tell me what worked, what didn&rsquo;t, and what you&rsquo;d change &mdash; this is a brand-new course and your read on it genuinely shapes how it gets taught next time. Thank you; it means a lot.</p>
+    </div>
+  </div>
+
+  <!-- ACOUSTO PLUGIN BANNER -->
+  <div class="banner plugin">
+    <div class="banner-face">&#9835;</div>
+    <div class="banner-body">
+      <div class="banner-tag">A Favor to Ask &middot; Acouso for Revit</div>
+      <p class="banner-text">A quick ask while I have you all together: the developer of the <strong>Acouso acoustics plugin for Revit</strong> is looking for feedback from real users, and this is exactly the right room for it. If you tried it this term &mdash; or are willing to give it a look before the Encore &mdash; I&rsquo;d love to gather your impressions: what worked, what got in your way, what you wished it did.</p>
+      <p class="banner-text">Bring it up tonight and I&rsquo;ll collect notes and pass them along. It&rsquo;s a small way to shape a tool you may keep using after this course.</p>
+    </div>
+  </div>
+
+
+  <!-- § 01 SESSION OBJECTIVES -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 01</span>
+      <h2 class="sec-title">The Last <em>Night.</em></h2>
+    </div>
+    <div class="prose">
+      <p>There is no new content in this course after tonight. The catalog is covered: acoustics, illumination, electrical, sound reinforcement, emergency power. So we are going to keep tonight <strong>short and useful</strong> &mdash; about two hours &mdash; and then I let you go early to spend the rest of your evening on the Encore itself.</p>
+      <p>Here is the shape of the night. We start with a <strong>game</strong> that runs the whole ten weeks past you on one board &mdash; a fair, low-stakes way to find out what actually stuck. Then I explain the one genuinely new page left in the Encore, the <strong>Cross-System Integration Sheet</strong>, and show you what those system collisions look like <em>on a real construction site</em> &mdash; photos from a project I have in the field right now. Then you are free to build your own sheet on your own time. By the end you should be able to:</p>
+      <ul>
+        <li><strong>Recall the course cold.</strong> RT60, sDA, the lumen method, the 80% rule, critical distance, the 10&nbsp;s / 90&nbsp;min / 1&nbsp;fc rule &mdash; if it comes up on the board and you can answer it, you are ready for the Encore.</li>
+        <li><strong>Name a real collision.</strong> Not &ldquo;the systems coordinate&rdquo; &mdash; an actual conflict where two systems wanted the same surface, the same watt, or the same opening, and <em>one of them had to lose.</em></li>
+        <li><strong>See it in the field.</strong> The site photos make the abstraction concrete: in real construction, ducts, pipe, conduit and sprinkler fight for the same few inches, and someone resolves it. Better it is the designer on paper than the trades in the ceiling.</li>
+        <li><strong>Build the sheet on your own.</strong> You leave tonight knowing the method cold; the drafting happens offline, where you have your drawings open and time to think.</li>
+        <li><strong>Close the loop.</strong> Fold your resolutions back into your drawings, finish the Decision Log, and write the retrospective while the whole arc is still fresh.</li>
+      </ul>
+    </div>
+  </section>
+
+
+  <!-- § 02 RUN OF SHOW -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 02</span>
+      <h2 class="sec-title">Run of <em>Show.</em></h2>
+    </div>
+    <div class="prose" style="margin-bottom:14px;">
+      <p>Two hours, and then you are free. I teach nothing new &mdash; I run a game, explain one page, show you the field, and release you to work. <strong>The clock is soft:</strong> if the game is fun and the questions are flowing, let it run; the release just comes a little later. Nobody is staying past 21:30.</p>
+    </div>
+    <div class="timetable">
+      <div class="row review"><div class="when">19:30 &middot; 19:45</div><div class="dur">15 min</div><div class="what"><em>Open &amp; Housekeeping.</em> Course evals (do them now), the Acouso plugin ask, and where everything stands. (&sect;&nbsp;03)</div></div>
+      <div class="row pinup"><div class="when">19:45 &middot; 20:15</div><div class="dur">30 min</div><div class="what"><em>Curtain Call &mdash; the recap game.</em> The whole course on one board, three teams, low stakes. The fun part. (&sect;&nbsp;04)</div></div>
+      <div class="row enc"><div class="when">20:15 &middot; 20:30</div><div class="dur">15 min</div><div class="what"><em>The Encore, one more time.</em> What is new, what is revision, and the Sunday clock. (&sect;&nbsp;05)</div></div>
+      <div class="row"><div class="when">20:30 &middot; 20:55</div><div class="dur">25 min</div><div class="what"><em>How to Build an Integration Sheet.</em> The four-move method, plus one collision worked start to finish on a demo hall. (&sect;&nbsp;06)</div></div>
+      <div class="row"><div class="when">20:55 &middot; 21:15</div><div class="dur">20 min</div><div class="what"><em>From the Field.</em> Site photos from a live project &mdash; what a cross-system collision actually looks like when it is built. (&sect;&nbsp;07)</div></div>
+      <div class="row review"><div class="when">21:15 &middot; 21:30</div><div class="dur">15 min</div><div class="what"><em>Release, Final Q&amp;A &amp; Send-off.</em> How to work offline, the Sunday checklist &mdash; and thank you. (&sect;&nbsp;08&ndash;10)</div></div>
+    </div>
+  </section>
+
+
+  <!-- § 03 HOUSEKEEPING -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 03</span>
+      <h2 class="sec-title">First, the <em>Housekeeping.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Two quick things before we get to work &mdash; both matter, and both take five minutes.</p>
+    </div>
+
+    <div class="concept">
+      <div class="c-label">Do It Now &middot; Course Evaluation</div>
+      <h4>Open the eval and fill it out before we start the game.</h4>
+      <p>The single most reliable way to <em>not</em> fill out a course evaluation is to plan to do it later. So we do it now, together, in the first ten minutes. Find the email from the university or the link in Canvas. It is <strong>completely anonymous</strong> &mdash; I never see who wrote what, only the aggregate after grades are posted.</p>
+      <p>This course is brand new, built from scratch this term, and I am going to teach it again. Concrete beats polite: <em>&ldquo;the Week 4 workload spiked&rdquo;</em> or <em>&ldquo;the LightStanza workflow needed a demo two weeks earlier&rdquo;</em> is worth more than &ldquo;good class.&rdquo; Tell me what to keep and what to cut.</p>
+    </div>
+
+    <div class="concept blue-rule">
+      <div class="c-label">A Favor &middot; Acouso for Revit</div>
+      <h4>Give the plugin&rsquo;s developer your honest read.</h4>
+      <p>The developer of the <strong>Acouso acoustics plugin for Revit</strong> asked me for feedback from people who&rsquo;ve actually used it in a design workflow &mdash; which is all of you. If you ran it this term, or want to give it a look before Sunday, I&rsquo;m collecting impressions tonight and passing them along.</p>
+      <p>Useful things to note: <strong>what it did well</strong>, <strong>where it slowed you down or confused you</strong>, <strong>what you expected it to do and it didn&rsquo;t</strong>, and whether the results squared with your hand calcs from Act&nbsp;I. Raise it in the chat or say it out loud &mdash; I&rsquo;ll write it down.</p>
+    </div>
+  </section>
+
+
+  <!-- § 04 CURTAIN CALL GAME -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 04</span>
+      <h2 class="sec-title">One Last <em>Game.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Before anything heavy, we play. Ten weeks is a lot of ground &mdash; RT60 in Week&nbsp;1, critical distance in Week&nbsp;9 &mdash; and the friendliest way to find out what actually stuck is to put it all on a board and let three teams fight over it. It is low-stakes, it is a little competitive, and it doubles as the world&rsquo;s most painless Encore review: every answer on the board is something you may want in your final package.</p>
+      <p>I share my screen, split the class into three teams (so everyone remembers who they are playing for), and we run the board. Click a tile, read the clue, first team to answer takes it. Keep it loose &mdash; the point is the laugh and the &ldquo;oh right, <em>that&rsquo;s</em> what NC-25 means,&rdquo; not the score.</p>
+    </div>
+
+    <div class="game-card">
+      <div class="g-label">Play It Right Here &middot; Also Runs Fullscreen</div>
+      <h3>Curtain Call &mdash; <em>the AEIS finale board.</em></h3>
+      <p>Five categories &mdash; <strong>Acoustics</strong>, <strong>Daylight &amp; Sun</strong>, <strong>Illumination</strong>, <strong>Power &amp; Safety</strong>, and <strong>Voice &amp; Integration</strong> &mdash; five clues each, $100 to $500 by difficulty. Click a tile to show the clue, offer a <em>Hint</em> if a team is stuck, hit <em>Reveal Answer</em>, then award the points. <strong>Three teams</strong>, live scoreboard, editable names &mdash; so everyone knows who they&rsquo;re playing for.</p>
+      <p><strong>To run it live:</strong> use the board below, or hit <em>Fullscreen</em> for the cleanest screen-share on Zoom. No internet needed once it loads.</p>
+    </div>
+
+    <div class="game-embed">
+      <div class="ge-bar">
+        <span>&#9654; Curtain Call &middot; embedded board</span>
+        <a href="Su_26_AEIS_Week10_Recap_Game.html" target="_blank" rel="noopener">Open Fullscreen &#8599;</a>
+      </div>
+      <iframe src="Su_26_AEIS_Week10_Recap_Game.html" title="Curtain Call — AEIS recap game" loading="lazy"></iframe>
+    </div>
+
+    <div class="bridge">
+      <strong>Why open with a game</strong>
+      A quiz you might dread; a game you play. Same content, opposite posture. By the time the last tile is gone, you have quietly reviewed the entire course &mdash; and the questions you <em>missed</em> are a free, honest study list for the two Encore addendum pages you still owe me. Note the ones that stung.
+    </div>
+  </section>
+
+
+  <!-- § 05 THE ENCORE, RECAP -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 05</span>
+      <h2 class="sec-title">The Encore, <em>One More Time.</em></h2>
+    </div>
+    <div class="prose">
+      <p>You saw this last week; here it is once more, because it closes the course and it is worth <strong>60 points &mdash; more than all three Act Reviews combined.</strong> It is <em>not</em> a fourth act. Almost everything in the package is work you have already done, assembled and corrected. What is genuinely new is three short pieces &mdash; and the first of them is what we build tonight.</p>
+    </div>
+
+    <div class="encore-card">
+      <div class="e-label">Final Submission &middot; Due Sun 07&middot;26 &middot; 11:59 PM</div>
+      <h3>The Full <em>Hall.</em></h3>
+      <p>Three acts, three systems, one building &mdash; assembled, revised, and finally forced to account for each other.</p>
+
+      <dl class="encore-stats">
+        <div><dt>Points</dt><dd>60</dd></div>
+        <div><dt>New writing</dt><dd>3 pieces</dd></div>
+        <div><dt>Video</dt><dd>Extra credit &middot; +5</dd></div>
+      </dl>
+
+      <p style="margin-top:16px;"><strong>The three new pieces:</strong></p>
+      <p><strong>1 &middot; The Cross-System Integration Sheet.</strong> At least three documented <em>collisions</em>, each with the numbers on both sides, a named winner, and a stated cost. <strong>We cover exactly how to build it tonight</strong> (&sect;&nbsp;06) &mdash; and it is worth as much as an entire act.</p>
+      <p><strong>2 &middot; The Week 9 Systems Addendum.</strong> One page each on reinforcement (a critical-distance check against your own RT60) and emergency power (your egress layer as the emergency branch, with the 10&nbsp;s / 90&nbsp;min / 1&nbsp;fc criteria named). Everything you need is in last week&rsquo;s &sect;&nbsp;05 and &sect;&nbsp;06.</p>
+      <p><strong>3 &middot; The Final Retrospective.</strong> What would you do differently if you started this hall over on Monday? Specific enough that a peer could act on it. We cover how to write it in &sect;&nbsp;09.</p>
+
+      <p style="margin-top:16px;">Everything else &mdash; the plans, the three act summary sheets, the Decision Log &mdash; is revision. <strong>The video is extra credit</strong> (up to +5, cannot hurt you). Five minutes, screen-share, one real decision and one honest failure.</p>
+
+      <a class="e-link" href="../assignments/encore/Su_26_AEIS_Encore_Assignment.html">Read the full Encore brief &amp; rubric &rarr;</a>
+    </div>
+  </section>
+
+
+  <!-- § 06 HOW TO BUILD THE SHEET -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 06</span>
+      <h2 class="sec-title">How to Build an <em>Integration Sheet.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Here is the whole method, and then I&rsquo;ll run one collision live on a demo hall so you can see the shape of it before you go hunting in your own set. A good integration entry has <strong>four moves</strong>, in order &mdash; skip any one and it reads as decoration instead of engineering.</p>
+    </div>
+
+    <div class="lab-sheet">
+      <div class="lab-row">
+        <div class="g">1</div>
+        <div>
+          <span class="tag">The Collision</span>
+          <h5>Two systems, <em>one</em> resource.</h5>
+          <p>Name the two systems and the single thing they both want &mdash; a surface, a watt, an opening, a cubic foot, a dollar. If you can&rsquo;t name what is shared, there is no collision.</p>
+        </div>
+        <div class="tasks">
+          <p><strong>Test:</strong> can you finish the sentence <em>&ldquo;___ needs this to be X, but ___ needs it to be Y&rdquo;</em>? If yes, you have one.</p>
+        </div>
+      </div>
+      <div class="lab-row">
+        <div class="g">2</div>
+        <div>
+          <span class="tag">The Numbers</span>
+          <h5>Quantify <em>both</em> sides.</h5>
+          <p>Attach the metric to each side. Not &ldquo;it&rsquo;s too dark&rdquo; &mdash; <em>&ldquo;the acoustic finish is 12% reflectance, but my CU assumed 50%, so my fixture count is 30% low.&rdquo;</em> Numbers make the trade-off arguable instead of aesthetic.</p>
+        </div>
+        <div class="tasks">
+          <p><strong>Source:</strong> pull the numbers from work you already did &mdash; RT60 worksheet, lumen calc, panel schedule, LPD verdict, PV sizing. This is why your acts have to be open.</p>
+        </div>
+      </div>
+      <div class="lab-row">
+        <div class="g">3</div>
+        <div>
+          <span class="tag">The Decision</span>
+          <h5>Name the winner. State the <em>cost.</em></h5>
+          <p>Which system won, which gave way, and what the loser paid for it. <em>&ldquo;Acoustics wins; I keep the porous finish and add two fixtures, +90&nbsp;W, which costs me 0.4 against my LPD margin.&rdquo;</em> A real decision has a loser.</p>
+        </div>
+        <div class="tasks">
+          <p><strong>Trap:</strong> if your resolution has no cost, you probably dodged the collision instead of resolving it. Go back to move&nbsp;1.</p>
+        </div>
+      </div>
+      <div class="lab-row">
+        <div class="g">4</div>
+        <div>
+          <span class="tag">The Trace</span>
+          <h5>Change the <em>drawing.</em></h5>
+          <p>The resolution has to land somewhere real &mdash; a revised fixture count, a moved cloud, a re-drawn panel, a note on the plan. Point to where the drawing changed. An integration that never touches a sheet didn&rsquo;t happen.</p>
+        </div>
+        <div class="tasks">
+          <p><strong>Bonus:</strong> log it. Every collision resolved here is a clean Decision Log entry &mdash; you&rsquo;re doing two deliverables at once.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose" style="margin-top:36px;">
+      <h5>Worked live &mdash; the collision I&rsquo;ll demo</h5>
+      <p>I&rsquo;ll run this one on a demo hall in real time so you can watch the four moves happen. Yours will be different &mdash; but the <em>shape</em> is always this.</p>
+    </div>
+
+    <table class="stc-table">
+      <thead>
+        <tr><th>Move</th><th>On the demo hall</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Collision</td><td>The <strong>acoustic cloud</strong> from Act&nbsp;I hangs at the exact ceiling zone where the Act&nbsp;III <strong>downlights</strong> need to sit to hit 12&nbsp;fc on the seats. Both want the same 8&nbsp;ft of ceiling over the center bays.</td></tr>
+        <tr><td>Numbers</td><td>Cloud placement is set by first-reflection geometry &mdash; move it 3&nbsp;ft and the RT60 target drifts. The downlights under it lose aim: illuminance at the center seats drops from 12&nbsp;fc to ~8&nbsp;fc, below the house target.</td></tr>
+        <tr><td>Decision</td><td><strong>Acoustics wins the ceiling; lighting re-strategizes.</strong> Keep the cloud; switch the center bays from recessed downlights to a <em>cove wash</em> off the cloud edge, +6 fixtures, +0.3 W/ft&sup2; against the LPD margin (still passing at 0.9 of allowance).</td></tr>
+        <tr><td>Trace</td><td>RCP re-drawn for the center bays; luminaire schedule +6 cove fixtures; LP-1 connected load updated; LPD verdict re-run and still passes. One Decision Log entry written.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="concept red-rule">
+      <div class="c-label">The Difference That Gets the Points</div>
+      <h4>&ldquo;The systems coordinate&rdquo; is worth zero. A named loser is worth the grade.</h4>
+      <p>The most common Encore mistake is a page that says every system was &ldquo;carefully coordinated&rdquo; and shows no evidence anything ever conflicted. That is a page that avoided the assignment. The rubric rewards the opposite instinct: <strong>find the place where your own beautiful Act&nbsp;I decision made your Act&nbsp;III job harder, admit it, and resolve it with numbers.</strong></p>
+      <p>Self-critique is the single skill this whole course has been trying to build, and this sheet is where it&rsquo;s graded directly. When you draft yours this week, lead with the ugliest collision you can find &mdash; that&rsquo;s the one worth points.</p>
+    </div>
+  </section>
+
+
+  <!-- § 07 FROM THE FIELD -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 07</span>
+      <h2 class="sec-title">From the <em>Field.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Everything above is a page in a PDF. Here is why it matters. These are photos from a project I have <strong>under construction right now</strong> &mdash; not a textbook, not a render, a real ceiling with real trades in it. Look at what happens when the coordination you are learning to do on paper <em>doesn&rsquo;t</em> get done: the systems still have to fit, so they fight it out in the field, and the most expensive place to resolve a collision is after it is hung.</p>
+      <p>As you look, do the exercise: for each photo, <em>name the two systems and the one who lost.</em> That is the integration sheet, built by a pipefitter instead of a designer.</p>
+    </div>
+
+    <div class="field-grid">
+      <figure class="field-item">
+        <img src="IMG_6206.jpg" alt="Copper supply piping looping around a cast-iron waste stack and electrical conduit on a concrete wall">
+        <figcaption><b>Three trades, one wall</b>Domestic water (copper), sanitary/vent (the black cast-iron stack), and power (conduit and wire, left) all claim the same chase. Watch the copper supply lines <em>loop up and over</em> to jog around the waste stack &mdash; that detour is a collision being resolved in real time, by a plumber, because nobody resolved it on the drawings first.</figcaption>
+      </figure>
+      <figure class="field-item">
+        <img src="IMG_6799.jpg" alt="Congested ceiling plenum with spiral galvanized ductwork, insulated flex duct, black sprinkler main, and PVC">
+        <figcaption><b>The plenum you never see</b>Spiral supply duct, insulated flex, the black steel sprinkler main (red fitting = a head drop), and PVC &mdash; all competing for a few inches above the ceiling. Every one of these had a &ldquo;preferred&rdquo; elevation on its own drawing. Only one got it; the rest bent, dropped, or re-routed around whatever landed first.</figcaption>
+      </figure>
+      <figure class="field-item">
+        <img src="IMG_6908.jpg" alt="Gutted room mid-construction with exposed structure, duct drops, clerestory windows, and mechanical equipment staged on the floor">
+        <figcaption><b>The room nobody draws, mid-build</b>Exposed structure, duct drops threading the beams, clerestory daylight up high, and the mechanical units staged on the slab before they fly. This is the <em>electrical / AV / mechanical room</em> problem at full scale &mdash; it takes real floor area, real headroom, and real coordination that has to exist on a plan before it exists here.</figcaption>
+      </figure>
+      <figure class="field-item">
+        <img src="IMG_6936.jpg" alt="Large rectangular sheet-metal duct transitioning to round spiral duct with two elbows to route around a structural beam and soffit">
+        <figcaption><b>Geometry driven by what&rsquo;s in the way</b>That big rectangular trunk had to drop, transition to round, and elbow <em>twice</em> to clear the structure and land in the soffit. None of those bends are what the mechanical engineer wanted &mdash; they&rsquo;re what the beam, the wall, and the ceiling height <em>allowed</em>. Form following coordination.</figcaption>
+      </figure>
+    </div>
+
+    <div class="concept blue-rule">
+      <div class="c-label">The Takeaway</div>
+      <h4>Your integration sheet is this &mdash; done <em>before</em> it&rsquo;s built.</h4>
+      <p>Every jog, drop, and elbow in these photos is a cross-system collision that got resolved the hard way. The whole point of the sheet you&rsquo;re about to write is to do that thinking at the desk, in the drawings, where a change costs an eraser instead of a change order. When you document your three collisions this week, you are practicing the single most valuable coordination habit in the profession.</p>
+    </div>
+  </section>
+
+
+  <!-- § 08 TAKE IT OFFLINE -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 08</span>
+      <h2 class="sec-title">Take It <em>Offline.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Here is where I let you go. You now know the method and you&rsquo;ve seen it in the field &mdash; the actual drafting is better done on your own time, with all three acts open and no clock running. <strong>The goal is three documented collisions, each carried through all four moves, plus at least one that changes a drawing.</strong> Work at your own pace this week; I&rsquo;m reachable by email and in the Canvas discussion if you get stuck.</p>
+      <p><strong>Where collisions live.</strong> You don&rsquo;t have to invent them &mdash; the course has been seeding them for ten weeks. Here is where to look first:</p>
+    </div>
+
+    <table class="clinic-table">
+      <thead>
+        <tr><th>Look here</th><th>The collision that&rsquo;s usually hiding</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ceiling</td><td><strong>Acoustic clouds / reflectors vs. downlights.</strong> Both want the ceiling plane over the seats. Whoever loses re-strategizes &mdash; cove, wall wash, or a relocated cloud.</td></tr>
+        <tr><td>Finishes</td><td><strong>Absorptive surfaces vs. your Coefficient of Utilization.</strong> The dark, porous treatment that tuned your RT60 also ate the light your lumen calc assumed you&rsquo;d bounce. Real reflectances &rarr; more fixtures &rarr; more watts &rarr; LPD pressure.</td></tr>
+        <tr><td>Glazing</td><td><strong>Act&nbsp;II daylight vs. glare &amp; vs. acoustics.</strong> The aperture that gave you sDA is the one that throws glare on the stage and puts a hard, sound-reflecting plane in the room.</td></tr>
+        <tr><td>Panel</td><td><strong>Egress branch vs. the house dimmer.</strong> Last week&rsquo;s trap: if your emergency lighting shares a circuit with dimmed house light, that&rsquo;s a documented collision handed to you for free.</td></tr>
+        <tr><td>Floor plan</td><td><strong>The rooms nobody drew.</strong> Electrical room, AV rack, mix position &mdash; each takes area, structure, and quiet from spaces that were already spoken for.</td></tr>
+        <tr><td>Roof</td><td><strong>PV array vs. mechanical vs. skylights.</strong> The roof plane your Act&nbsp;III array needs is the same one the daylight aperture and the rooftop units want.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="concept blue-rule">
+      <div class="c-label">If You Get Stuck</div>
+      <h4>Ask a <em>specific</em> question &mdash; email or the Canvas discussion.</h4>
+      <p>&ldquo;Look at my project&rdquo; is hard to answer at a distance; <em>&ldquo;I think my cloud-vs-downlight collision is real but I can&rsquo;t find the number that proves lighting loses &mdash; where do I pull it?&rdquo;</em> I can answer in one reply. Come to me mid-move, not mid-panic, and paste the drawing or the number you&rsquo;re looking at.</p>
+      <p>And post your good ones to the discussion &mdash; a collision one of you found is very likely hiding in three other halls too. Helping each other spot them is fair game and genuinely useful.</p>
+    </div>
+  </section>
+
+
+  <!-- § 09 RETROSPECTIVE & VIDEO -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 09</span>
+      <h2 class="sec-title">The Retrospective &amp; the <em>Video.</em></h2>
+    </div>
+    <div class="prose">
+      <p>Two smaller pieces to close out the Encore, covered here so you can write them this weekend while the whole arc is fresh.</p>
+    </div>
+
+    <div class="concept">
+      <div class="c-label">Encore Piece 3</div>
+      <h4>The retrospective &mdash; what you&rsquo;d do differently starting <em>Monday.</em></h4>
+      <p>Not a summary of what you did &mdash; a critique of it. Pick two or three decisions you now see differently, and say what you&rsquo;d change and why. <em>&ldquo;I&rsquo;d set my RT60 target 0.2&nbsp;s lower knowing how much speech the hall would host&rdquo;</em> beats &ldquo;I learned a lot about acoustics.&rdquo;</p>
+      <p>The tell of a strong retrospective is that <strong>a peer could act on it.</strong> Specific, honest, and tied to a real decision in your set. Your Decision Log is the raw material &mdash; read it back and the regrets will surface on their own.</p>
+    </div>
+
+    <div class="concept blue-rule">
+      <div class="c-label">Extra Credit &middot; +5</div>
+      <h4>The walkthrough video &mdash; five minutes, one decision, one failure.</h4>
+      <p>Optional, worth up to <strong>+5 points</strong>, and it cannot hurt your grade. Screen-share your Encore package and talk me through it as if I were a client or a consultant. It&rsquo;s the fastest way to demonstrate you understand your own building.</p>
+      <p><strong>Keep it simple:</strong> Zoom &rarr; New Meeting &rarr; Share Screen &rarr; Record. Walk one <em>real</em> decision you&rsquo;re proud of and one <em>honest</em> failure you&rsquo;d fix. Export the MP4 and upload it with your submission. Five minutes is plenty &mdash; don&rsquo;t script it, just talk.</p>
+    </div>
+  </section>
+
+
+  <!-- § 10 THE SUNDAY CHECKLIST & SEND-OFF -->
+  <section>
+    <div class="sec-label">
+      <span class="sec-num">&sect; 10</span>
+      <h2 class="sec-title">Before Sunday &mdash; &amp; <em>Farewell.</em></h2>
+    </div>
+    <div class="prose">
+      <p>No class after tonight. Everything now points at one upload. Here is the full picture of what&rsquo;s due and the short list to run before you submit.</p>
+    </div>
+
+    <div class="deliverable">
+      <div class="label">Due Sun 07&middot;26 &middot; 11:59 PM &middot; 60 pts</div>
+      <h4>The Encore &mdash; The Full Hall</h4>
+      <ul>
+        <li>The integrated package: all three acts, revised and assembled into one PDF, with a cover page.</li>
+        <li><strong>The Cross-System Integration Sheet</strong> &mdash; three collisions, each with numbers on both sides, a named winner, and a stated cost.</li>
+        <li><strong>The Week 9 Systems Addendum</strong> &mdash; reinforcement (critical-distance check) + emergency power (egress as the emergency branch).</li>
+        <li>Complete Decision Log (min. 20 entries) + the Final Retrospective.</li>
+        <li><em>Optional:</em> the 5-minute walkthrough video, worth up to +5 extra-credit points.</li>
+      </ul>
+    </div>
+
+    <div class="prose" style="margin-top:36px;">
+      <h5>Run this before you upload</h5>
+    </div>
+    <div class="checklist">
+      <div class="check"><div class="box"></div><div class="text"><strong>Three collisions, all four moves each.</strong> Each has both sides quantified, a named winner, a stated cost, and a place the drawing changed.</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>The resolutions are actually in the drawings.</strong> If a collision changed your fixture count or panel, make sure the revised sheets in the package reflect it &mdash; not just the integration page.</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>Both addendum pages are in.</strong> Critical distance run against your own S, &#257;, and Q&asymp;2; egress branch identified with the 10&nbsp;s / 90&nbsp;min / 1&nbsp;fc criteria named.</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>Decision Log hits 20 entries.</strong> Tonight&rsquo;s collisions are clean entries &mdash; log them and you&rsquo;re likely already there.</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>One PDF, cover page, filename with your name.</strong> Re-read the Encore rubric one last time before you submit &mdash; the criteria are published, not a mystery.</div></div>
+      <div class="check"><div class="box"></div><div class="text"><strong>Did the course eval &amp; left Acouso feedback?</strong> Two minutes each, and both genuinely help. Thank you.</div></div>
+    </div>
+
+    <div class="sendoff">
+      <div class="s-label">Curtain</div>
+      <p>Ten weeks ago your hall was a shape with a reverberation time. Tonight it&rsquo;s a building that can be heard in, seen in, powered, and evacuated &mdash; and you can defend every one of those systems <em>against the others</em> with numbers. That&rsquo;s the job. That&rsquo;s the whole job.</p>
+      <p>Finish the Encore, upload it Sunday, and then the hall is <em>yours.</em> It has been a genuine pleasure teaching this one. Thank you for building it with me.</p>
+      <div class="sig">&mdash; Kurt</div>
+    </div>
+
+    <div class="bridge">
+      <strong>After the course</strong>
+      Your Encore is the portfolio piece &mdash; a complete, integrated systems package you designed and defended end to end. Keep the file. It&rsquo;s the thing you show when someone asks whether you understand how a building actually works, not just how it looks.
+    </div>
+  </section>
+
+  <footer>
+    <span>ARC 5443 &middot; Acoustics, Electrical &amp; Illumination Systems</span>
+    <span>Week 10 &middot; Kurt Neiswender, AIA &middot; Summer 2026</span>
+  </footer>
+
+</div>
+</body>
+</html>

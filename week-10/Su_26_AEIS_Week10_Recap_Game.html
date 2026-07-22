@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARC 5443 · Curtain Call — The AEIS Finale Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E0D0B;--ink-2:#161412;
+    --paper:#EDE4D3;--paper-2:#D9CFB9;--paper-dim:#8A8273;
+    --amber:#D4A24C;--amber-soft:rgba(212,162,76,.10);--amber-line:rgba(212,162,76,.45);
+    --red:#C8472F;--blue:#9FC8D4;--green:#7FAF78;
+    --rule:rgba(237,228,211,.18);--rule-strong:rgba(237,228,211,.42);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--ink);color:var(--paper);min-height:100%;}
+  body{
+    font-family:"Newsreader",Georgia,serif;font-size:18px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.93  0 0 0 0 0.89  0 0 0 0 0.83  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;opacity:.5;
+  }
+  .wrap{max-width:1500px;margin:0 auto;padding:28px 32px 60px;position:relative;z-index:2;}
+
+  header.top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;border-bottom:1px solid var(--rule-strong);padding-bottom:18px;margin-bottom:8px;}
+  .brand .kick{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;}
+  h1{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(34px,5vw,60px);line-height:.9;letter-spacing:-.02em;margin:0;font-variation-settings:"opsz" 144,"SOFT" 30,"WONK" 1;}
+  h1 em{font-style:italic;color:var(--amber);font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;}
+
+  /* SCOREBOARD */
+  .scoreboard{display:flex;gap:12px;flex-wrap:wrap;}
+  .team{border:1px solid var(--rule-strong);background:rgba(237,228,211,.03);padding:9px 14px;min-width:164px;}
+  .team.a{border-color:var(--amber-line);}
+  .team.b{border-color:rgba(159,200,212,.5);}
+  .team.c{border-color:rgba(127,175,120,.5);}
+  .team .t-name{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:4px;}
+  .team.b .t-name{color:var(--blue);}
+  .team.c .t-name{color:var(--green);}
+  .team .t-name input{background:none;border:none;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;width:110px;padding:0;}
+  .team .t-name input:focus{outline:1px dotted var(--rule-strong);}
+  .team .t-row{display:flex;align-items:center;gap:8px;}
+  .team .score{font-family:"Fraunces",serif;font-size:30px;font-variation-settings:"opsz" 48;min-width:58px;text-align:right;}
+  .team.b .score{color:var(--blue);}
+  .team.c .score{color:var(--green);}
+  .team button{font-family:"JetBrains Mono",monospace;font-size:14px;width:24px;height:24px;line-height:1;border:1px solid var(--rule-strong);background:transparent;color:var(--paper-2);cursor:pointer;border-radius:2px;}
+  .team button:hover{border-color:var(--amber);color:var(--amber);}
+
+  .howto{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--paper-dim);margin:14px 0 20px;text-transform:uppercase;}
+  .howto b{color:var(--amber);}
+  .howto .reset{margin-left:8px;border:1px solid var(--rule-strong);background:transparent;color:var(--paper-dim);font:inherit;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;cursor:pointer;}
+  .howto .reset:hover{border-color:var(--red);color:var(--red);}
+
+  /* BOARD */
+  .board{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+  .cat{
+    font-family:"Fraunces",serif;font-weight:380;font-size:clamp(14px,1.35vw,20px);line-height:1.05;
+    text-align:center;padding:16px 8px;border:1px solid var(--amber-line);background:var(--amber-soft);
+    color:var(--amber);font-variation-settings:"opsz" 36,"SOFT" 30;min-height:76px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .tile{
+    font-family:"Fraunces",serif;font-size:clamp(26px,3vw,44px);font-variation-settings:"opsz" 72;
+    color:var(--paper);text-align:center;padding:22px 8px;border:1px solid var(--rule);
+    background:rgba(237,228,211,.02);cursor:pointer;transition:.15s;user-select:none;
+  }
+  .tile:hover{background:rgba(212,162,76,.12);border-color:var(--amber-line);color:var(--amber);transform:translateY(-2px);}
+  .tile.used{color:var(--paper-dim);opacity:.32;background:transparent;cursor:default;pointer-events:none;}
+  .tile.used:hover{transform:none;}
+
+  /* OVERLAY */
+  .overlay{position:fixed;inset:0;z-index:50;background:rgba(14,13,11,.97);display:none;flex-direction:column;
+    align-items:center;justify-content:center;padding:6vh 6vw;text-align:center;}
+  .overlay.show{display:flex;animation:fade .2s ease;}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .ov-tag{font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--amber);margin-bottom:32px;}
+  .ov-clue{font-family:"Fraunces",serif;font-weight:380;font-size:clamp(26px,4.4vw,58px);line-height:1.12;max-width:1100px;font-variation-settings:"opsz" 96,"SOFT" 20;margin:0;}
+  .ov-hint{margin-top:28px;font-family:"JetBrains Mono",monospace;font-size:clamp(13px,1.5vw,16px);letter-spacing:.08em;color:var(--blue);max-width:900px;display:none;}
+  .ov-hint.show{display:block;animation:fade .25s ease;}
+  .ov-hint .lead{letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-right:10px;}
+  .ov-answer{margin-top:36px;font-family:"Newsreader",serif;font-style:italic;font-size:clamp(22px,3.2vw,40px);color:var(--green);max-width:1000px;display:none;}
+  .ov-answer.show{display:block;animation:fade .25s ease;}
+  .ov-answer .lead{font-family:"JetBrains Mono",monospace;font-style:normal;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);display:block;margin-bottom:12px;}
+  .ov-controls{margin-top:48px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center;}
+  .btn{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    padding:14px 24px;border:1px solid var(--rule-strong);background:transparent;color:var(--paper-2);cursor:pointer;border-radius:2px;transition:.15s;}
+  .btn:hover{border-color:var(--amber);color:var(--amber);}
+  .btn.primary{border-color:var(--amber);color:var(--amber);background:var(--amber-soft);}
+  .btn.hint{border-color:rgba(159,200,212,.5);color:var(--blue);}
+  .btn.hint:hover{background:rgba(159,200,212,.1);border-color:var(--blue);}
+  .btn.award-a{border-color:var(--amber-line);color:var(--amber);}
+  .btn.award-a:hover{background:var(--amber-soft);}
+  .btn.award-b{border-color:rgba(159,200,212,.5);color:var(--blue);}
+  .btn.award-b:hover{background:rgba(159,200,212,.1);border-color:var(--blue);}
+  .btn.award-c{border-color:rgba(127,175,120,.5);color:var(--green);}
+  .btn.award-c:hover{background:rgba(127,175,120,.1);border-color:var(--green);}
+  .btn.ghost{color:var(--paper-dim);}
+  .btn.ghost:hover{border-color:var(--paper-dim);color:var(--paper-2);}
+  .ov-award-label{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);width:100%;margin-bottom:-4px;}
+
+  footer{margin-top:40px;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);text-align:center;border-top:1px solid var(--rule);padding-top:20px;}
+
+  @media (max-width:720px){
+    .wrap{padding:18px 14px 40px;}
+    .tile{padding:14px 4px;}
+    .cat{min-height:58px;padding:10px 4px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="kick">ARC 5443 &middot; Acoustics, Electrical &amp; Illumination Systems &middot; Week 10</div>
+      <h1>Curtain <em>Call.</em></h1>
+    </div>
+    <div class="scoreboard">
+      <div class="team a">
+        <div class="t-name"><input value="TEAM 1" aria-label="Team 1 name" maxlength="12"></div>
+        <div class="t-row">
+          <button data-team="a" data-d="-100" title="minus 100">&minus;</button>
+          <span class="score" id="score-a">0</span>
+          <button data-team="a" data-d="100" title="plus 100">+</button>
+        </div>
+      </div>
+      <div class="team b">
+        <div class="t-name"><input value="TEAM 2" aria-label="Team 2 name" maxlength="12"></div>
+        <div class="t-row">
+          <button data-team="b" data-d="-100" title="minus 100">&minus;</button>
+          <span class="score" id="score-b">0</span>
+          <button data-team="b" data-d="100" title="plus 100">+</button>
+        </div>
+      </div>
+      <div class="team c">
+        <div class="t-name"><input value="TEAM 3" aria-label="Team 3 name" maxlength="12"></div>
+        <div class="t-row">
+          <button data-team="c" data-d="-100" title="minus 100">&minus;</button>
+          <span class="score" id="score-c">0</span>
+          <button data-team="c" data-d="100" title="plus 100">+</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="howto">
+    Click a tile &rarr; read the clue &rarr; <b>Hint</b> if they&rsquo;re stuck &rarr; <b>Reveal Answer</b> &rarr; award the points to whoever got it &middot; three teams, one board
+    <button class="reset" id="reset">Reset board</button>
+  </div>
+
+  <div class="board" id="board"></div>
+
+  <footer>The Full Hall &middot; Kurt Neiswender, AIA &middot; Summer 2026 &middot; last one — have fun</footer>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="ov-tag" id="ov-tag"></div>
+  <p class="ov-clue" id="ov-clue"></p>
+  <div class="ov-hint" id="ov-hint"><span class="lead">Hint</span><span id="ov-hint-text"></span></div>
+  <div class="ov-answer" id="ov-answer"><span class="lead">Answer</span><span id="ov-answer-text"></span></div>
+  <div class="ov-controls" id="ov-controls"></div>
+</div>
+
+<script>
+const CATS = [
+  {
+    name: "Act I · Acoustics",
+    clues: [
+      {v:100, q:"The reverberation-time metric — the seconds for sound to fall 60 dB — that your whole hall shape was tuned to.", h:"Named for the number of decibels it decays.", a:"RT60 (reverberation time)"},
+      {v:200, q:"Sabine's equation: RT60 rises with room volume and falls with THIS quantity — every surface's area times its absorption coefficient, summed.", h:"Its unit, 'sabins,' honors the same Harvard physicist.", a:"Total absorption (sabins, S·ā)"},
+      {v:300, q:"The single-number airborne-sound rating of a wall or floor assembly — you specified partitions to hit a target value of it.", h:"Three letters; a higher number means a quieter neighbor.", a:"STC (Sound Transmission Class)"},
+      {v:400, q:"The 0-to-1 rating of how much sound a finish absorbs, averaged across frequencies — carpet is high, glass is low.", h:"Three letters; a single averaged number from 0.00 to 1.00.", a:"NRC (Noise Reduction Coefficient)"},
+      {v:500, q:"The background-noise criterion you targeted at about 25 in the hall, rating mechanical rumble against a family of curves.", h:"Two letters plus a number — it rates what you DON'T want to hear.", a:"NC (Noise Criteria) — i.e. NC-25"}
+    ]
+  },
+  {
+    name: "Act II · Daylight & Sun",
+    clues: [
+      {v:100, q:"The web-based tool you used to simulate daylight and illuminance from IES files and your Revit model.", h:"The cloud app you linked to Revit — not Revit itself.", a:"LightStanza"},
+      {v:200, q:"The LEED daylight metric — spatial daylight autonomy — measuring the % of floor area that gets enough daylight for enough of the year.", h:"Three letters starting with a lowercase 's'; it's a percentage of area.", a:"sDA (spatial Daylight Autonomy)"},
+      {v:300, q:"The contrast-based visual discomfort that makes a big south window both an asset and a liability — LEED caps it as ASE.", h:"Its LEED cousin is Annual Sunlight Exposure; think squinting.", a:"Glare (Annual Sunlight Exposure)"},
+      {v:400, q:"To block high summer sun but admit low winter sun on a south face, you size THIS horizontal element to the sun's altitude angle.", h:"A horizontal fin — like an eyebrow over the window.", a:"An overhang / horizontal shading device"},
+      {v:500, q:"In the northern hemisphere this is the most controllable façade orientation for daylight, because the sun stays low and its path is predictable.", h:"The sun never comes from the opposite pole.", a:"South"}
+    ]
+  },
+  {
+    name: "Act III · Illumination",
+    clues: [
+      {v:100, q:"The unit of illuminance falling on a surface: one lumen per square foot.", h:"The imperial cousin of the lux.", a:"A foot-candle (fc)"},
+      {v:200, q:"You tallied every fixture's wattage and divided by floor area to check this code-limited density.", h:"Three letters; measured in watts per square foot.", a:"LPD (Lighting Power Density, W/ft²)"},
+      {v:300, q:"In the lumen method, the coefficient for how much of a fixture's light actually reaches the workplane — it drops in a dark, absorptive room.", h:"Two letters; a fraction of 1 in the lumen-method equation.", a:"CU (Coefficient of Utilization)"},
+      {v:400, q:"Two lamp specs: one in kelvin describing warmth/coolness, one on a 0–100 scale describing how truthfully it renders color.", h:"One is measured in kelvin; the other tops out at 100.", a:"CCT and CRI"},
+      {v:500, q:"When your hand lumen-method count disagrees with your LightStanza render, the usual culprit is that the sim used the wrong values for THESE surface properties.", h:"Garbage in, garbage out — it's about the surfaces you told the model about.", a:"Reflectances (material inputs / assumptions)"}
+    ]
+  },
+  {
+    name: "Power & Safety",
+    clues: [
+      {v:100, q:"A panel may be loaded only to this percentage of its rating under the continuous-load rule.", h:"The continuous-load derate — leave a fifth in reserve.", a:"80%"},
+      {v:200, q:"Emergency egress lighting must energize within this many seconds of a normal power loss.", h:"Faster than a slow generator can even start up.", a:"10 seconds"},
+      {v:300, q:"…and it must then stay lit for at least this long on battery or generator.", h:"An hour and a half.", a:"90 minutes"},
+      {v:400, q:"The average maintained illuminance the code requires along the egress path at floor level (with 0.1 fc minimum).", h:"Same unit as your task lighting — just far dimmer, and it's a single digit.", a:"1 foot-candle"},
+      {v:500, q:"The listing standard for the bypass relay that forces a dimmable emergency fixture to FULL output the instant normal power fails.", h:"A three-digit UL listing number.", a:"UL 924 (emergency bypass relay)"}
+    ]
+  },
+  {
+    name: "Voice & Integration",
+    clues: [
+      {v:100, q:"The reinforcement system type — one hung group of speakers over the proscenium — that's the default for a tall hall with a single stage.", h:"One 'group' of speakers, hung high and center over the stage.", a:"A central cluster"},
+      {v:200, q:"The distance from a source where the reverberant field overtakes the direct sound; past it, adding watts won't fix intelligibility.", h:"Two words; it's where direct sound equals the reverberant field.", a:"Critical distance (Dc)"},
+      {v:300, q:"The psychoacoustic effect that lets you delay a loudspeaker so the audience still localizes the sound to the live performer.", h:"Named for a German researcher; a.k.a. the precedence effect.", a:"The precedence (Haas) effect"},
+      {v:400, q:"Your egress lighting layer must never share a circuit with THIS — or one failure takes your life-safety light down with it.", h:"The device that can fail 'dark.'", a:"The house dimmer (dimming system)"},
+      {v:500, q:"The one-page Encore deliverable where two systems fight over the same surface, watt, or opening — and you name a winner and its cost.", h:"The one page you're building this week.", a:"The Cross-System Integration Sheet"}
+    ]
+  }
+];
+
+const board = document.getElementById('board');
+const overlay = document.getElementById('overlay');
+const ovTag = document.getElementById('ov-tag');
+const ovClue = document.getElementById('ov-clue');
+const ovHint = document.getElementById('ov-hint');
+const ovHintText = document.getElementById('ov-hint-text');
+const ovAnswer = document.getElementById('ov-answer');
+const ovAnswerText = document.getElementById('ov-answer-text');
+const ovControls = document.getElementById('ov-controls');
+const scores = {a:0, b:0, c:0};
+let current = null; // {catIdx,row,v,tileEl}
+
+function render(){
+  board.innerHTML = '';
+  CATS.forEach(c=>{
+    const el = document.createElement('div');
+    el.className='cat'; el.textContent=c.name; board.appendChild(el);
+  });
+  for(let row=0; row<5; row++){
+    CATS.forEach((c,ci)=>{
+      const clue = c.clues[row];
+      const t = document.createElement('div');
+      t.className='tile';
+      t.dataset.ci=ci; t.dataset.row=row;
+      t.textContent = '$'+clue.v;
+      t.addEventListener('click', ()=>openClue(ci,row,t));
+      board.appendChild(t);
+    });
+  }
+}
+
+function openClue(ci,row,tileEl){
+  const clue = CATS[ci].clues[row];
+  current = {ci,row,v:clue.v,tileEl};
+  ovTag.textContent = CATS[ci].name + '  ·  $' + clue.v;
+  ovClue.textContent = clue.q;
+  ovHintText.textContent = clue.h;
+  ovAnswerText.textContent = clue.a;
+  ovHint.classList.remove('show');
+  ovAnswer.classList.remove('show');
+  buildControls('reveal');
+  overlay.classList.add('show');
+}
+
+function buildControls(stage){
+  ovControls.innerHTML='';
+  if(stage==='reveal'){
+    ovControls.appendChild(mkBtn('Reveal Answer','primary',()=>{ ovAnswer.classList.add('show'); buildControls('award'); }));
+    ovControls.appendChild(mkBtn('Hint','hint',()=>{ ovHint.classList.add('show'); }));
+    ovControls.appendChild(mkBtn('Skip / Close','ghost',()=>closeClue(true)));
+  } else {
+    const lbl = document.createElement('div');
+    lbl.className='ov-award-label'; lbl.textContent='Award $'+current.v+' to —';
+    ovControls.appendChild(lbl);
+    ovControls.appendChild(mkBtn(teamName('a'),'award-a',()=>award('a')));
+    ovControls.appendChild(mkBtn(teamName('b'),'award-b',()=>award('b')));
+    ovControls.appendChild(mkBtn(teamName('c'),'award-c',()=>award('c')));
+    ovControls.appendChild(mkBtn('No one','ghost',()=>closeClue(true)));
+  }
+}
+
+function teamName(t){
+  const map={a:0,b:1,c:2};
+  const input = document.querySelectorAll('.team input')[map[t]];
+  return (input && input.value.trim()) || ('Team '+(map[t]+1));
+}
+
+function mkBtn(label,cls,fn){
+  const b=document.createElement('button');
+  b.className='btn '+cls; b.textContent=label; b.addEventListener('click',fn);
+  return b;
+}
+
+function award(team){
+  scores[team]+=current.v;
+  document.getElementById('score-'+team).textContent = scores[team];
+  closeClue(true);
+}
+
+function closeClue(markUsed){
+  if(markUsed && current) current.tileEl.classList.add('used');
+  overlay.classList.remove('show');
+  current=null;
+}
+
+// manual score steppers
+document.querySelectorAll('.team button[data-team]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const t=btn.dataset.team, d=parseInt(btn.dataset.d,10);
+    scores[t]+=d;
+    document.getElementById('score-'+t).textContent=scores[t];
+  });
+});
+
+document.getElementById('reset').addEventListener('click',()=>{
+  if(!confirm('Reset the board and all three scores?')) return;
+  scores.a=0; scores.b=0; scores.c=0;
+  document.getElementById('score-a').textContent='0';
+  document.getElementById('score-b').textContent='0';
+  document.getElementById('score-c').textContent='0';
+  render();
+});
+
+// close overlay on Escape
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && overlay.classList.contains('show')) closeClue(false); });
+
+render();
+</script>
+</body>
+</html>

@@ -4,3 +4,7 @@ textbook/
 *.3dm
 Week-00/
 zoom/
+
+# Instructor-only answer keys — never deploy/share
+**/INSTRUCTOR_ONLY_*
+**/*_INSTRUCTOR.pdf

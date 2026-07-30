@@ -8,3 +8,67 @@ zoom/
 # Instructor-only answer keys — never deploy/share
 **/INSTRUCTOR_ONLY_*
 **/*_INSTRUCTOR.pdf
+
+# ─────────────────────────────────────────────────────────────
+# STUDENT DATA — FERPA. Never commit; this repo has a public host.
+# Education records (names + grades + submitted coursework) must not
+# reach a third-party processor. Git history is permanent: a file
+# committed once survives deletion in every clone.
+# ─────────────────────────────────────────────────────────────
+
+# Submitted student work
+**/student-submissions/
+**/submissions/
+**/student work/
+student-work/
+
+# Grades, gradebook exports, per-student assessments
+grades/
+*Grades-*.csv
+**/*Instructor Assessment*
+**/*-log.md
+**/*-log.pdf
+**/*-log.docx
+**/*-presentation.pdf
+
+# Student media (faces / voices)
+*.mp4
+*.mov
+
+# Loose student submissions dropped straight into an act folder,
+# and logs with doubled extensions (russell-log.md.md)
+assignments/act-*/*.pdf
+assignments/act-*/*.docx
+assignments/act-*/*.pptx
+**/*-log.*
+
+# Correspondence naming students (LightStanza account requests, etc.)
+troubleshooting/*Mail*
+troubleshooting/*Schwalm*
+
+# Student models / test files handed over for troubleshooting.
+# Keyed to names because these land loose in working folders.
+**/*kierra*
+**/*troung*
+**/*truong*
+**/*phuol*
+**/*bejko*
+**/*pagett*
+**/*kroll*
+**/*richards*
+**/*hadassah*
+**/*russell*
+**/*schwalm*
+**/*taueg*
+**/*turczynski*
+**/*vanmeurs*
+**/*fritsch*
+**/*fritch*
+python/reports/
+
+# ── Re-allow the course materials you author ──
+!assignments/**/Su_26_AEIS_*Assignment*
+!assignments/**/Su 26 AEIS Act *Assignment*
+!assignments/**/*Rubric*
+!assignments/Su 26 AEIS Decision Log Template.md
+!assignments/Su 26 AEIS Canvas Assignments.md
